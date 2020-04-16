@@ -34,7 +34,7 @@ def scandir(dir, floor):
     for file in files:
         filepath = dir + os.sep + file
         if os.path.isdir(filepath):
-            if os.path.isfile(filepath + '.md'):
+            if file[0] == '.' or os.path.isfile(filepath + '.md'):
                 continue
             createfileitem(floor, file, None)
             scandir(filepath, floor + 1)
