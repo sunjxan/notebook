@@ -116,7 +116,7 @@ Word2vec 正是来源于这个思想，但它的最终目的，不是要把 f �
 
 OK，那我们接下来就可以看看 Skip-gram 的网络结构了，x 就是上面提到的 one-hot encoder 形式的输入，y 是在这 V 个词上输出的概率，我们希望跟真实的 y 的 one-hot encoder 一样。
 
-![img]([NLP] 秒懂词向量Word2vec的本质\1.png)
+![img]([NLP] 秒懂词向量Word2vec的本质/1.png)
 
 
 
@@ -134,7 +134,7 @@ OK，那我们接下来就可以看看 Skip-gram 的网络结构了，x 就是�
 
 上面讨论的是最简单情形，即 y 只有一个词，当 y 有多个词时，网络结构如下：
 
-![img]([NLP] 秒懂词向量Word2vec的本质\2.png)
+![img]([NLP] 秒懂词向量Word2vec的本质/2.png)
 
 
 
@@ -150,7 +150,7 @@ OK，那我们接下来就可以看看 Skip-gram 的网络结构了，x 就是�
 
 网络结构如下
 
-![img]([NLP] 秒懂词向量Word2vec的本质\3.png)
+![img]([NLP] 秒懂词向量Word2vec的本质/3.png)
 
 
 

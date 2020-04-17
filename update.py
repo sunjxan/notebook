@@ -19,6 +19,7 @@ def downimage(url, file):
     urlretrieve(url, file)
     print(file, '下载成功')
 
+
 def createfileitem(floor, title, filepath):
     global summary
     if filepath == None:
@@ -26,13 +27,15 @@ def createfileitem(floor, title, filepath):
         return
 
     global path
-    start = len(path + os.sep)
-    summary.append('\t' * floor + '- [' + title + '](' + filepath[start:] + ')\n')
+    start = len(path + '/')
+    summary.append(
+        '\t' * floor + '- [' + title + '](' + filepath[start:] + ')\n')
+
 
 def scandir(dir, floor):
     files = os.listdir(dir)
     for file in files:
-        filepath = dir + os.sep + file
+        filepath = dir + '/' + file
         if os.path.isdir(filepath):
             if file[0] == '.' or os.path.isfile(filepath + '.md'):
                 continue
@@ -53,14 +56,15 @@ def scandir(dir, floor):
                 line = line.strip()
                 if line[:6] == '![img]':
                     num += 1
-                    newfile = file[:-3] + os.sep + str(num) + '.png'
+                    newfile = file[:-3] + '/' + str(num) + '.png'
                     lines[index] = '![img](' + newfile + ')\n'
-                    downimage(line[7:-1], downdir + os.sep + newfile)
+                    downimage(line[7:-1], downdir + '/' + newfile)
             with open(filepath, 'w', encoding='utf8') as f:
                 f.writelines(lines)
 
+
 path = os.path.dirname(__file__)
-readme = path + os.sep + 'README.md'
+readme = path + '/' + 'README.md'
 if os.path.isfile(readme):
     os.remove(readme)
 
