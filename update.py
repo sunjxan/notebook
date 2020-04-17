@@ -3,21 +3,31 @@
 # 3. 执行本脚本下载图片，更新目录
 
 import os
+import re
+import base64
 import shutil
 from urllib.request import urlretrieve
 
+pasplit = re.compile('(!\[[^\]]+\]\([^\)]+\))')
+pafind = re.compile('!\[([^\]]+)\]\(([^\s\)]+)(\s[\'\"]([^\s\'\"]+)[\'\"])?\)')
+
 
 def downimage(url, file):
-    if url[:4] != 'http':
+    if url[:4] == 'http':
+        if url[:9] == 'http:////':
+            url = 'http://' + url[9:]
+        elif url[:10] == 'https:////':
+            url = 'https://' + url[10:]
+        urlretrieve(url, file)
+        print(file, '下载成功')
+    elif url[:22] == 'data:image/png;base64,':
+        imgdata = base64.b64decode(url[22:])
+        with open(file, 'wb') as f:
+            f.write(imgdata)
+        print(file, '下载成功')
+    else:
         shutil.move(url, file)
         print(file, '移动成功')
-        return
-    if url[:9] == 'http:////':
-        url = 'http://' + url[9:]
-    elif url[:10] == 'https:////':
-        url = 'https://' + url[10:]
-    urlretrieve(url, file)
-    print(file, '下载成功')
 
 
 def createfileitem(floor, title, filepath):
@@ -54,11 +64,25 @@ def scandir(dir, floor):
             num = 0
             for index, line in enumerate(lines):
                 line = line.strip()
-                if line[:6] == '![img]':
-                    num += 1
-                    newfile = file[:-3] + '/' + str(num) + '.png'
-                    lines[index] = '![img](' + newfile + ')\n'
-                    downimage(line[7:-1], downdir + '/' + newfile)
+                res = pasplit.split(line)
+                if len(res) != 1:
+                    for ix, it in enumerate(res):
+                        if ix % 2 == 0:
+                            res[ix] = it.strip()
+                            if len(res[ix]):
+                                res[ix] += '\n'
+                        else:
+                            num += 1
+                            newfile = file[:-3] + '/' + str(num) + '.png'
+                            tmp = pafind.findall(res[ix])[0]
+                            if tmp[3]:
+                                res[ix] = '![' + tmp[0] + \
+                                    '](' + newfile + ' "' + tmp[3] + '")\n'
+                            else:
+                                res[ix] = '![' + tmp[0] + \
+                                    '](' + newfile + ')\n'
+                            downimage(tmp[1], dir + '/' + newfile)
+                    lines[index] = ''.join(res)
             with open(filepath, 'w', encoding='utf8') as f:
                 f.writelines(lines)
 
