@@ -1,5 +1,4 @@
-- NLP
-	- [word2vec中的数学原理详解](NLP/word2vec中的数学原理详解.md)
-	- [秒懂词向量Word2vec的本质](NLP/秒懂词向量Word2vec的本质.md)
-	- [通俗理解word2vec](NLP/通俗理解word2vec.md)
-	- [面经之word2vec篇（一）](NLP/面经之word2vec篇（一）.md)
+- word2vec
+	- [word2vec中的数学原理详解](word2vec/word2vec中的数学原理详解.md)
+	- [总结](word2vec/总结.md)
+	- [通俗理解word2vec](word2vec/通俗理解word2vec.md)
