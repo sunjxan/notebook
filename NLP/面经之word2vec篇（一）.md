@@ -1,3 +1,5 @@
+[原网页](https://blog.csdn.net/sir_TI/article/details/89199084)
+
 ### 前篇
 
 本来以为自己`word2vec`掌握的很好，面试的时候回答的一团糟…借此机会，结合面试提问，再来复习一遍`word2vec`吧，面试给自己上了一节很重要的课…
