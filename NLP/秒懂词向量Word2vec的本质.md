@@ -204,7 +204,7 @@ OK，那我们接下来就可以看看 Skip-gram 的网络结构了，x 就是�
 
 ***2019年更新\***：最新的语言模型 Bert 也借鉴了 Word2vec 的 CBOW 模式，欢迎阅读本人最新文章：
 
-[穆文：[NLP\] 从语言模型看Bert的善变与GPT的坚守zhuanlan.zhihu.com![图标](https://pic4.zhimg.com/v2-e7aab901fbf9279f4c3bc08a6834b2e7_180x120.jpg)](https://zhuanlan.zhihu.com/p/66409688)
+[穆文：[NLP\] 从语言模型看Bert的善变与GPT的坚守zhuanlan.zhihu.com![图标](秒懂词向量Word2vec的本质/4.png)](https://zhuanlan.zhihu.com/p/66409688)
 
 ## 4. 实战
 

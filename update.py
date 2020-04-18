@@ -43,6 +43,7 @@ def createfileitem(floor, title, filepath):
 
 
 def scandir(dir, floor):
+    os.chdir(dir)
     files = os.listdir(dir)
     for file in files:
         filepath = dir + '/' + file
@@ -55,33 +56,33 @@ def scandir(dir, floor):
         if os.path.isfile(filepath) and file[-3:] == '.md':
             createfileitem(floor, file[:-3], filepath)
             downdir = filepath[:-3]
-            if os.path.isdir(downdir):
-                continue
-            else:
+            if not os.path.isdir(downdir):
                 os.mkdir(downdir)
             with open(filepath, 'r', encoding='utf8') as f:
                 lines = f.readlines()
             num = 0
             for index, line in enumerate(lines):
-                line = line.strip()
                 res = pasplit.split(line)
                 if len(res) != 1:
-                    for ix, it in enumerate(res):
-                        if ix % 2 == 0:
-                            res[ix] = it.strip()
-                            if len(res[ix]):
-                                res[ix] += '\n'
-                        else:
-                            num += 1
-                            newfile = file[:-3] + '/' + str(num) + '.png'
+                    for ix in range(len(res)):
+                        if ix % 2:
+                            while True:
+                                num += 1
+                                newfile = file[:-3] + '/' + str(num) + '.png'
+                                newfilepath = dir + '/' + newfile
+                                if not os.path.isfile(newfilepath):
+                                    break
                             tmp = pafind.findall(res[ix])[0]
+                            if os.path.dirname(os.path.abspath(tmp[1])) == os.path.dirname(os.path.abspath(newfilepath)):
+                                num -= 1
+                                continue
                             if tmp[3]:
                                 res[ix] = '![' + tmp[0] + \
-                                    '](' + newfile + ' "' + tmp[3] + '")\n'
+                                    '](' + newfile + ' "' + tmp[3] + '")'
                             else:
                                 res[ix] = '![' + tmp[0] + \
-                                    '](' + newfile + ')\n'
-                            downimage(tmp[1], dir + '/' + newfile)
+                                    '](' + newfile + ')'
+                            downimage(tmp[1], newfilepath)
                     lines[index] = ''.join(res)
             with open(filepath, 'w', encoding='utf8') as f:
                 f.writelines(lines)
