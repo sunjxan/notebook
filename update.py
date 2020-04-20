@@ -13,6 +13,9 @@ pafind = re.compile('!\[([^\]]+)\]\(([^\s\)]+)(\s[\'\"]([^\s\'\"]+)[\'\"])?\)')
 
 
 def downimage(url, file):
+    downdir = os.path.abspath(os.path.dirname(file))
+    if not os.path.isdir(downdir):
+        os.mkdir(downdir)
     if url[:4] == 'http':
         if url[:9] == 'http:////':
             url = 'http://' + url[9:]
@@ -55,9 +58,6 @@ def scandir(dir, floor):
             continue
         if os.path.isfile(filepath) and file[-3:] == '.md':
             createfileitem(floor, file[:-3], filepath)
-            downdir = filepath[:-3]
-            if not os.path.isdir(downdir):
-                os.mkdir(downdir)
             with open(filepath, 'r', encoding='utf8') as f:
                 lines = f.readlines()
             num = 0

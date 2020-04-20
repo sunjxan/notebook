@@ -1,6 +1,10 @@
 - NLP
 	- [NLP简介](NLP/NLP简介.md)
-- word2vec
-	- [word2vec中的数学原理详解](word2vec/word2vec中的数学原理详解.md)
-	- [总结](word2vec/总结.md)
-	- [通俗理解word2vec](word2vec/通俗理解word2vec.md)
+	- word2vec
+		- [word2vec中的数学原理详解](NLP/word2vec/word2vec中的数学原理详解.md)
+		- [总结](NLP/word2vec/总结.md)
+		- [通俗理解word2vec](NLP/word2vec/通俗理解word2vec.md)
+- 数理统计学
+	- [最大似然估计和最大后验估计](数理统计学/最大似然估计和最大后验估计.md)
+	- [概率和统计](数理统计学/概率和统计.md)
+	- [频率学派与贝叶斯学派](数理统计学/频率学派与贝叶斯学派.md)
