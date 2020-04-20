@@ -1,3 +1,5 @@
+- NLP
+	- [NLP简介](NLP/NLP简介.md)
 - word2vec
 	- [word2vec中的数学原理详解](word2vec/word2vec中的数学原理详解.md)
 	- [总结](word2vec/总结.md)

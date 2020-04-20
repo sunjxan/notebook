@@ -88,7 +88,7 @@ def scandir(dir, floor):
                 f.writelines(lines)
 
 
-path = os.path.dirname(__file__)
+path = os.path.abspath(os.path.dirname(__file__))
 readme = path + '/' + 'README.md'
 if os.path.isfile(readme):
     os.remove(readme)
