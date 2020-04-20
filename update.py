@@ -74,7 +74,8 @@ def scandir(dir, floor):
                         if ix % 2:
                             while True:
                                 num += 1
-                                newfile = file[:-3] + '/' + str(num) + '.png'
+                                newfile = file[:-3] + \
+                                    '.assets/' + str(num) + '.png'
                                 newfilepath = dir + '/' + newfile
                                 if not os.path.isfile(newfilepath):
                                     break

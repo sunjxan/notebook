@@ -6,7 +6,7 @@
 
 
 
-![img](通俗理解word2vec/1.png)
+![img](通俗理解word2vec.assets/1.png)
 
 
 
@@ -14,11 +14,11 @@
 
 
 
-![img](通俗理解word2vec/2.png)
+![img](通俗理解word2vec.assets/2.png)
 
 
 
-![img](通俗理解word2vec/3.png)
+![img](通俗理解word2vec.assets/3.png)
 
 
  考虑一下的三个特征：
@@ -57,7 +57,7 @@ Dristributed representation可以解决One hot representation的问题，它的�
 
 
 
-![img](通俗理解word2vec/4.png)
+![img](通俗理解word2vec.assets/4.png)
 
 
 
@@ -68,16 +68,16 @@ Dristributed representation可以解决One hot representation的问题，它的�
 
 这个过程称为**word embedding（词嵌入）**，即将高维词向量嵌入到一个低维空间。顺便找了个图
 
-![img](通俗理解word2vec/5.png)
+![img](通俗理解word2vec.assets/5.png)
 
 
  经过我们一系列的降维神操作，有了用Dristributed representation表示的较短的词向量，我们就可以较容易的分析词之间的关系了，比如我们将词的维度降维到2维，有一个有趣的研究表明，用下图的词向量表示我们的词时，我们可以发现：
 
-![img](通俗理解word2vec/6.png)
+![img](通俗理解word2vec.assets/6.png)
 
 
 
-![img](通俗理解word2vec/7.png)
+![img](通俗理解word2vec.assets/7.png)
 
 
 
@@ -85,7 +85,7 @@ Dristributed representation可以解决One hot representation的问题，它的�
 
 
 
-![img](通俗理解word2vec/8.png)
+![img](通俗理解word2vec.assets/8.png)
 
 
 
@@ -97,7 +97,7 @@ Dristributed representation可以解决One hot representation的问题，它的�
 
 
 
-![img](通俗理解word2vec/9.png)
+![img](通俗理解word2vec.assets/9.png)
 
 
 
@@ -107,7 +107,7 @@ Dristributed representation可以解决One hot representation的问题，它的�
 
 
 
-![img](通俗理解word2vec/10.png)
+![img](通俗理解word2vec.assets/10.png)
 
 ### word2vec
 
@@ -115,7 +115,7 @@ word2vec模型其实就是简单化的神经网络。（不明白神经网络的
 
 
 
-![img](通俗理解word2vec/11.png)
+![img](通俗理解word2vec.assets/11.png)
 
 
 
@@ -125,13 +125,13 @@ word2vec模型其实就是简单化的神经网络。（不明白神经网络的
 
 
 
-![img](通俗理解word2vec/12.png)
+![img](通俗理解word2vec.assets/12.png)
 
 CBOW模型
 
 
 
-![img](通俗理解word2vec/13.png)
+![img](通俗理解word2vec.assets/13.png)
 
 Skip-Gram模型
 
@@ -139,7 +139,7 @@ Skip-Gram模型
 
 CBOW的训练模型如图所示
 
-![img](通俗理解word2vec/14.png)
+![img](通俗理解word2vec.assets/14.png)
 
 
  1 输入层：上下文单词的onehot.  {假设单词向量空间dim为V，上下文单词个数为C}
@@ -157,7 +157,7 @@ CBOW的训练模型如图所示
 
 
 
-![img](通俗理解word2vec/15.png)
+![img](通俗理解word2vec.assets/15.png)
 
 
 
@@ -165,7 +165,7 @@ CBOW的训练模型如图所示
 
 
 
-![img](通俗理解word2vec/16.png)
+![img](通俗理解word2vec.assets/16.png)
 
 
  假设我们此时得到的概率分布已经达到了设定的迭代次数，那么现在我们训练出来的look up table应该为矩阵W。即，任何一个单词的one-hot表示乘以这个矩阵都将得到自己的word embedding。
@@ -188,7 +188,7 @@ CBOW的训练模型如图所示
 
 
 
-![img](通俗理解word2vec/17.png)
+![img](通俗理解word2vec.assets/17.png)
 
 
 
@@ -202,7 +202,7 @@ CBOW的训练模型如图所示
 
 
 
-![img](通俗理解word2vec/18.png)
+![img](通俗理解word2vec.assets/18.png)
 
 > 本来想写一篇word2vec的深入理解篇，但有一篇已经讲得非常好了，请读者移步# [word2vec 中的数学原理详解](https://links.jianshu.com/go?to=https%3A%2F%2Fwww.cnblogs.com%2Fpeghoty%2Fp%2F3857839.html)
 
