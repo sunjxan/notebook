@@ -6,6 +6,7 @@ import os
 import re
 import base64
 import shutil
+import urllib
 from urllib.request import urlretrieve
 
 pasplit = re.compile('(!\[[^\]]+\]\([^\)]+\))')
@@ -21,6 +22,11 @@ def downimage(url, file):
             url = 'http://' + url[9:]
         elif url[:10] == 'https:////':
             url = 'https://' + url[10:]
+        # 绕过反爬虫机制
+        opener = urllib.request.build_opener()
+        opener.addheaders = [
+            ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36')]
+        urllib.request.install_opener(opener)
         urlretrieve(url, file)
         print(file, '下载成功')
     elif url[:22] == 'data:image/png;base64,':
