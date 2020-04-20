@@ -57,7 +57,7 @@ def scandir(dir, floor):
     for file in files:
         filepath = dir + '/' + file
         if os.path.isdir(filepath):
-            if file[0] == '.' or os.path.isfile(filepath + '.md'):
+            if file[0] == '.' or filepath[-7:] == '.assets':
                 continue
             createfileitem(floor, file, None)
             scandir(filepath, floor + 1)
@@ -74,7 +74,8 @@ def scandir(dir, floor):
                         if ix % 2:
                             while True:
                                 num += 1
-                                newfile = file[:-3] + '/' + str(num) + '.png'
+                                newfile = file[:-3] + \
+                                    '.assets/' + str(num) + '.png'
                                 newfilepath = dir + '/' + newfile
                                 if not os.path.isfile(newfilepath):
                                     break
