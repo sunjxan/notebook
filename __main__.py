@@ -57,7 +57,7 @@ def scandir(dir, floor):
     for file in files:
         filepath = dir + '/' + file
         if os.path.isdir(filepath):
-            if file[0] == '.' or filepath[-7:] == '.assets':
+            if file[0] == '.' or file == '__pycache__' or filepath[-7:] == '.assets':
                 continue
             createfileitem(floor, file, None)
             scandir(filepath, floor + 1)
