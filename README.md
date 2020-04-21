@@ -1,5 +1,6 @@
 - NLP
 	- FastText
+		- [总结](NLP/FastText/总结.md)
 	- GloVe
 		- [GloVe详解](NLP/GloVe/GloVe详解.md)
 	- [NLP概念解释](NLP/NLP概念解释.md)
@@ -9,6 +10,7 @@
 		- [word2vec中的数学原理详解](NLP/Word2Vec/word2vec中的数学原理详解.md)
 		- [总结](NLP/Word2Vec/总结.md)
 		- [通俗理解word2vec](NLP/Word2Vec/通俗理解word2vec.md)
+	- WordRank
 - 概率论与数理统计
 	- [最大似然估计和最大后验估计](概率论与数理统计/最大似然估计和最大后验估计.md)
 	- [概率和统计](概率论与数理统计/概率和统计.md)

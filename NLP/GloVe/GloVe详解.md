@@ -8,11 +8,29 @@
 
 正如论文的标题而言，GloVe的全称叫Global Vectors for Word Representation，它是一个基于**全局词频统计**（count-based & overall statistics）的词表征（word representation）工具，它可以把一个单词表达成一个由实数组成的向量，这些向量捕捉到了单词之间一些语义特性，比如相似性（similarity）、类比性（analogy）等。我们通过对向量的运算，比如欧几里得距离或者cosine相似度，可以计算出两个单词之间的语义相似性。
 
+### 什么是共现矩阵？
+
+共现矩阵顾名思义就是共同出现的意思，词文档的共现矩阵主要用于发现主题(topic)，用于主题模型，如LSA。
+
+局域窗中的word-word共现矩阵可以挖掘语法和语义信息，**例如：**
+
+- I like deep learning.
+- I like NLP.
+- I enjoy flying
+
+有以上三句话，设置滑窗为2，可以得到一个词典：**{"I like","like deep","deep learning","like NLP","I enjoy","enjoy flying","I like"}**。
+
+我们可以得到一个共现矩阵(对称矩阵)：
+
+![image](GloVe详解.assets/4.png)
+
+中间的每个格子表示的是行和列组成的词组在词典中共同出现的次数，也就体现了**共现**的特性。
+
 ### GloVe是如何实现的？
 
 GloVe的实现分为以下三步：
 
-- 根据语料库（corpus）构建一个共现矩阵（Co-ocurrence Matrix）X（什么是[共现矩阵](http://www.fanyeong.com/2017/10/10/word2vec/)？），**矩阵中的每一个元素Xij代表单词i和上下文单词j在特定大小的上下文窗口（context window）内共同出现的次数。**一般而言，这个次数的最小单位是1，但是GloVe不这么认为：它根据两个单词在上下文窗口的距离d，提出了一个衰减函数（decreasing weighting）：decay=1/d用于计算权重，也就是说**距离越远的两个单词所占总计数（total count）的权重越小**。
+- 根据语料库（corpus）构建一个共现矩阵（Co-ocurrence Matrix）X，**矩阵中的每一个元素Xij代表单词i和上下文单词j在特定大小的上下文窗口（context window）内共同出现的次数。**一般而言，这个次数的最小单位是1，但是GloVe不这么认为：它根据两个单词在上下文窗口的距离d，提出了一个衰减函数（decreasing weighting）：decay=1/d用于计算权重，也就是说**距离越远的两个单词所占总计数（total count）的权重越小**。
 
   > In all cases we use a decreasing weighting function, so that word pairs that are d words apart contribute 1/d to the total count.
 
