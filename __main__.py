@@ -52,7 +52,6 @@ def createfileitem(floor, title, filepath):
 
 
 def scandir(dir, floor):
-    os.chdir(dir)
     files = os.listdir(dir)
     for file in files:
         filepath = dir + '/' + file
@@ -80,6 +79,8 @@ def scandir(dir, floor):
                                 if not os.path.isfile(newfilepath):
                                     break
                             tmp = pafind.findall(res[ix])[0]
+                            # 切换工作目录获取绝对路径
+                            os.chdir(dir)
                             if os.path.dirname(os.path.abspath(tmp[1])) == os.path.dirname(os.path.abspath(newfilepath)):
                                 num -= 1
                                 continue
