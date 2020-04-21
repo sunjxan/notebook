@@ -6,11 +6,15 @@
 	- [NLP概念解释](NLP/NLP概念解释.md)
 	- [NLP简介](NLP/NLP简介.md)
 	- [NNLM](NLP/NNLM.md)
-	- Word2Vec
-		- [word2vec中的数学原理详解](NLP/Word2Vec/word2vec中的数学原理详解.md)
-		- [总结](NLP/Word2Vec/总结.md)
-		- [通俗理解word2vec](NLP/Word2Vec/通俗理解word2vec.md)
-	- WordRank
+	- word2vec
+		- [word2vec中的数学原理详解](NLP/word2vec/word2vec中的数学原理详解.md)
+		- [总结](NLP/word2vec/总结.md)
+		- [通俗理解word2vec](NLP/word2vec/通俗理解word2vec.md)
+- 人工智能
+	- [发展历程](人工智能/发展历程.md)
+	- [机器学习概述](人工智能/机器学习概述.md)
+	- [机器学习的一般过程](人工智能/机器学习的一般过程.md)
+	- [过拟合和欠拟合](人工智能/过拟合和欠拟合.md)
 - 概率论与数理统计
 	- [最大似然估计和最大后验估计](概率论与数理统计/最大似然估计和最大后验估计.md)
 	- [概率和统计](概率论与数理统计/概率和统计.md)
