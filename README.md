@@ -1,8 +1,10 @@
 - NLP
+	- FastText
 	- GloVe
 		- [GloVe详解](NLP/GloVe/GloVe详解.md)
 	- [NLP概念解释](NLP/NLP概念解释.md)
 	- [NLP简介](NLP/NLP简介.md)
+	- [NNLM](NLP/NNLM.md)
 	- Word2Vec
 		- [word2vec中的数学原理详解](NLP/Word2Vec/word2vec中的数学原理详解.md)
 		- [总结](NLP/Word2Vec/总结.md)
