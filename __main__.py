@@ -10,7 +10,7 @@ import urllib
 from urllib.request import urlretrieve
 
 pasplit = re.compile('(!\[[^\]]+\]\([^\)]+\))')
-pafind = re.compile('!\[([^\]]+)\]\(([^\s\)]+)(\s[\'\"]([^\s\'\"]+)[\'\"])?\)')
+pafind = re.compile('!\[([^\]]+)\]\(([^\)]+)(\s[\'\"]([^\'\"]+)[\'\"])?\)')
 
 
 def downimage(url, file):
