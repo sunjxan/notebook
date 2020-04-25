@@ -10,6 +10,8 @@
 		- [word2vec中的数学原理详解](NLP/word2vec/word2vec中的数学原理详解.md)
 		- [总结](NLP/word2vec/总结.md)
 		- [通俗理解word2vec](NLP/word2vec/通俗理解word2vec.md)
+- 推荐系统
+	- [推荐系统概述](推荐系统/推荐系统概述.md)
 - 机器学习
 	- [人工智能发展历程](机器学习/人工智能发展历程.md)
 	- [机器学习概述](机器学习/机器学习概述.md)

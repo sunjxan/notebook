@@ -99,11 +99,9 @@ n元模型的思想就是：
 
 ## 模型的前向传播
 
-该模型结构分为三层，分别是输入层，一层隐层，输出层。下面我分别来介绍。
+## 从One-hot到distribution representation
 
-## 输入层： 从One-hot到distribution representation
-
-对于输入层，我们先将输入词序列 ![[公式]](https://www.zhihu.com/equation?tex=w_1%2C+%5Ccdots%2C+w_n) 映射到词表中，如词 ![[公式]](https://www.zhihu.com/equation?tex=w_i) 是词表中是第i个元素，编码为one-hot embedding；然后我们再将这个元素映射到实向量 ![[公式]](https://www.zhihu.com/equation?tex=C%28i%29) 中，其中 ![[公式]](https://www.zhihu.com/equation?tex=C%28i%29+%5Cin+R%5Em) ，它表示的是**词表中第i个词**的**distributed representation**。 C实际上就是一个 ![[公式]](https://www.zhihu.com/equation?tex=%7CV%7C+%C3%97+m+) 的自由参数矩阵， ![[公式]](https://www.zhihu.com/equation?tex=%7CV%7C) 表示词表的大小， ![[公式]](https://www.zhihu.com/equation?tex=m) 表示每个词的维度。
+我们先将输入词序列 ![[公式]](https://www.zhihu.com/equation?tex=w_1%2C+%5Ccdots%2C+w_n) 映射到词表中，如词 ![[公式]](https://www.zhihu.com/equation?tex=w_i) 是词表中是第i个元素，编码为one-hot embedding；然后我们再将这个元素映射到实向量 ![[公式]](https://www.zhihu.com/equation?tex=C%28i%29) 中，其中 ![[公式]](https://www.zhihu.com/equation?tex=C%28i%29+%5Cin+R%5Em) ，它表示的是**词表中第i个词**的**distributed representation**。 C实际上就是一个 ![[公式]](https://www.zhihu.com/equation?tex=%7CV%7C+%C3%97+m+) 的自由参数矩阵， ![[公式]](https://www.zhihu.com/equation?tex=%7CV%7C) 表示词表的大小， ![[公式]](https://www.zhihu.com/equation?tex=m) 表示每个词的维度。
 
 
 
@@ -117,9 +115,11 @@ n元模型的思想就是：
 
 
 
+## 投影层：
 
+将输入层的词向量按顺序首尾相接拼接成一个长向量。
 
-## 隐层：
+## 隐藏层：
 
 ![[公式]](https://www.zhihu.com/equation?tex=+o+%5Cleftarrow+d+%2B+Hx%3B+%5Cqquad+o%E6%98%AF%E9%95%BF%E5%BA%A6%E4%B8%BAh%E7%9A%84%E5%90%91%E9%87%8F+%5C%5C+a+%5Cleftarrow+tanh%28o%29+%5Cqquad+a%E6%98%AF%E9%95%BF%E5%BA%A6%E4%B8%BAh%E7%9A%84%E5%90%91%E9%87%8F+)
 
