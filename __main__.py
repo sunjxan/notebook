@@ -23,21 +23,34 @@ def downimage(url, file):
         elif url[:10] == 'https:////':
             url = 'https://' + url[10:]
         # 绕过反爬虫机制
-        opener = urllib.request.build_opener()
-        opener.addheaders = [
-            ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36')]
-        urllib.request.install_opener(opener)
-        urlretrieve(url, file)
-        print(file, '下载成功')
+        try:
+            opener = urllib.request.build_opener()
+            opener.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36')]
+            urllib.request.install_opener(opener)
+            urlretrieve(url, file)
+        except:
+            print(file, '下载失败！')
+        else:
+            print(file, '下载成功')
+            return True
     elif url[:22] == 'data:image/png;base64,':
-        imgdata = base64.b64decode(url[22:])
-        with open(file, 'wb') as f:
-            f.write(imgdata)
-        print(file, '下载成功')
+        try:
+            imgdata = base64.b64decode(url[22:])
+            with open(file, 'wb') as f:
+                f.write(imgdata)
+        except:
+            print(file, '下载失败！')
+        else:
+            print(file, '下载成功')
+            return True
     else:
-        shutil.move(url, file)
-        print(file, '移动成功')
-
+        try:
+            shutil.move(url, file)
+        except:
+            print(file, '移动失败！')
+        else:
+            print(file, '移动成功')
+            return True
 
 def createfileitem(floor, title, filepath):
     global summary
@@ -84,13 +97,13 @@ def scandir(dir, floor):
                             if os.path.dirname(os.path.abspath(tmp[1])) == os.path.dirname(os.path.abspath(newfilepath)):
                                 num -= 1
                                 continue
-                            if tmp[3]:
-                                res[ix] = '![' + tmp[0] + \
-                                    '](' + newfile + ' "' + tmp[3] + '")'
-                            else:
-                                res[ix] = '![' + tmp[0] + \
-                                    '](' + newfile + ')'
-                            downimage(tmp[1], newfilepath)
+                            if downimage(tmp[1], newfilepath):
+                                if tmp[3]:
+                                    res[ix] = '![' + tmp[0] + \
+                                        '](' + newfile + ' "' + tmp[3] + '")'
+                                else:
+                                    res[ix] = '![' + tmp[0] + \
+                                        '](' + newfile + ')'
                     lines[index] = ''.join(res)
             with open(filepath, 'w', encoding='utf8') as f:
                 f.writelines(lines)
