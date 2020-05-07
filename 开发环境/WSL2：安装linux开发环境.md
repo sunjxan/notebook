@@ -76,7 +76,7 @@ sudo chsh -s /bin/zsh <username>
 
 9. 安装oh-my-zsh
 
-下载[install.sh](WSL2：安装linux开发环境.assets/install.sh)执行：
+下载[install.sh](https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)执行：
 ```
 sudo sh install.sh
 ```

@@ -12,7 +12,10 @@
 		- [通俗理解word2vec](NLP/word2vec/通俗理解word2vec.md)
 - 开发环境
 	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)
+	- [安装Anaconda](开发环境/安装Anaconda.md)
 	- [安装Docker](开发环境/安装Docker.md)
+	- [安装Go](开发环境/安装Go.md)
+	- [安装Node.js](开发环境/安装Node.js.md)
 - 推荐系统
 	- [协同过滤](推荐系统/协同过滤.md)
 	- [推荐系统概述](推荐系统/推荐系统概述.md)
