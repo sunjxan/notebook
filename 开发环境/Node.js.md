@@ -8,6 +8,7 @@ mv node-v12.16.3-linux-x64 node
 #安装yarn（https://classic.yarnpkg.com/en/docs/install#debian-stable）
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update && sudo apt install yarn
 
 # 设置环境变量，在~/.zshrc追加
 export PATH="/home/sunjxan/node/bin:$PATH"

@@ -1,5 +1,5 @@
 ```
-# 下载脚本
+# 下载脚本（https://www.anaconda.com/products/individual）
 wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 # 安装
 sudo sh Anaconda3-2020.02-Linux-x86_64.sh
@@ -19,6 +19,9 @@ unset __conda_setup
 
 # 生效
 source .zshrc
+
+# 删除python3的软连接
+sudo rm -rf python3
 
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
