@@ -59,5 +59,10 @@ custom_channels:
 
 # 清除索引缓存，保证用的是镜像站提供的索引
 conda clean -i
+
+# 打开Jupyter服务器
+jupyter notebook
+# 获取token
+jupyter notebook list
 ```
 
