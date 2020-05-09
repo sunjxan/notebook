@@ -14,6 +14,7 @@
 	- [Anaconda](开发环境/Anaconda.md)
 	- [Docker](开发环境/Docker.md)
 	- [Go](开发环境/Go.md)
+	- [MySQL](开发环境/MySQL.md)
 	- [Node.js](开发环境/Node.js.md)
 	- [Pycharm](开发环境/Pycharm.md)
 	- [Python](开发环境/Python.md)
