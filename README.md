@@ -20,7 +20,7 @@
 	- [Go](开发环境/Go.md)
 	- [MySQL](开发环境/MySQL.md)
 	- [Node.js](开发环境/Node.js.md)
-	- [Pycharm](开发环境/Pycharm.md)
+	- [PyCharm](开发环境/PyCharm.md)
 	- [Python](开发环境/Python.md)
 	- [VSCode](开发环境/VSCode.md)
 	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)
