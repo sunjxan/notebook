@@ -45,6 +45,9 @@ def downimage(url, file):
             return True
     else:
         try:
+            if url[1] == ':':
+                url = '/mnt/' + url[0].lower() + url[2:]
+                url = url.replace('\\', '/')
             shutil.move(url, file)
         except:
             print(file, '移动失败！')

@@ -10,6 +10,10 @@
 		- [word2vec中的数学原理详解](NLP/word2vec/word2vec中的数学原理详解.md)
 		- [总结](NLP/word2vec/总结.md)
 		- [通俗理解word2vec](NLP/word2vec/通俗理解word2vec.md)
+- 大数据
+	- [HBase和Hive以及传统数据库的区别](大数据/HBase和Hive以及传统数据库的区别.md)
+	- [发展历程](大数据/发展历程.md)
+	- [概述](大数据/概述.md)
 - 开发环境
 	- [Anaconda](开发环境/Anaconda.md)
 	- [Docker](开发环境/Docker.md)
