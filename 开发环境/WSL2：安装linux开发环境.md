@@ -135,3 +135,18 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source .zshrc
 ```
 
+10. 路径问题
+
+|  | Windows文件系统 | Linux文件系统 |
+| ----------- | --------------- | ------------- |
+| Linux路径   | /mnt/f/         | /home/user/   |
+| Windows路径 | F:\             | `\\wsl$\Ubuntu-18.04\home\user\` |
+
+使用file协议
+
+|  | Windows文件系统 | Linux文件系统 |
+| ----------- | --------------- | ------------- |
+| Linux路径   | file:///mnt/f/  | file:///home/user/ |
+| Windows路径 | file:///F:\     | `file://wsl$\Ubuntu-18.04\home\user\` |
+
+Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows程序访问Linux文件系统可能有路径错误，所以把项目文件放在Windows文件系统。
