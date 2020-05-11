@@ -3,7 +3,9 @@
 sudo apt install mysql-server mysql-client
 
 # 查看是否安装成功
-sudo netstat -tap | grep mysql
+sudo netstat -anp | grep mysql
+# 或者
+sudo ps aux | grep mysql
 
 # 启动
 sudo service mysql start

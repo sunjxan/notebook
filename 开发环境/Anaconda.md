@@ -2,20 +2,10 @@
 # 下载脚本（https://www.anaconda.com/products/individual）
 wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 # 安装
-sudo sh Anaconda3-2020.02-Linux-x86_64.sh
+sudo bash Anaconda3-2020.02-Linux-x86_64.sh
 
 # 设置环境变量，在~/.zshrc追加
-__conda_setup="$('/home/sunjxan/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/sunjxan/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/sunjxan/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/sunjxan/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
+export PATH="/home/<user>/anaconda3/bin:$PATH"
 
 # 生效
 source .zshrc

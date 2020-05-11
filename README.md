@@ -22,8 +22,10 @@
 	- [Node.js](开发环境/Node.js.md)
 	- [PyCharm](开发环境/PyCharm.md)
 	- [Python](开发环境/Python.md)
+	- [ssh](开发环境/ssh.md)
 	- [VSCode](开发环境/VSCode.md)
 	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)
+	- [代理](开发环境/代理.md)
 	- [版本控制](开发环境/版本控制.md)
 - 推荐系统
 	- [协同过滤](推荐系统/协同过滤.md)
