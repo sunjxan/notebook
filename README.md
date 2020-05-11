@@ -19,6 +19,7 @@
 	- [Docker](开发环境/Docker.md)
 	- [Go](开发环境/Go.md)
 	- [MySQL](开发环境/MySQL.md)
+	- [NGINX](开发环境/NGINX.md)
 	- [Node.js](开发环境/Node.js.md)
 	- [PyCharm](开发环境/PyCharm.md)
 	- [Python](开发环境/Python.md)
