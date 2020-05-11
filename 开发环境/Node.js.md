@@ -1,4 +1,5 @@
 ```
+cd /usr/local/share
 # 下载安装包（https://nodejs.org/en/download/）
 wget https://nodejs.org/dist/v12.16.3/node-v12.16.3-linux-x64.tar.xz
 # 解压
@@ -11,7 +12,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update && sudo apt install yarn
 
 # 设置环境变量，在~/.zshrc追加
-export PATH="/home/<user>/node/bin:$PATH"
+export PATH="/usr/local/share/node/bin:$PATH"
 
 # 生效
 source .zshrc

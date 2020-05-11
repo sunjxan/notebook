@@ -1,11 +1,12 @@
 ```
+cd /usr/local/share
 # 下载脚本（https://www.anaconda.com/products/individual）
 wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 # 安装
 sudo bash Anaconda3-2020.02-Linux-x86_64.sh
 
 # 设置环境变量，在~/.zshrc追加
-export PATH="/home/<user>/anaconda3/bin:$PATH"
+export PATH="/usr/local/share/anaconda3/bin:$PATH"
 
 # 生效
 source .zshrc
