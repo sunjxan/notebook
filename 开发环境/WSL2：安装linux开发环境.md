@@ -24,12 +24,11 @@ wsl -l -v
 ```
 # 以管理员身份打开PowerShell，设置wsl默认用户为root
 ubuntu1804.exe config --default-user root
-
 # 进入Linux Shell，当前用户是root，设置密码
 passwd
 
-# 以管理员身份打开PowerShell，重新设置wsl默认用户
-ubuntu1804.exe config --default-user <username>
+# 或者直接以root身份进入wsl
+wsl -u root
 ```
 6. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后进入Linux Shell；
 
@@ -150,3 +149,34 @@ source .zshrc
 | Windows路径 | file:///F:\     | `file://wsl$\Ubuntu-18.04\home\user\` |
 
 Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows程序访问Linux文件系统可能有路径错误，所以把项目文件放在Windows文件系统。
+
+11. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，而且WSL2的虚拟网卡网关是动态的，每次重新进入时IP会改变：
+```
+# 关闭wsl
+wsl --shutdown
+```
+
+而且WSL2的IP在局域网中无法访问，只能在Windows中通过WSL2的IP或者localhost(127.0.0.1)访问。
+
+如果要在局域网中访问WSL2里的服务，可以在CMD（以管理员身份运行）使用端口映射：
+
+```
+# 添加映射
+netsh interface portproxy add v4tov4 listenport=<WSL2服务的端口> connectaddress=localhost
+# 查看映射
+netsh interface portproxy show v4tov4
+# 删除映射
+netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
+```
+
+然后添加Windows防火墙规则并启用：
+
+> 1）防火墙和网络保护 -> 高级设置
+
+> 2）入站规则 -> 新建规则
+
+> 3）端口 -> 协议类型：TCP，特定本地端口：<WSL2服务的端口>
+
+> 4）设置名称：WSL2，完成
+
+> 5）规则已经自动启用
