@@ -141,7 +141,7 @@ http {
     server {
         # 监听端口
         listen       80;
-        # 监听地址
+        # 绑定域名
         server_name  localhost;
 
         # charset utf-8;
