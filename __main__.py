@@ -17,6 +17,8 @@ def downimage(url, file):
     downdir = os.path.abspath(os.path.dirname(file))
     if not os.path.isdir(downdir):
         os.mkdir(downdir)
+    if url[0] == '<':
+    	url = url[1:-1]
     if url[:4] == 'http':
         if url[:9] == 'http:////':
             url = 'http://' + url[9:]
