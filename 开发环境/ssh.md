@@ -3,7 +3,7 @@
 sudo apt install openssh-server
 
 # 开启服务并查看
-sudo service sshd restart
+sudo service ssh restart
 sudo netstat -anp | grep ssh
 
 # 生成密钥

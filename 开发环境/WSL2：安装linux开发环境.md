@@ -162,7 +162,7 @@ wsl --shutdown
 
 ```
 # 添加映射
-netsh interface portproxy add v4tov4 listenport=<WSL2服务的端口> connectaddress=localhost
+netsh interface portproxy add v4tov4 listenport=<WSL2服务的端口> connectaddress=<WSL2的IP>
 # 查看映射
 netsh interface portproxy show v4tov4
 # 删除映射
