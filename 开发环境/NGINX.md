@@ -1,12 +1,8 @@
-安装nginx
-
 ```
+# 安装nginx
 sudo apt install nginx
-```
 
-查看nginx版本
-
-```
+# 查看nginx版本
 nginx -v
 
 # 启动
