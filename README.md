@@ -23,6 +23,7 @@
 	- [Anaconda](开发环境/Anaconda.md)
 	- [Docker](开发环境/Docker.md)
 	- [Go](开发环境/Go.md)
+	- [Java](开发环境/Java.md)
 	- [MySQL](开发环境/MySQL.md)
 	- [NGINX](开发环境/NGINX.md)
 	- [Node.js](开发环境/Node.js.md)
@@ -33,6 +34,7 @@
 	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)
 	- [代理](开发环境/代理.md)
 	- [版本控制](开发环境/版本控制.md)
+	- [环境变量](开发环境/环境变量.md)
 - 推荐系统
 	- [协同过滤](推荐系统/协同过滤.md)
 	- [推荐系统概述](推荐系统/推荐系统概述.md)

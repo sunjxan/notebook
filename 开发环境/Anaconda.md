@@ -1,7 +1,7 @@
 ```
 cd /usr/local/share
 # 下载脚本（https://www.anaconda.com/products/individual）
-wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
+sudo wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 # 安装
 sudo bash Anaconda3-2020.02-Linux-x86_64.sh
 

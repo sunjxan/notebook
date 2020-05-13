@@ -1,10 +1,10 @@
 ```
 cd /usr/local/share
 # 下载安装包（https://nodejs.org/en/download/）
-wget https://nodejs.org/dist/v12.16.3/node-v12.16.3-linux-x64.tar.xz
+sudo wget https://nodejs.org/dist/v12.16.3/node-v12.16.3-linux-x64.tar.xz
 # 解压
-tar -xvf node-v12.16.3-linux-x64.tar.xz
-mv node-v12.16.3-linux-x64 node
+sudo tar -xvf node-v12.16.3-linux-x64.tar.xz
+sudo mv node-v12.16.3-linux-x64 node
 
 #安装yarn（https://classic.yarnpkg.com/en/docs/install#debian-stable）
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
