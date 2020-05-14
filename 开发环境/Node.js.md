@@ -12,7 +12,8 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update && sudo apt install yarn
 
 # 设置环境变量，在~/.zshrc追加
-export PATH="/usr/local/node/bin:$PATH"
+export NODE_HOME="/usr/local/node"
+export PATH="${NODE_HOME}/bin:$PATH"
 
 # 生效
 source .zshrc

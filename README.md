@@ -12,6 +12,7 @@
 		- [通俗理解word2vec](NLP/word2vec/通俗理解word2vec.md)
 - 大数据
 	- [HBase和Hive以及传统数据库的区别](大数据/HBase和Hive以及传统数据库的区别.md)
+	- [HDFS](大数据/HDFS.md)
 	- [发展历程](大数据/发展历程.md)
 	- [概述](大数据/概述.md)
 - 并发
@@ -30,6 +31,7 @@
 	- [Node.js](开发环境/Node.js.md)
 	- [PyCharm](开发环境/PyCharm.md)
 	- [Python](开发环境/Python.md)
+	- [Spark](开发环境/Spark.md)
 	- [ssh](开发环境/ssh.md)
 	- [VSCode](开发环境/VSCode.md)
 	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)

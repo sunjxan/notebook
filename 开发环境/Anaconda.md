@@ -4,15 +4,16 @@ cd /usr/local
 sudo wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 # 安装
 sudo bash Anaconda3-2020.02-Linux-x86_64.sh
+sudo mv anaconda3 anaconda
 
 # 设置环境变量，在~/.zshrc追加
-export PATH="/usr/local/anaconda3/bin:$PATH"
+export PATH="/usr/local/anaconda/bin:$PATH"
 
 # 生效
 source .zshrc
 
 #查看版本
-anaconda -V
+conda -V
 
 
 # 删除python3的软连接
