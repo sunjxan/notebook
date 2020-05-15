@@ -7,6 +7,7 @@ sudo tar -xvf go1.14.2.linux-amd64.tar.gz
 
 # 设置环境变量，在~/.zshrc追加
 export GOROOT="/usr/local/go"
+export GOPATH="/home/<user>/.local/lib/go"
 export PATH="${GOROOT}/bin:$PATH"
 
 # 生效

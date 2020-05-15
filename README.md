@@ -32,7 +32,7 @@
 	- [PyCharm](开发环境/PyCharm.md)
 	- [Python](开发环境/Python.md)
 	- [Spark](开发环境/Spark.md)
-	- [ssh](开发环境/ssh.md)
+	- [SSH](开发环境/SSH.md)
 	- [VSCode](开发环境/VSCode.md)
 	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)
 	- [下载](开发环境/下载.md)

@@ -8,6 +8,11 @@ sudo ln -snf /usr/bin/python2.7 /usr/bin/python
 sudo ln -snf /usr/bin/python2.7 /usr/bin/python2
 sudo ln -snf /usr/bin/python3.8 /usr/bin/python3
 
+# 设置环境变量，在~/.zshrc追加
+export PATH="/home/<user>/.local/bin:$PATH"
+# 生效
+source ~/.zshrc
+
 # 安装pip2和pip3
 sudo apt install python-pip python-dev
 sudo pip2 install --upgrade pip
