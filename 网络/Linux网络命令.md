@@ -265,7 +265,7 @@ vconfig rem eth0.200
 
 route 用来查看和修改路由表，同样工具还有 netstat-r 和 ip route。
 
-- route-n 查看路由表
+- route -n 查看路由表
 - route add/del 增加/删除路由表
 
 比如添加一条默认路由：
