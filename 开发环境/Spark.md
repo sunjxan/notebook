@@ -1,3 +1,5 @@
+[原网页](<http://dblab.xmu.edu.cn/blog/1689-2/>)
+
 Spark部署模式主要有四种：Local模式（单机模式）、Standalone模式（使用Spark自带的简单集群管理器）、YARN模式（使用YARN作为集群管理器）和Mesos模式（使用Mesos作为集群管理器）。
 这里介绍Local模式（单机模式）的 Spark安装。
 
@@ -20,7 +22,7 @@ export PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
 source .zshrc
 
 #查看版本
-spark-shell --version
+pyspark --version
 
 # 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者
 sudo chown -R <user> /usr/local/spark
@@ -41,6 +43,12 @@ export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
 
 有了上面的配置信息以后，Spark就可以把数据存储到Hadoop分布式文件系统HDFS中，也可以从HDFS中读取数据。如果没有配置上面信息，Spark就只能读写本地数据，无法读写HDFS数据。配置完成后就可以直接使用，不需要像Hadoop运行启动命令。
 
+验证Spark是否安装成功
+
+```
+run-example SparkPi 2>&1 | grep "Pi is"
+```
+
 ### 在pyspark中运行代码
 
 学习Spark程序开发，建议首先通过pyspark交互式学习，加深Spark程序开发的理解。
@@ -60,6 +68,8 @@ pyspark
 PYSPARK_PYTHON=python3
 pyspark
 ```
+
+启动后在Spark context Web UI 查看：http://localhost:4040
 
 pyspark命令及其常用的参数如下：
 
@@ -128,7 +138,7 @@ pyspark
 
 接着我们通过一个简单的应用程序来演示如何通过 Spark API 编写一个独立应用程序。使用 Python进行spark编程比Java和Scala简单得多。
 在进行Python编程前，请先确定是否已经.bashrc中添加PYTHONPATH环境变量。
-接下来即可进行Python编程.
+接下来即可进行Python编程。
 这里在新建一个test.py文件,并在test.py添加代码
 
 ```bash
@@ -196,7 +206,7 @@ print(textFile.first())
 
 结果输出word文件的第1行。
 
-## 加载HDFS文件
+**加载HDFS文件**
 
 为了能够读取HDFS中的文件，请首先启动Hadoop中的HDFS组件。
 

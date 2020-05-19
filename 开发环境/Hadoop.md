@@ -117,7 +117,7 @@ hdfs namenode -format
 
 ![执行namenode格式化](Hadoop.assets/2.png)执行namenode格式化
 
-接着开启 NameNode 和 DataNode 守护进程（需要先开启ssh服务器）。
+接着开启 NameNode 和 DataNode 守护进程（**需要先开启ssh服务器**）。
 
 ```bash
 start-dfs.sh  #start-dfs.sh是个完整的可执行文件，中间没有空格
@@ -158,7 +158,7 @@ start-dfs.sh  #start-dfs.sh是个完整的可执行文件，中间没有空格
 > ```bash
 > # 针对 DataNode 没法启动的解决方法
 > stop-dfs.sh   # 关闭
-> rm -r ./tmp     # 删除 tmp 文件，注意这会删除 HDFS 中原有的所有数据
+> rm -r /usr/local/hadoop/tmp     # 删除 tmp 文件，注意这会删除 HDFS 中原有的所有数据
 > hdfs namenode -format   # 重新格式化 NameNode
 > start-dfs.sh  # 重启
 > ```
@@ -489,8 +489,8 @@ export PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin
 配置好后，将 Master 上的 /usr/local/Hadoop 文件夹复制到各个节点上。因为之前有跑过伪分布式模式，建议在切换到集群模式前先删除之前的临时文件。在 Master 节点上执行：
 
 ```bash
-cd /usr/localsudo 
-rm -r ./hadoop/tmp     # 删除 Hadoop 临时文件
+cd /usr/local
+sudo rm -r ./hadoop/tmp     # 删除 Hadoop 临时文件
 sudo rm -r ./hadoop/logs/*   # 删除日志文件
 tar -zcf ~/hadoop.master.tar.gz ./hadoop   # 先压缩再复制
 cd ~
