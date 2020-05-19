@@ -1,3 +1,4 @@
+[原网页](http://dblab.xmu.edu.cn/blog/2080-2/)
 ```
 cd /usr/local
 # 下载安装包（https://www.scala-lang.org/download/）

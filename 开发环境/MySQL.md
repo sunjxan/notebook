@@ -1,3 +1,5 @@
+[原网页](http://dblab.xmu.edu.cn/blog/install-mysql/)
+
 ```
 # 安装MySQL
 sudo apt install mysql-server mysql-client

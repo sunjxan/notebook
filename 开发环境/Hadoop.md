@@ -203,6 +203,8 @@ hdfs dfs -put ./etc/hadoop/*.xml input
 hdfs dfs -ls input
 ```
 
+或者在<http://localhost:50070/explorer.html>网页浏览hdfs目录
+
 伪分布式运行 MapReduce 作业的方式跟单机模式相同，区别在于伪分布式读取的是HDFS中的文件（可以将单机步骤中创建的本地 input 文件夹，输出结果 output 文件夹都删掉来验证这一点）。
 
 ```bash

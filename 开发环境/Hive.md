@@ -1,3 +1,4 @@
+[原网页](<http://dblab.xmu.edu.cn/blog/install-hive/>)
 ```
 cd /usr/local
 # 下载安装包（https://hive.apache.org/downloads.html）
@@ -19,8 +20,6 @@ hive --version
 # 因为在hive中很多操作需要文件所有者权限，所以需要更改hive目录所有者
 sudo chown -R <user> /usr/local/hive
 ```
-
-[原网页](<http://dblab.xmu.edu.cn/blog/install-hive/>)
 
 ### 配置MySQL
 
@@ -157,5 +156,7 @@ order by word;
 执行后，用select语句查看，结果如下：
 
 ![img](Hive.assets/1.png)
+
+创建的数据库文件保存至hdfs目录/user/hive/warehouse里
 
 由上可知，采用Hive实现最大的优势是，对于非程序员，不用学习编写Java MapReduce代码了，只需要用户学习使用HiveQL就可以了，而这对于有SQL基础的用户而言是非常容易的。

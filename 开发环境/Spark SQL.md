@@ -1,3 +1,5 @@
+原网页](<http://dblab.xmu.edu.cn/blog/1724-2/>)
+
 ### 连接MySQL
 
 1. 下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>）
@@ -25,6 +27,8 @@ jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<�
 # 执行查询语句
 jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<数据库>").option("driver","com.mysql.cj.jdbc.Driver").option("query", "select * from <表>").option("user", "root").option("password", "root").load()
 ```
+
+[原网页](<http://dblab.xmu.edu.cn/blog/1729-2/>)
 
 ### Hive支持
 
@@ -144,15 +148,10 @@ hive_context.sql('select * from student').show()
 +---+--------+------+---+
 ```
 
-下面，请在spark-sql（包含Hive支持）中执行以下命令
+使用spark-sql命令行可以直接使用SQL语句
 
 ```bash
 spark-sql
 ```
 
-启动后就进入了hive命令提示符状态，然后输入如下命令查看sparktest.student表中的数据：
-
-```hive
-use default;
-select * from student;
-```
+两种方式创建的数据库文件都保存在hdfs目录/user/hive/warehouse里
