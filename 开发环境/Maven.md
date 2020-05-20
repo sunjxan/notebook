@@ -1,4 +1,4 @@
-[原网页](http://dblab.xmu.edu.cn/blog/2138-2/)
+[原网页](<http://dblab.xmu.edu.cn/blog/build-storm-starter-with-maven/>)
 ```
 cd /usr/local
 # 下载安装包（https://maven.apache.org/download.cgi）

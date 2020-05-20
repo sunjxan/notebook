@@ -157,6 +157,6 @@ order by word;
 
 ![img](Hive.assets/1.png)
 
-创建的数据库文件保存至hdfs目录/user/hive/warehouse里
+创建的数据库文件保存至hdfs目录/user/hive/warehouse里，同时创建的数据库和表记录在mysql数据库hive的表DBS和TBLS里。
 
 由上可知，采用Hive实现最大的优势是，对于非程序员，不用学习编写Java MapReduce代码了，只需要用户学习使用HiveQL就可以了，而这对于有SQL基础的用户而言是非常容易的。

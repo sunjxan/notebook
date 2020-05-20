@@ -8,16 +8,16 @@ sudo mv anaconda3 anaconda
 
 # 设置环境变量，在~/.zshrc追加
 export PATH="/usr/local/anaconda/bin:$PATH"
-
 # 生效
-source .zshrc
+source ~/.zshrc
 
 #查看版本
 conda -V
 
-
+# 查看软连接
+ls -al /usr/local/anaconda/bin/python*
 # 删除python3的软连接
-sudo rm -rf python3
+sudo rm /usr/local/anaconda/bin/python3
 
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
