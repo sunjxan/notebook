@@ -182,8 +182,3 @@ netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
 > 4）设置名称：WSL2，完成
 
 > 5）规则已经自动启用
-
-
-```
-
-```
