@@ -154,4 +154,8 @@ hive_context.sql('select * from student').show()
 spark-sql
 ```
 
-两种方式创建的数据库文件都保存在hdfs目录/user/hive/warehouse里
+两种方式创建的数据库文件
+
+在default数据库里创建的表都保存在hdfs目录/user/hive/warehouse里；
+
+新建的数据库保存至当前工作目录下spark-warehouse里

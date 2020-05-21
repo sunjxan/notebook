@@ -23,7 +23,7 @@ wsl -l -v
 5. 设置root密码：
 ```
 # 以管理员身份打开PowerShell，设置wsl默认用户为root
-ubuntu1804.exe config --default-user root
+Ubuntu1804.exe config --default-user root
 # 进入Linux Shell，当前用户是root，设置密码
 passwd
 
@@ -56,21 +56,6 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted
 deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
-```
-
-阿里源：
-
-```
-deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
 ```
 
 更新
@@ -150,7 +135,24 @@ source .zshrc
 
 Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows程序访问Linux文件系统可能有路径错误，所以把项目文件放在Windows文件系统。
 
-11. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，而且WSL2的虚拟网卡网关是动态的，每次重新进入时IP会改变：
+11. 添加开机启动项
+```
+sudo vim /etc/init.wsl
+# 输入启动项
+#! /bin/sh
+/etc/init.d/ssh start
+/etc/init.d/mysql start
+
+# 给予脚本执行权限
+sudo chmod +x /etc/init.wsl
+
+# Windows下Win+R输入shell:startup进入目录
+# 创建文件linux-start.vbs，输入内容
+Set ws = WScript.CreateObject("WScript.Shell")        
+ws.run "wsl -d Ubuntu-18.04 -u root /etc/init.wsl"
+```
+
+12. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，而且WSL2的虚拟网卡网关是动态的，每次重新进入时IP会改变：
 ```
 # 关闭wsl
 wsl --shutdown
@@ -180,3 +182,8 @@ netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
 > 4）设置名称：WSL2，完成
 
 > 5）规则已经自动启用
+
+
+```
+
+```

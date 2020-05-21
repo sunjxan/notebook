@@ -14,11 +14,6 @@ source ~/.zshrc
 #查看版本
 conda -V
 
-# 查看软连接
-ls -al /usr/local/anaconda/bin/python*
-# 删除python3的软连接
-sudo rm /usr/local/anaconda/bin/python3
-
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
 sudo touch pip.conf
@@ -28,7 +23,6 @@ sudo vim pip.conf
 index-url = http://mirrors.aliyun.com/pypi/simple/
 [install]
 trusted-host = mirrors.aliyun.com
-
 
 # 设置Anaconda 镜像
 cd ~

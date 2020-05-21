@@ -19,10 +19,6 @@ command -v python python2 python3
 command -v pip pip2 pip3
 # 查看软连接
 ls -al /usr/bin/python*
-# 修改软连接
-sudo ln -snf /usr/bin/python2.7 /usr/bin/python
-sudo ln -snf /usr/bin/python2.7 /usr/bin/python2
-sudo ln -snf /usr/bin/python3.8 /usr/bin/python3
 
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
