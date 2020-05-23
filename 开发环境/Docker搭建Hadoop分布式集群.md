@@ -5,7 +5,7 @@
 安装好Docker之后，接下来就要在Docker上安装Ubuntu，其实和安装其他镜像一样，只需运行一个命令足矣，如下:
 
 ```bash
-docker pull ubuntu
+docker pull ubuntu:18.04
 ```
 
 docker pull命令表示从Docker hub上拉取Ubuntu镜像到本地；这时可以在终端运行以下命令查看是否安装成功
@@ -18,26 +18,28 @@ docker images
 
 ```
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-ubuntu              latest              4ca3a192ff2a        11 days ago         128.2 MB
+ubuntu              18.04              4ca3a192ff2a        11 days ago         128.2 MB
 ```
 
 docker images表示列出Docker上所有的镜像；镜像也是一堆文件，我们需要在Docker上开启这Ubuntu系统；在启动Ubuntu镜像时，需要先在个人文件下创建一个目录，用于向Docker内部的Ubuntu系统传输文件；命令如下:
 
 ```bash
 cd ~
-mkdir dockerbuild
+mkdir dockerfiles
+cp /etc/apt/sources.list ./dockerfiles
 ```
 
 然后再在Docker上运行Ubuntu系统；
 
 ```bash
-docker run -it -v /home/<user>/dockerbuild:/root/build --name ubuntu ubuntu
+docker run -it -p 80:80 -v /home/<user>/dockerfiles:/root/dockerfiles --name ubuntu18.04 <镜像ID>
 ```
 
 这里解析下这个命令参数：
 * docker run 表示运行一个镜像；
 * -i表示开启交互式；-t表示分配一个tty，可以理解为一个控制台；因此-it可以理解为在当前终端上与docker内部的ubuntu系统交互；
-* -v 表示docker内部的ubuntu系统`/root/build`目录与本地`/home/<user>/dockerbuild`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
+* -p 表示将容器内的端口映射出来，可同时映射多对；
+* -v 表示docker内部的ubuntu系统`/root/dockerfiles`目录与本地`/home/<user>/dockerfiles`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
 * –name ubuntu 表示Ubuntu镜像启动名称，如果没有指定，那么Docker将会随机分配一个名字；
 * ubuntu 表示docker run启动的镜像文件；
 ```
@@ -48,6 +50,8 @@ docker stop <容器ID>
 docker rm <容器ID>
 # 启动容器
 docker start -i <容器ID>
+# 保存容器为镜像
+docker commit <容器ID> <镜像名>
 ```
 
 ## Ubuntu系统初始化
@@ -56,10 +60,19 @@ docker start -i <容器ID>
 
 #### 更新系统软件源
 
-更新系统源命令如下:
+查看Ubuntu版本，选择更换源版本
+
+```
+cat /etc/lsb-release
+cp /etc/apt/sources.list /etc/apt/sources.list.bak
+cp /root/dockerfiles/sources.list /etc/apt
+```
+
+更新系统源命令如下
 
 ```bash
-apt-get update
+apt update
+apt upgrade
 ```
 
 #### 安装vim
@@ -67,38 +80,26 @@ apt-get update
 然后我们安装下经常会使用到的vim软件:
 
 ```bash
-apt-get install vim
+apt install vim
 ```
 
-#### 安装sshd
+#### 安装ssh
 
-接着安装sshd，因为在开启分布式Hadoop时，需要用到ssh连接slave:
+接着安装ssh，因为在开启分布式Hadoop时，需要用到ssh连接slave：
 
 ```bash
-apt-get install ssh
+apt install ssh
 ```
 
-然后运行如下脚本即可开启sshd服务器:
+在~/.bashrc追加，设置开机自启：
 
 ```bash
 /etc/init.d/ssh start
 ```
 
-但是这样的话，就需要每次在开启镜像时，都需要手动开启sshd服务，因此我们把这启动命令写进~/.bashrc文件，这样我们每次登录Ubuntu系统时，都能自动启动sshd服务;
+#### 配置ssh
 
-```bash
-vim ~/.bashrc
-```
-
-在该文件中最后一行添加如下内容：
-
-```
-/etc/init.d/ssh start
-```
-
-#### 配置sshd
-
-安装好sshd之后，我们需要配置ssh无密码连接本地sshd服务，如下命令:
+安装好ssh之后，我们需要配置ssh无密码连接本地ssh服务，如下命令:
 
 ```bash
 ssh-keygen -t rsa #一直按回车键即可
@@ -106,14 +107,14 @@ cd /root/.ssh
 cat id_rsa.pub >> authorized_keys
 ```
 
-执行完上述命令之后，即可无密码访问本地sshd服务；
+执行完上述命令之后，即可无密码访问本地ssh服务；
 
 #### 安装JDK
 
 因为Hadoop有用到Java，因此还需要安装JDK；直接输入以下命令来安装JDK:
 
 ```bash
-apt-get install default-jdk
+apt install default-jdk
 ```
 
 这个命令会安装比较多的库，可能耗时比较长；等这个命令运行结束之后，即安装成功；然后我们需要配置环境变量，打开~/.bashrc文件，在最后输入如下内容；

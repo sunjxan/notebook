@@ -1,28 +1,39 @@
 ```
-# 升级python2和python3
+# 从零安装python2
+sudo apt install python
+# 查看版本
+python -V
+# 升级python2
 sudo apt upgrade python2.7
+
+# 从零安装python3
+sudo apt install python3
+# 查看版本
+python3 -V
+# 升级python3
 sudo apt upgrade python3.8
 
 # 安装pip2和pip3
 sudo apt install python-pip python-dev
-sudo pip2 install --upgrade pip
+sudo pip install --upgrade pip
 sudo apt install python3-pip python3-dev
 sudo pip3 install --upgrade pip
+
+# 查看个版本
+where python
+where python3
+# 查看优先使用的版本
+command -v python python2 python3 pip pip2 pip3
+# 不建议修改python软连接
+ls -al /usr/bin/python* /usr/bin/pip*
 
 # 设置环境变量，在~/.zshrc追加
 export PATH="/home/<user>/.local/bin:$PATH"
 # 生效
 source ~/.zshrc
 
-# 查看命令位置
-command -v python python2 python3
-command -v pip pip2 pip3
-# 查看软连接
-ls -al /usr/bin/python*
-
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
-sudo touch pip.conf
 sudo vim pip.conf
 
 [global]

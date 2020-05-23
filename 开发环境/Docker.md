@@ -1,7 +1,7 @@
 ###  Windows安装
 1. 升级系统至64 位版本的 Windows 10 Pro；
 2. 在BIOS的Advanced->CPU Configuration里的Virtualization设置为Enabled；
-3. 打开windows的【启用或关闭windows功能】，安装Hyper-V；
+3. 打开Wndows的【启用或关闭windows功能】，启用“Hyper-V”；
 4. 下载[Docker Desktop](https://www.docker.com/products/docker-desktop)并安装；
 5. 打开Docker Desktop设置，勾选“Expose daemon on tcp://localhost:2375 without TLS”、“Enable the experimental WSL 2 based engine”，“Resources  WSL Integration”里选择安装的WSL2发行版；
 6. 在WSL2里查看docker版本信息
@@ -68,7 +68,8 @@ docker run hello-world
 
 ```
 # 下载安装包（https://download.docker.com/linux/ubuntu/dists/）
-# 查看Ubuntu版本代号，Ubuntu18.04代号是Bionic Beaver
+# 以下两个命令都可以查看Ubuntu版本代号，Ubuntu18.04代号是Bionic Beaver
+cat /etc/lsb-release
 lsb_release -cs
 sudo wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_19.03.9~3-0~ubuntu-bionic_amd64.deb
 # 安装
@@ -81,4 +82,3 @@ sudo dpkg -i docker-ce_19.03.9~3-0~ubuntu-bionic_amd64.deb
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 ```
-

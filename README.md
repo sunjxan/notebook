@@ -47,7 +47,7 @@
 	- [SSH](开发环境/SSH.md)
 	- [Storm](开发环境/Storm.md)
 	- [VSCode](开发环境/VSCode.md)
-	- [WSL2：安装linux开发环境](开发环境/WSL2：安装linux开发环境.md)
+	- [WSL2：安装Linux开发环境](开发环境/WSL2：安装Linux开发环境.md)
 	- [ZooKeeper](开发环境/ZooKeeper.md)
 	- [下载](开发环境/下载.md)
 	- [代理](开发环境/代理.md)

@@ -1,3 +1,4 @@
+![1590156152992](HBase.assets/7.png)
 ```
 cd /usr/local
 # 下载安装包（https://hbase.apache.org/downloads.html）

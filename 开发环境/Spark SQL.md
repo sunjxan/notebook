@@ -87,8 +87,8 @@ sudo mv spark-2.4.5-bin-hadoop2.10 spark
 # 设置环境变量，在~/.zshrc追加
 # PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本。
 export SPARK_HOME="/usr/local/spark"
-export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH
-export PYSPARK_PYTHON=/usr/local/anaconda/bin/python
+export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
+export PYSPARK_PYTHON="/usr/local/anaconda/bin/python"
 export PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
 
 # 生效

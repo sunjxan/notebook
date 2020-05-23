@@ -1,8 +1,9 @@
+[原网页](https://docs.microsoft.com/zh-cn/windows/wsl/install-win10)
 1. 运行 Windows 10 **版本 18917** 或更高版本：
-- 加入 [Windows 预览体验计划](https://insider.windows.com/en-us/)并选择“慢速”环形；
+- 加入 [Windows 预览体验计划](<https://insider.windows.com/zh-cn/>)并选择慢速更新；
 - 可以通过打开命令提示符并运行 `ver` 命令来检查 Windows 版本。
 
-2. 在“Windows功能”中打开“适用于Linux的Windows子系统”和“虚拟机平台”；
+2. 打开Wndows的【启用或关闭windows功能】，启用“适用于Linux的Windows子系统”和“虚拟机平台”；
 
 3. 在应用商店中安装Ubuntu，或下载安装包安装（<https://docs.microsoft.com/en-us/windows/wsl/install-manual>），安装后创建用户；
 
@@ -20,20 +21,20 @@ wsl --set-default-version 2
 # 验证使用的WSL版本
 wsl -l -v
 ```
-5. 设置root密码：
+5. 设置root密码的方法：
 ```
 # 以管理员身份打开PowerShell，设置wsl默认用户为root
-Ubuntu1804.exe config --default-user root
+Ubuntu1804 config --default-user root
 # 进入Linux Shell，当前用户是root，设置密码
 passwd
 
 # 或者直接以root身份进入wsl
 wsl -u root
 ```
-6. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后进入Linux Shell；
-
-![1588836531014](WSL2：安装linux开发环境.assets/1.png)
-
+6. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后打开进入Linux Shell，在设置里修改Linux Shell选项，添加：
+```
+"commandline": "wsl.exe ~"
+```
 7. 更换国内源
 
 备份原文件：
@@ -43,19 +44,40 @@ sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 
 替换source.list文件内容
 
-清华源：
+[阿里云源](<https://developer.aliyun.com/mirror/ubuntu>)  18.04
 
 ```
+deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+```
+[清华源](<https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/>)  18.04
+
+```
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+
+# 预发布软件源，不建议启用
+# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 ```
 
 更新
@@ -83,7 +105,7 @@ sudo chsh -s /bin/zsh <username>
 
 9. 安装oh-my-zsh
 
-下载[install.sh](WSL2：安装linux开发环境.assets/install.sh)（https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh）执行：
+https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh 下载 [install.sh](WSL2：安装Linux开发环境.assets/install.sh) 并执行：
 ```
 sudo bash install.sh
 ```
@@ -139,7 +161,7 @@ Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows�
 ```
 sudo vim /etc/init.wsl
 # 输入启动项
-#! /bin/sh
+#!/bin/sh
 /etc/init.d/ssh start
 /etc/init.d/mysql start
 
@@ -156,6 +178,9 @@ ws.run "wsl -d Ubuntu-18.04 -u root /etc/init.wsl"
 ```
 # 关闭wsl
 wsl --shutdown
+# 查看ip
+export WINIP=$(cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' ') 
+export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
 ```
 
 而且WSL2的IP在局域网中无法访问，只能在Windows中通过WSL2的IP访问。Windows和WSL2各自有自身的localhost(127.0.0.1)，但是使用Windows的localhost自动解析到WSL2的IP。
@@ -182,3 +207,4 @@ netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
 > 4）设置名称：WSL2，完成
 
 > 5）规则已经自动启用
+

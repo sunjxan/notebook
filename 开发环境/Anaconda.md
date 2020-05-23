@@ -6,13 +6,14 @@ sudo wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 sudo bash Anaconda3-2020.02-Linux-x86_64.sh
 sudo mv anaconda3 anaconda
 
+# 为了不和系统的python和pip冲突，建议不修改环境变量
 # 设置环境变量，在~/.zshrc追加
-export PATH="/usr/local/anaconda/bin:$PATH"
+# export PATH="/usr/local/anaconda/bin:$PATH"
 # 生效
-source ~/.zshrc
+# source ~/.zshrc
 
 #查看版本
-conda -V
+/usr/local/anaconda/bin/conda -V
 
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
@@ -48,11 +49,11 @@ custom_channels:
   simpleitk: https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud
 
 # 清除索引缓存，保证用的是镜像站提供的索引
-conda clean -i
+/usr/local/anaconda/bin/conda clean -i
 
 # 打开Jupyter服务器
-jupyter notebook
+/usr/local/anaconda/bin/jupyter notebook
 # 获取token
-jupyter notebook list
+/usr/local/anaconda/bin/jupyter notebook list
 ```
 

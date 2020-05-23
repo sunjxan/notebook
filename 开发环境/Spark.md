@@ -14,8 +14,8 @@ sudo mv spark-2.4.5-bin-without-hadoop spark
 # 设置环境变量，在~/.zshrc追加
 # PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本。
 export SPARK_HOME="/usr/local/spark"
-export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH
-export PYSPARK_PYTHON=/usr/local/anaconda/bin/python
+export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
+export PYSPARK_PYTHON="/usr/local/anaconda/bin/python"
 export PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
 
 # 生效
@@ -246,7 +246,7 @@ hdfs dfs -put /usr/local/spark/input/word input
 from pyspark import SparkContext
 sc = SparkContext('local', 'test')
 textFile = sc.textFile("input/word")
-# 以下两句是等价的
+# 这句与以下两句是等价的
 # textFile = sc.textFile("/user/<user>/input/word")
 # textFile = sc.textFile("hdfs://localhost:9000/user/<user>/input/word")
 print(textFile.first())
@@ -260,7 +260,7 @@ print(textFile.first())
 from pyspark import SparkContext
 sc = SparkContext('local', 'test')
 textFile = sc.textFile("input/word")
-# 以下两句是等价的
+# 这句与以下两句是等价的
 # textFile = sc.textFile("/user/<user>/input/word")
 # textFile = sc.textFile("hdfs://localhost:9000/user/<user>/input/word")
 wordCount = textFile.flatMap(lambda line: line.split(" ")).map(lambda word: (word,1)).reduceByKey(lambda a, b : a + b)
@@ -274,3 +274,173 @@ print(wordCount.collect())
 textFile包含了多行文本内容，textFile.flatMap(labmda line : line.split(” “))会遍历textFile中的每行文本内容，当遍历到其中一行文本内容时，会把文本内容赋值给变量line，并执行Lamda表达式line : line.split(” “)。line : line.split(” “)是一个Lamda表达式，左边表示输入参数，右边表示函数里面执行的处理逻辑，这里执行line.split(” “)，也就是针对line中的一行文本内容，采用空格作为分隔符进行单词切分，从一行文本切分得到很多个单词构成的单词集合。这样，对于textFile中的每行文本，都会使用Lamda表达式得到一个单词集合，最终，多行文本，就得到多个单词集合。textFile.flatMap()操作就把这多个单词集合“拍扁”得到一个大的单词集合。
 然后，针对这个大的单词集合，执行map()操作，也就是map(lambda word : (word, 1))，这个map操作会遍历这个集合中的每个单词，当遍历到其中一个单词时，就把当前这个单词赋值给变量word，并执行Lamda表达式word : (word, 1)，这个Lamda表达式的含义是，word作为函数的输入参数，然后，执行函数处理逻辑，这里会执行(word, 1)，也就是针对输入的word，构建得到一个tuple，形式为(word,1)，key是word，value是1（表示该单词出现1次）。
 程序执行到这里，已经得到一个RDD，这个RDD的每个元素是(key,value)形式的tuple。最后，针对这个RDD，执行reduceByKey(labmda a, b : a + b)操作，这个操作会把所有RDD元素按照key进行分组，然后使用给定的函数（这里就是Lamda表达式：a, b : a + b），对具有相同的key的多个value进行reduce操作，返回reduce后的(key,value)，比如(“hadoop”,1)和(“hadoop”,1)，具有相同的key，进行reduce以后就得到(“hadoop”,2)，这样就计算得到了这个单词的词频。
+
+### Spark 分布式集群搭建
+
+[原网页](<http://dblab.xmu.edu.cn/blog/1714-2/>)
+
+#### 安装Hadoop并搭建好Hadoop集群环境
+
+Spark分布式集群的安装环境，需要事先配置好Hadoop的分布式集群环境。
+
+#### 安装Spark
+
+这里采用3台机器（节点）作为实例来演示如何搭建Spark集群，其中1台机器（节点）作为Master节点，另外两台机器（节点）作为Slave节点（即作为Worker节点），主机名分别为Slave01和Slave02。
+在Master节点机器上，访问[Spark官方下载地址](http://spark.apache.org/downloads.html)，按照如下图下载。
+![20161205_010](Spark.assets/3.png)
+下载完成后，执行如下命令：
+
+```bash
+sudo tar -zxf ~/下载/spark-2.0.2-bin-without-hadoop.tgz -C /usr/local/
+cd /usr/local
+sudo mv ./spark-2.0.2-bin-without-hadoop/ ./spark
+sudo chown -R hadoop ./spark
+```
+
+#### 配置环境变量
+
+在Mster节点主机的终端中执行如下命令：
+
+```bash
+vim ~/.bashrc
+```
+
+在.bashrc添加如下配置：
+
+```
+export SPARK_HOME=/usr/local/spark
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+```
+
+执行如下命令使得配置立即生效：
+
+```bash
+source ~/.bashrc
+```
+
+#### Spark配置
+
+在Master节点主机上进行如下操作：
+
+- 配置slaves文件
+  将 slaves.template 拷贝到 slaves
+
+```bash
+cd /usr/local/spark/
+cp ./conf/slaves.template ./conf/slaves
+```
+
+slaves文件设置Worker节点。编辑slaves内容,把默认内容localhost替换成如下内容：
+
+```
+slave01
+slave02
+```
+
+- 配置spark-env.sh文件
+
+  将 spark-env.sh.template 拷贝到 spark-env.sh
+
+  ```bash
+  cp ./conf/spark-env.sh.template ./conf/spark-env.sh
+  ```
+
+  编辑spark-env.sh,添加如下内容：
+
+  ```
+  export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
+  export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
+  export SPARK_MASTER_IP=192.168.1.104
+  ```
+
+  SPARK_MASTER_IP 指定 Spark 集群 Master 节点的 IP 地址；
+
+配置好后，将Master主机上的/usr/local/spark文件夹复制到各个节点上。在Master主机上执行如下命令：
+
+```bash
+cd /usr/local/
+tar -zcf ~/spark.master.tar.gz ./spark
+cd ~
+scp ./spark.master.tar.gz slave01:/home/hadoop
+scp ./spark.master.tar.gz slave02:/home/hadoop
+```
+
+在slave01,slave02节点上分别执行下面同样的操作：
+
+```bash
+sudo rm -rf /usr/local/spark/
+sudo tar -zxf ~/spark.master.tar.gz -C /usr/local
+sudo chown -R hadoop /usr/local/spark
+```
+
+#### 启动Hadoop集群
+
+启动Spark集群前，要先启动Hadoop集群。在Master节点主机上运行如下命令：
+
+```bash
+cd /usr/local/hadoop/
+sbin/start-all.sh
+```
+
+#### 启动Spark集群
+
+1. 启动Master节点
+
+   在Master节点主机上运行如下命令：
+
+   ```bash
+   cd /usr/local/spark/
+   sbin/start-master.sh
+   ```
+
+   在Master节点上运行jps命令，可以看到多了个Master进程：
+
+   ```
+   15093 Jps
+   14343 SecondaryNameNode
+   14121 NameNode
+   14891 Master
+   14509 ResourceManager
+   ```
+
+2. 启动所有Slave节点
+
+   在Master节点主机上运行如下命令：
+
+   ```bash
+   sbin/start-slaves.sh
+   ```
+
+   分别在slave01、slave02节点上运行jps命令，可以看到多了个Worker进程
+
+   ```
+   37553 DataNode
+   37684 NodeManager
+   37876 Worker
+   37924 Jps
+   ```
+
+3. 在浏览器上查看Spark独立集群管理器的集群信息
+   在master主机上打开浏览器，访问[http://master:8080](http://master:8080/),如下图：
+   ![20161205_010](Spark.assets/4.png)
+
+#### 关闭Spark集群
+
+1. 关闭Master节点
+
+   ```bash
+   sbin/stop-master.sh
+   ```
+
+2. 关闭Worker节点
+
+   ```bash
+   sbin/stop-slaves.sh
+   ```
+
+3. 关闭Hadoop集群
+
+   ```bash
+   cd /usr/local/hadoop/sbin/stop-all.sh
+   ```
+
