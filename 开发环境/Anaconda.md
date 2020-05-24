@@ -1,10 +1,9 @@
 ```
-cd /usr/local
+cd ~
 # 下载脚本（https://www.anaconda.com/products/individual）
-sudo wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
-# 安装
+wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
+# 安装到/usr/local/anaconda，不运行conda init
 sudo bash Anaconda3-2020.02-Linux-x86_64.sh
-sudo mv anaconda3 anaconda
 
 # 为了不和系统的python和pip冲突，建议不修改环境变量
 # 设置环境变量，在~/.zshrc追加
@@ -12,12 +11,13 @@ sudo mv anaconda3 anaconda
 # 生效
 # source ~/.zshrc
 
-#查看版本
+# 查看版本
 /usr/local/anaconda/bin/conda -V
+# 查看所有环境
+/usr/local/anaconda/bin/conda env list
 
 # 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
 cd ~/.pip
-sudo touch pip.conf
 sudo vim pip.conf
 
 [global]
@@ -26,10 +26,8 @@ index-url = http://mirrors.aliyun.com/pypi/simple/
 trusted-host = mirrors.aliyun.com
 
 # 设置Anaconda 镜像
-cd ~
-sudo touch .condarc
-sudo vim .condarc
-
+sudo vim ~/.condarc
+# 清华源（https://mirror.tuna.tsinghua.edu.cn/help/anaconda/）
 channels:
   - defaults
 show_channel_urls: true

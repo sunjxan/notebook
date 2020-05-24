@@ -1,4 +1,5 @@
 [原网页](<http://dblab.xmu.edu.cn/blog/install-hive/>)
+
 ```
 cd /usr/local
 # 下载安装包（https://hive.apache.org/downloads.html）
@@ -12,9 +13,9 @@ export HIVE_HOME="/usr/local/hive"
 export PATH="${HIVE_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 hive --version
 
 # 因为在hive中很多操作需要文件所有者权限，所以需要更改hive目录所有者

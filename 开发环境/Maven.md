@@ -12,9 +12,9 @@ export MAVEN_HOME="/usr/local/maven"
 export PATH="${MAVEN_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 mvn -v
 
 # 更换Maven源到国内镜像，修改 /usr/local/maven/conf/settings.xml中<mirrors>

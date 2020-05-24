@@ -19,9 +19,9 @@ export ZOOKEEPER_HOME="/usr/local/zookeeper"
 export PATH="${ZOOKEEPER_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 zkServer.sh version
 
 # 因为在zookeeper中很多操作需要文件所有者权限，所以需要更改zookeeper目录所有者

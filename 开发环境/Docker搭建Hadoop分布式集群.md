@@ -25,21 +25,42 @@ docker images表示列出Docker上所有的镜像；镜像也是一堆文件，�
 
 ```bash
 cd ~
-mkdir dockerfiles
-cp /etc/apt/sources.list ./dockerfiles
+mkdir docker_files
+cp /etc/apt/sources.list ./docker_files
+```
+
+替换docker_files/source.list文件内容
+
+[阿里云源](<https://developer.aliyun.com/mirror/ubuntu>)  18.04
+
+```
+deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
 ```
 
 然后再在Docker上运行Ubuntu系统；
 
 ```bash
-docker run -it -p 80:80 -v /home/<user>/dockerfiles:/root/dockerfiles --name ubuntu18.04 <镜像ID>
+docker run -it -p 80:80 -v /home/<user>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
 ```
 
 这里解析下这个命令参数：
 * docker run 表示运行一个镜像；
 * -i表示开启交互式；-t表示分配一个tty，可以理解为一个控制台；因此-it可以理解为在当前终端上与docker内部的ubuntu系统交互；
 * -p 表示将容器内的端口映射出来，可同时映射多对；
-* -v 表示docker内部的ubuntu系统`/root/dockerfiles`目录与本地`/home/<user>/dockerfiles`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
+* -v 表示docker内部的ubuntu系统`/root/docker_files`目录与本地`/home/<user>/docker_files`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
 * –name ubuntu 表示Ubuntu镜像启动名称，如果没有指定，那么Docker将会随机分配一个名字；
 * ubuntu 表示docker run启动的镜像文件；
 ```
@@ -58,107 +79,55 @@ docker commit <容器ID> <镜像名>
 
 刚安装好的Ubuntu系统，是一个很纯净的系统，很多软件是没有安装的，所以我们需要先更新下Ubuntu系统的源以及安装一些必备的软件；
 
-#### 更新系统软件源
+#### 1. 更新系统软件源
 
 查看Ubuntu版本，选择更换源版本
 
 ```
 cat /etc/lsb-release
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
-cp /root/dockerfiles/sources.list /etc/apt
+cp /root/docker_files/sources.list /etc/apt/sources.list
 ```
 
 更新系统源命令如下
 
 ```bash
-apt update
-apt upgrade
+apt update && apt upgrade
 ```
 
-#### 安装vim
+#### 2. 安装vim
 
-然后我们安装下经常会使用到的vim软件:
+#### 3. 安装SSH
 
-```bash
-apt install vim
+设置开机自启，在~/.bashrc追加
+
 ```
-
-#### 安装ssh
-
-接着安装ssh，因为在开启分布式Hadoop时，需要用到ssh连接slave：
-
-```bash
-apt install ssh
-```
-
-在~/.bashrc追加，设置开机自启：
-
-```bash
 /etc/init.d/ssh start
 ```
 
-#### 配置ssh
+#### 4. 安装MySQL
 
-安装好ssh之后，我们需要配置ssh无密码连接本地ssh服务，如下命令:
+#### 5. 安装JDK8
 
-```bash
-ssh-keygen -t rsa #一直按回车键即可
-cd /root/.ssh
-cat id_rsa.pub >> authorized_keys
-```
+#### 6. 安装Maven
 
-执行完上述命令之后，即可无密码访问本地ssh服务；
+#### 7. 安装Hadoop3.2.1
 
-#### 安装JDK
+#### 8. 安装HBase2.2.4
 
-因为Hadoop有用到Java，因此还需要安装JDK；直接输入以下命令来安装JDK:
+#### 9. 安装Hive3.1.2
 
-```bash
-apt install default-jdk
-```
+#### 10. 安装Anaconda
 
-这个命令会安装比较多的库，可能耗时比较长；等这个命令运行结束之后，即安装成功；然后我们需要配置环境变量，打开~/.bashrc文件，在最后输入如下内容；
-
-```bash
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-export PATH=${JAVA_HOME}/bin:$PATH
-```
-
-接着执行如下命令使~/.bashrc生效即可;
-
-```bash
-source ~/.bashrc
-```
-
-## 安装Hadoop
-
-把下载下来的Hadoop安装文件放到共享目录`/home/<user>/dockerbuild`下面，然后在Docker内部Ubuntu系统的/root/build目录即可获取到Hadoop安装文件；在Docker内部的Ubuntu系统安装Hadoop和本地安装一样
-
-```bash
-cd /root/build
-tar -zxvf hadoop-2.7.1.tar.gz -C /usr/local
-mv hadoop-3.2.1 hadoop
-```
-
-如果是单机版Hadoop，到这里已经安装完成了，可以运行如下命令测试下:
-
-```bash
-cd /usr/local/hadoop
-./bin/hadoop version
-```
-
-输出如下:
+#### 11. 编译安装Spark2.4.5
 
 ```
-Hadoop 2.7.1
-Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r 15ecc87ccf4a0228f35af08fc56de536e6ce657a
-Compiled by jenkins on 2015-06-29T06:04Z
-Compiled with protoc 2.5.0
-From source with checksum fc0a1a23fc1868e4d5ee7fa2b28a58a
-This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.7.1.jar
+cd spark-2.4.5
+export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=1g"
+./dev/make-distribution.sh --name hadoop3.2 --tgz -Phadoop-3.2 -Dhadoop.version=3.2.1 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes -DskipTests
 ```
 
-## 配置Hadoop集群
+#### 12.  配置Hadoop集群
 
 接下来，我们来看下如何配置Hadoop集群；对一些文件的设置和之前教程一样，首先打开hadoop_env.sh文件，修改JAVA_HOME
 
@@ -166,7 +135,7 @@ This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2
 cd /usr/local/hadoop
 vim etc/hadoop/hadoop-env.sh
 # 将export JAVA_HOME=${JAVA_HOME}替换成
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export JAVA_HOME="/usr/local/jdk"
 ```
 
 接着打开etc/hadoop/core-site.xml，输入一下内容:
@@ -174,18 +143,18 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ```
 <configuration>
       <property>
+          <name>fs.defaultFS</name>
+          <value>hdfs://master:9000</value>
+      </property>
+      <property>
           <name>hadoop.tmp.dir</name>
           <value>file:///usr/local/hadoop/tmp</value>
           <description>Abase for other temporary directories.</description>
       </property>
-      <property>
-          <name>fs.defaultFS</name>
-          <value>hdfs://master:9000</value>
-      </property>
 </configuration>
 ```
 
-然后再打开etc/hadoop/hdfs-site.xml输入以下内容:
+然后再打开etc/hadoop/hdfs-site.xml输入以下内容（dfs.replication设为 节点数）:
 
 ```
 <configuration>
@@ -204,7 +173,7 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 </configuration>
 ```
 
-接下来修改etc/hadoop/mapred-site.xml(复制mapred-site.xml.template,再修改文件名)，输入以下内容:
+接下来修改etc/hadoop/mapred-site.xml（可能需要先重命名，默认文件名为 mapred-site.xml.template），输入以下内容:
 
 ```
 <configuration>
@@ -231,14 +200,13 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 ```
 <configuration>
-<!-- Site specific YARN configuration properties -->
-      <property>
-          <name>yarn.nodemanager.aux-services</name>
-          <value>mapreduce_shuffle</value>
-      </property>
       <property>
           <name>yarn.resourcemanager.hostname</name>
           <value>master</value>
+      </property>
+      <property>
+          <name>yarn.nodemanager.aux-services</name>
+          <value>mapreduce_shuffle</value>
       </property>
 </configuration>
 ```
@@ -250,23 +218,23 @@ cd share/hadoop/yarn/lib
 wget https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar
 ```
 
-保存这个镜像
+退出docker，保存这个镜像
 
 ```
 # 查看当前容器ID
 docker ps -a
-docker commit <容器ID> ubuntu/hadoopinstalled
+docker commit <容器ID> ubuntu/hadoop
 ```
 
 接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave01和slave02；
 
 ```bash
 # 第一个终端
-docker run -it -h master --name master ubuntu/hadoopinstalled
+docker run -it -p 50070:50070 -p 9870:9870 -p 8088:8088 -h master --name master ubuntu/hadoop
 # 第二个终端
-docker run -it -h slave01 --name slave01 ubuntu/hadoopinstalled
+docker run -it -h slave01 --name slave01 ubuntu/hadoop
 # 第三个终端
-docker run -it -h slave02 --name slave02 ubuntu/hadoopinstalled
+docker run -it -h slave02 --name slave02 ubuntu/hadoop
 ```
 
 接着配置master,slave01和slave02的地址信息，这样他们才能找到彼此，分别打开/etc/hosts可以查看本机的ip和主机名信息,最后得到三个ip和主机地址信息如下:
@@ -277,7 +245,7 @@ docker run -it -h slave02 --name slave02 ubuntu/hadoopinstalled
 172.17.0.4      slave02
 ```
 
-最后把上述三个地址信息分别复制到master,slave01和slave02的/etc/hosts即可，**每次开启容器hosts文件会还原，需要重新配置**
+最后把上述三个地址信息分别复制到master,slave01和slave02的/etc/hosts即可，**每次开启容器hosts文件会自动改变，需要重新配置**
 
 我们可以用如下命令来检测下是否master是否可以连上slave01和slave02
 
@@ -330,7 +298,7 @@ sbin/start-all.sh
 ![slave01运行结果](Docker搭建Hadoop分布式集群.assets/2.png)
 ![slave02运行结果](Docker搭建Hadoop分布式集群.assets/3.png)
 
-## 运行Hadoop实例程序grep
+#### 13. 运行Hadoop实例程序grep
 
 到目前为止，我们已经成功启动hadoop分布式集群，接下来，我们通过运行hadoop自带的grep实例来查看下如何在hadoop分布式集群运行程序；这里我们运行的实例是hadoop自带的grep
 
@@ -377,7 +345,9 @@ Found 9 items
 
 ```bash
 ./bin/hdfs dfs -cat output/*
-1   dfsadmin1   dfs.replication
+
+1   dfsadmin
+1   dfs.replication
 1   dfs.namenode.name.dir
 1   dfs.datanode.data.dir
 ```

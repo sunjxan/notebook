@@ -22,9 +22,9 @@ export PATH="${SQOOP_HOME}/bin:$PATH"
 export CLASSPATH="${SQOOP_HOME}/lib:$CLASSPATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 sqoop version
 
 # 因为在sqoop中很多操作需要文件所有者权限，所以需要更改sqoop目录所有者

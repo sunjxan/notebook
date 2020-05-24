@@ -12,9 +12,9 @@ export STORM_HOME="/usr/local/storm"
 export PATH="${STORM_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 storm version
 
 # 因为在storm中很多操作需要文件所有者权限，所以需要更改storm目录所有者

@@ -8,8 +8,9 @@
 
 ```bash
 cd /usr/local
-sudo tar -xvf jdk-8u162-linux-x64.tar.gz
-sudo mv jdk1.8.0_162 jdk
+sudo wget https://download.oracle.com/otn/java/jdk/8u251-b08/3d5a2bb8f8d4428bbe94aed7ec7ae784/jdk-8u251-linux-x64.tar.gz
+sudo tar -xvf jdk-8u251-linux-x64.tar.gz
+sudo mv jdk1.8.0_251 jdk
 ```
 
 设置环境变量，在~/.zshrc追加

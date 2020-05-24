@@ -11,9 +11,9 @@ export FLINK_HOME="/usr/local/flink"
 export PATH="${FLINK_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 flink -v
 
 # 因为在flink中很多操作需要文件所有者权限，所以需要更改flink目录所有者

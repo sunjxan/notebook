@@ -12,9 +12,9 @@ export FLUME_CONF_DIR="${FLUME_HOME}/conf"
 export PATH="${FLUME_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 flume-ng version
 
 # 因为在flume中很多操作需要文件所有者权限，所以需要更改flume目录所有者

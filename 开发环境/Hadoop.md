@@ -12,9 +12,9 @@ export HADOOP_COMMON_LIB_NATIVE_DIR="${HADOOP_HOME}/lib/native"
 export PATH="${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 hadoop version
 
 # 因为在hadoop中很多操作需要文件所有者权限，所以需要更改hadoop目录所有者

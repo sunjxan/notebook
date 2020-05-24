@@ -1,4 +1,4 @@
-原网页](<http://dblab.xmu.edu.cn/blog/1724-2/>)
+[原网页](<http://dblab.xmu.edu.cn/blog/1724-2/>)
 
 ### 连接MySQL
 
@@ -30,7 +30,7 @@ jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<�
 
 [原网页](<http://dblab.xmu.edu.cn/blog/1729-2/>)
 
-### Hive支持
+### 编译安装Spark添加Hive支持
 
 为了让Spark能够访问Hive，必须为Spark添加Hive支持。Spark官方提供的预编译版本，通常是不包含Hive支持的，需要采用源码编译，编译得到一个包含Hive支持的Spark版本。
 
@@ -57,18 +57,16 @@ error: object hive is not a member of package org.apache.spark.sql
 #### 下载源码编译
 
 ```
-cd /usr/local
+cd ~
 # 下载源码（http://spark.apache.org/downloads.html）
-sudo wget http://www.trieuvan.com/apache/spark/spark-2.4.5/spark-2.4.5.tgz
+wget http://www.trieuvan.com/apache/spark/spark-2.4.5/spark-2.4.5.tgz
 # 解压
-sudo tar -xvf spark-2.4.5.tgz
-sudo chown -R <user> /usr/local/spark-2.4.5
+tar -xvf spark-2.4.5.tgz
 
 cd spark-2.4.5
 # 编译（https://spark.apache.org/docs/latest/building-spark.html）
 # 配置Maven内存限制
 export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=1g"
-
 # 编译
 ./dev/make-distribution.sh --name hadoop2.10 --tgz -Phadoop-2.10 -Dhadoop.version=2.10.0 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes -DskipTests
 # -Phadoop-2.10 -Dhadoop.version=2.10.0 指定安装spark时的hadoop版本，一定要对应，这个hadoop版本是你当前电脑上已经安装的Hadoop的版本
@@ -85,16 +83,17 @@ cd /usr/local
 sudo mv spark-2.4.5-bin-hadoop2.10 spark
 
 # 设置环境变量，在~/.zshrc追加
-# PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本。
+# PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本
+# 为避免与hadoop脚本冲突，不要把sbin目录加入PATH
 export SPARK_HOME="/usr/local/spark"
-export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
 export PYSPARK_PYTHON="/usr/local/anaconda/bin/python"
-export PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
+export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/pyspark.zip:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
+export PATH="${SPARK_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 pyspark --version
 
 # 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者

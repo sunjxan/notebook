@@ -12,16 +12,17 @@ sudo tar -xvf spark-2.4.5-bin-without-hadoop.tgz
 sudo mv spark-2.4.5-bin-without-hadoop spark
 
 # 设置环境变量，在~/.zshrc追加
-# PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本。
+# PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本
+# 为避免与hadoop脚本冲突，不要把sbin目录加入PATH
 export SPARK_HOME="/usr/local/spark"
-export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
 export PYSPARK_PYTHON="/usr/local/anaconda/bin/python"
-export PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
+export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/pyspark.zip:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
+export PATH="${SPARK_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 pyspark --version
 
 # 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者

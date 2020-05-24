@@ -12,8 +12,8 @@ export SCALA_HOME="/usr/local/scala"
 export PATH="${SCALA_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 scala --version
 ```

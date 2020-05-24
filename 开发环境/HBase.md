@@ -12,9 +12,9 @@ export HBASE_HOME="/usr/local/hbase"
 export PATH="${HBASE_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 hbase version
 
 # 因为在hbase中很多操作需要文件所有者权限，所以需要更改hbase目录所有者

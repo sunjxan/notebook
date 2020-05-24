@@ -11,9 +11,9 @@ export GOPATH="/home/<user>/.local/lib/go"
 export PATH="${GOROOT}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
-#查看版本
+# 查看版本
 go version
 ```
 

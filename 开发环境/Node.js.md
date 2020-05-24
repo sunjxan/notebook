@@ -16,7 +16,7 @@ export NODE_HOME="/usr/local/node"
 export PATH="${NODE_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
 # 查看版本
 node -v

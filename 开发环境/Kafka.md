@@ -11,7 +11,7 @@ export KAFKA_HOME="/usr/local/kafka"
 export PATH="${KAFKA_HOME}/bin:$PATH"
 
 # 生效
-source .zshrc
+source ~/.zshrc
 
 # 查看版本
 kafka-server-start.sh --version
