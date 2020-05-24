@@ -15,16 +15,23 @@ git config --global core.autocrlf input
 git config --global core.autocrlf false
 ```
 
-3. 设置用户信息
+3. 关闭文件模式
+
+```
+# 忽略文件权限修改
+git config --global core.filemode false
+```
+
+4. 设置用户信息
 
 ```
 git config --global user.name "Your Name"
 git config --global user.email "youremail@example.com"
 ```
 
-4. 安装TortoiseGit和语言包（https://tortoisegit.org/download/）；
+5. 安装TortoiseGit和语言包（https://tortoisegit.org/download/）；
 
-5. 创建SSH Key
+6. 创建SSH Key
     在Linux的用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有`id_rsa`和`id_rsa.pub`这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell，创建SSH Key：
 
   ```

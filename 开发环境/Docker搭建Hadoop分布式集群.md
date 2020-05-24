@@ -61,7 +61,7 @@ docker run -it -p 80:80 -v /home/<user>/docker_files:/root/docker_files --name u
 * -i表示开启交互式；-t表示分配一个tty，可以理解为一个控制台；因此-it可以理解为在当前终端上与docker内部的ubuntu系统交互；
 * -p 表示将容器内的端口映射出来，可同时映射多对；
 * -v 表示docker内部的ubuntu系统`/root/docker_files`目录与本地`/home/<user>/docker_files`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
-* –name ubuntu 表示Ubuntu镜像启动名称，如果没有指定，那么Docker将会随机分配一个名字；
+* –-name ubuntu 表示Ubuntu镜像启动名称，如果没有指定，那么Docker将会随机分配一个名字；
 * ubuntu 表示docker run启动的镜像文件；
 ```
 # 查看创建的容器
@@ -92,7 +92,7 @@ cp /root/docker_files/sources.list /etc/apt/sources.list
 更新系统源命令如下
 
 ```bash
-apt update && apt upgrade
+apt update && apt upgrade -y
 ```
 
 #### 2. 安装vim
