@@ -22,24 +22,16 @@ export PATH="${SPARK_HOME}/bin:$PATH"
 # 生效
 source ~/.zshrc
 
+# 如果安装的是without hadoop的版本，加入hadoop中的依赖包
+cd /usr/local/spark
+cp ./conf/spark-env.sh.template ./conf/spark-env.sh
+echo export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath) >> ./conf/spark-env.sh
+
 # 查看版本
 pyspark --version
 
 # 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者
 sudo chown -R <user> /usr/local/spark
-```
-
-安装后，还需要修改Spark的配置文件spark-env.sh
-
-```bash
-cd /usr/local/spark
-cp ./conf/spark-env.sh.template ./conf/spark-env.sh
-```
-
-编辑spark-env.sh文件，追加以下信息:
-
-```
-export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
 ```
 
 有了上面的配置信息以后，Spark就可以把数据存储到Hadoop分布式文件系统HDFS中，也可以从HDFS中读取数据。如果没有配置上面信息，Spark就只能读写本地数据，无法读写HDFS数据。配置完成后就可以直接使用，不需要像Hadoop运行启动命令。
@@ -48,6 +40,8 @@ export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
 
 ```
 run-example SparkPi 2>&1 | grep "Pi is"
+
+# 如果如果安装的是包含hadoop的版本,且hadoop(/usr/local/hadoop/share/hadoop/common/lib/)和spark(/usr/local/spark/jars/)有两个不同版本的guava jar包，会报错，应该删除低版本，并拷贝高版本
 ```
 
 ### 在pyspark中运行代码
@@ -349,16 +343,14 @@ slave02
   编辑spark-env.sh,添加如下内容：
 
   ```
-  export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
-  export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
-  export SPARK_MASTER_IP=192.168.1.104
+  export JAVA_HOME="/usr/local/jdk"
+  export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
+  export SPARK_MASTER_HOST=master
   ```
-
-  SPARK_MASTER_IP 指定 Spark 集群 Master 节点的 IP 地址；
-
+```
 配置好后，将Master主机上的/usr/local/spark文件夹复制到各个节点上。在Master主机上执行如下命令：
 
-```bash
+​```bash
 cd /usr/local/
 tar -zcf ~/spark.master.tar.gz ./spark
 cd ~

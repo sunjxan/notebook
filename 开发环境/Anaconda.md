@@ -16,9 +16,9 @@ sudo bash Anaconda3-2020.02-Linux-x86_64.sh
 # 查看所有环境
 /usr/local/anaconda/bin/conda env list
 
-# 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
-cd ~/.pip
-sudo vim pip.conf
+# 更换pip源到国内镜像，修改 ~/.pip/pip.conf
+sudo mkdir ~/.pip
+sudo vim ~/.pip/pip.conf
 
 [global]
 index-url = http://mirrors.aliyun.com/pypi/simple/

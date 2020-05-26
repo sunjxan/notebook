@@ -1,4 +1,5 @@
 [原网页](<http://dblab.xmu.edu.cn/blog/install-storm/>)
+
 ```
 cd /usr/local
 # 下载安装包（https://zookeeper.apache.org/releases.html）
@@ -7,16 +8,18 @@ sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.6.1/
 sudo tar -xvf apache-zookeeper-3.6.1-bin.tar.gz
 sudo mv apache-zookeeper-3.6.1-bin zookeeper
 
-cd zookeeper
-sudo mkdir tmp
-sudo cp conf/zoo_sample.cfg conf/zoo.cfg
-sudo vim conf/zoo.cfg
+sudo mkdir /usr/local/zookeeper/data
+
 # 修改配置
-将 dataDir=/tmp/zookeeper 更改为 dataDir=/usr/local/zookeeper/tmp 
+sudo cp /usr/local/zookeeper/conf/zoo_sample.cfg /usr/local/zookeeper/conf/zoo.cfg
+sudo vim /usr/local/zookeeper/conf/zoo.cfg
+
+dataDir=/usr/local/zookeeper/data 
+admin.serverPort=8081
 
 # 设置环境变量，在~/.zshrc追加
-export ZOOKEEPER_HOME="/usr/local/zookeeper"
-export PATH="${ZOOKEEPER_HOME}/bin:$PATH"
+export ZK_HOME="/usr/local/zookeeper"
+export PATH="${ZK_HOME}/bin:$PATH"
 
 # 生效
 source ~/.zshrc

@@ -63,17 +63,6 @@ docker run -it -p 80:80 -v /home/<user>/docker_files:/root/docker_files --name u
 * -v 表示docker内部的ubuntu系统`/root/docker_files`目录与本地`/home/<user>/docker_files`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
 * –-name ubuntu 表示Ubuntu镜像启动名称，如果没有指定，那么Docker将会随机分配一个名字；
 * ubuntu 表示docker run启动的镜像文件；
-```
-# 查看创建的容器
-docker ps -a
-# 停止/删除容器
-docker stop <容器ID>
-docker rm <容器ID>
-# 启动容器
-docker start -i <容器ID>
-# 保存容器为镜像
-docker commit <容器ID> <镜像名>
-```
 
 ## Ubuntu系统初始化
 
@@ -97,48 +86,56 @@ apt update && apt upgrade -y
 
 #### 2. 安装vim
 
-#### 3. 安装SSH
+#### 3. 安装net-tools
+
+#### 4. 安装SSH
 
 设置开机自启，在~/.bashrc追加
 
 ```
-/etc/init.d/ssh start
+echo /etc/init.d/ssh start >> ~/.bashrc
 ```
 
-#### 4. 安装MySQL
+#### 5. 安装MySQL
 
-#### 5. 安装JDK8
+#### 6. 安装JDK8
 
-#### 6. 安装Maven
+## 安装Hadoop软件
 
-#### 7. 安装Hadoop3.2.1
+#### 1. 安装ZooKeeper3.6.1
 
-#### 8. 安装HBase2.2.4
+#### 2. 安装Hadoop2.10.0
 
-#### 9. 安装Hive3.1.2
+#### 3. 安装HBase1.6.0
 
-#### 10. 安装Anaconda
+#### 4. 安装Hive2.3.7
 
-#### 11. 编译安装Spark2.4.5
+#### 5. 安装Anaconda3
+
+#### 6. 安装Spark2.4.5
+
+## 配置分布式集群
+
+#### 1. 配置ZooKeeper集群
+
+在conf/zoo.cfg中追加
 
 ```
-cd spark-2.4.5
-export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=1g"
-./dev/make-distribution.sh --name hadoop3.2 --tgz -Phadoop-3.2 -Dhadoop.version=3.2.1 -Phive -Phive-thriftserver -Pmesos -Pyarn -Pkubernetes -DskipTests
+server.0=master:2888:3888
+server.1=slave01:2888:3888
+server.2=slave02:2888:3888
 ```
 
-#### 12.  配置Hadoop集群
+#### 2. 配置Hadoop集群
 
-接下来，我们来看下如何配置Hadoop集群；对一些文件的设置和之前教程一样，首先打开hadoop_env.sh文件，修改JAVA_HOME
+接下来，我们来看下如何配置Hadoop集群；对一些文件的设置和之前教程一样，首先打开etc/hadoop/hadoop_env.sh文件，修改JAVA_HOME
 
 ```bash
-cd /usr/local/hadoop
-vim etc/hadoop/hadoop-env.sh
 # 将export JAVA_HOME=${JAVA_HOME}替换成
 export JAVA_HOME="/usr/local/jdk"
 ```
 
-接着打开etc/hadoop/core-site.xml，输入一下内容:
+接着打开etc/hadoop/core-site.xml，输入以下内容:
 
 ```
 <configuration>
@@ -211,29 +208,121 @@ export JAVA_HOME="/usr/local/jdk"
 </configuration>
 ```
 
-加入可能缺失的jar包
+如果缺失jar包，自行下载
 
 ```
 cd share/hadoop/yarn/lib
 wget https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar
 ```
 
+修改slaves列表
+```
+# 默认为 localhost，所以在伪分布式配置时，节点即作为 NameNode 也作为 DataNode。分布式配置可以保留 localhost，也可以删掉，让 Master 节点仅作为 NameNode 使用
+vim /usr/local/hadoop/etc/hadoop/slaves(或/usr/local/hadoop/etc/hadoop/workers)
+# 将localhost替换成两个slave的主机名
+
+slave01
+slave02
+```
+
+#### 3.   配置HBase集群
+
+修改/usr/local/hbase/conf/hbase-env.sh，配置JAVA_HOME，HBASE_MANAGES_ZK设为false（不适用hbase自带zookeeper）
+
+```shell
+export JAVA_HOME="/usr/local/jdk"
+export HBASE_MANAGES_ZK=false
+```
+
+配置/usr/local/hbase/conf/hbase-site.xml
+
+修改hbase.rootdir，指定HBase数据在HDFS上的存储路径；将属性hbase.cluter.distributed设置为true。假设当前Hadoop集群运行在伪分布式模式下，在本机上运行，且NameNode运行在9000端口。
+
+```xml
+<configuration>
+        <property>
+                <name>hbase.rootdir</name>
+                <value>hdfs://master:9000/hbase</value>
+        </property>
+        <property>
+                <name>hbase.cluster.distributed</name>
+                <value>true</value>
+        </property>
+        <property>
+            <name>hbase.master.info.port</name>
+            <value>16010</value>
+        </property>
+    	<property>
+        	<name>hbase.unsafe.stream.capability.enforce</name>
+        	<value>false</value>
+        </property>
+    	<property>
+            <name>hbase.zookeeper.quorum</name>
+            <value>master,slave01,slave02</value>
+        </property>
+        <property>
+            <name>hbase.zookeeper.property.dataDir</name>
+            <value>/usr/local/zookeeper/data</value>
+        </property>
+</configuration>
+```
+
+hbase.rootdir指定HBase的存储目录；hbase.cluster.distributed设置集群处于分布式模式
+
+修改regionservers
+
+```
+vim conf/regionservers
+
+master
+slave01
+slave02
+```
+
+#### 4. 配置Hive的MySQL支持
+
+#### 5. 配置Spark集群
+
+修改conf/spark-env.sh，追加
+
+```
+export JAVA_HOME="/usr/local/jdk"
+export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
+export SPARK_MASTER_HOST=master
+```
+
+修改conf/slaves
+
+```
+cp conf/slaves.template conf/slaves
+vim conf/slaves
+
+slave01
+slave02
+```
+
+#### 6. 保存镜像
+
 退出docker，保存这个镜像
 
 ```
-# 查看当前容器ID
-docker ps -a
-docker commit <容器ID> ubuntu/hadoop
+# 保存容器为镜像
+docker commit ubuntu18.04 ubuntu/hadoop
+# 导出镜像
+docker save -o <tar文件地址> ubuntu/hadoop
 ```
+
+## 启动分布式集群
+
+#### 1. 运行容器
 
 接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave01和slave02；
 
 ```bash
-# 第一个终端
-docker run -it -p 50070:50070 -p 9870:9870 -p 8088:8088 -h master --name master ubuntu/hadoop
-# 第二个终端
+docker run -it -p 50070:50070 -p 8088:8088 -p 16010:16010 -p 10002:10002 -p 8080:8080 -h master --name master ubuntu/hadoop
+
 docker run -it -h slave01 --name slave01 ubuntu/hadoop
-# 第三个终端
+
 docker run -it -h slave02 --name slave02 ubuntu/hadoop
 ```
 
@@ -243,6 +332,13 @@ docker run -it -h slave02 --name slave02 ubuntu/hadoop
 172.17.0.2      master
 172.17.0.3      slave01
 172.17.0.4      slave02
+```
+修改每个结点的/etc/hosts
+```
+echo '172.17.0.3      slave01
+172.17.0.4      slave02' >> /etc/hosts
+scp /etc/hosts slave01:/etc
+scp /etc/hosts slave02:/etc
 ```
 
 最后把上述三个地址信息分别复制到master,slave01和slave02的/etc/hosts即可，**每次开启容器hosts文件会自动改变，需要重新配置**
@@ -254,40 +350,43 @@ ssh slave01
 ssh slave02
 ```
 
-到这里，我们还差最后一个配置就要完成hadoop集群配置了，打开master上的slaves文件，输入两个slave的主机名:
+#### 2. 启动ZooKeeper
 
-```bash
-# 默认为 localhost，所以在伪分布式配置时，节点即作为 NameNode 也作为 DataNode。分布式配置可以保留 localhost，也可以删掉，让 Master 节点仅作为 NameNode 使用
-vim /usr/local/hadoop/etc/hadoop/slaves(或/usr/local/hadoop/etc/hadoop/workers)
-# 将localhost替换成两个slave的主机名
-slave01
-slave02
+在配置conf/zoo.cfg中dataDir的路径为每个结点创建myid文件，并启动zkServer
+
+```
+# 若显示 “Starting zookeeper … STARTED”表示启动成功
+echo 0 >> /usr/local/zookeeper/data/myid
+zkServer.sh start
+
+echo 1 >> /usr/local/zookeeper/data/myid
+zkServer.sh start
+
+echo 2 >> /usr/local/zookeeper/data/myid
+zkServer.sh start
 ```
 
-ok，Hadoop集群已经配置完成，我们来启动集群；
+#### 3. 启动hadoop
 
 在master终端上，首先进入/usr/local/hadoop，然后运行如下命令:
 
 ```bash
-cd /usr/local/hadoop
-bin/hdfs namenode -format
-sbin/start-all.sh
+hdfs namenode -format
+start-dfs.sh && start-yarn.sh
 ```
 
 > 如果遇到错误ERROR: but there is no HDFS_NAMENODE_USER defined
 >
-> 在start-dfs.sh和stop-dfs.sh开头加入：
+> 在sbin/start-dfs.sh和sbin/stop-dfs.sh开头加入：
 >
 > ```
 > HDFS_DATANODE_USER=root
-> HADOOP_SECURE_DN_USER=hdfs
 > HDFS_NAMENODE_USER=root
 > HDFS_SECONDARYNAMENODE_USER=root 
 > ```
-> 在start-yarn.sh和stop-yarn.sh开头加入：
+> 在sbin/start-yarn.sh和sbin/stop-yarn.sh开头加入：
 > ```
 > YARN_RESOURCEMANAGER_USER=root
-> HADOOP_SECURE_DN_USER=yarn
 > YARN_NODEMANAGER_USER=root
 > ```
 
@@ -295,29 +394,85 @@ sbin/start-all.sh
 下面是运行结果图
 
 ![master运行结果](Docker搭建Hadoop分布式集群.assets/1.png)
+
 ![slave01运行结果](Docker搭建Hadoop分布式集群.assets/2.png)
+
 ![slave02运行结果](Docker搭建Hadoop分布式集群.assets/3.png)
 
-#### 13. 运行Hadoop实例程序grep
+#### 4. 启动HBase
+
+```bash
+start-hbase.sh
+```
+
+启动成功，输入命令jps，看到以下界面说明hbase启动成功
+
+![hbase jps](Docker搭建Hadoop分布式集群.assets/4.png)
+
+进入shell界面：
+
+```bash
+hbase shell
+```
+
+注意：如果在操作HBase的过程中发生错误，可以通过{HBASE_HOME}目录（/usr/local/hbase）下的logs子目录中的日志文件查看错误原因。
+这里启动关闭Hadoop和HBase的顺序一定是：
+启动Hadoop—>启动HBase—>关闭HBase—>关闭Hadoop
+
+#### 5. 启动mysql
+
+#### 6. 启动Hive
+
+```
+hive --service hiveserver2 >/dev/null 2>&1 &
+```
+
+#### 7. 启动Spark
+
+```
+/usr/local/spark/sbin/start-all.sh
+```
+
+#### 8. WebUI
+
+HDFS  http://localhost:50070/dfshealth.html  hadoop3+端口改为9870
+
+yarn  http://localhost:8088/cluster
+
+hbase  http://localhost:16010/master-status
+
+hive  http://localhost:10002
+
+spark  http://localhost:8080
+
+在WSL2中要使用子系统的ip来访问
+
+```
+export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
+```
+
+## 实例程序
+
+#### 1. 运行Hadoop实例程序grep
 
 到目前为止，我们已经成功启动hadoop分布式集群，接下来，我们通过运行hadoop自带的grep实例来查看下如何在hadoop分布式集群运行程序；这里我们运行的实例是hadoop自带的grep
 
-因为要用到hdfs，所以我们先在hdfs上创建一个目录:
+因为要用到hdfs，所以我们先在hdfs上创建一个目录/user/root/user
 
 ```bash
-./bin/hdfs dfs -mkdir -p /user/hadoop/input
+hdfs dfs -mkdir -p input
 ```
 
 然后将/usr/local/hadoop/etc/hadoop/目录下的所有文件拷贝到hdfs上的目录:
 
 ```bash
-./bin/hdfs dfs -put ./etc/hadoop/*.xml /user/hadoop/input
+hdfs dfs -put /usr/local/hadoop/etc/hadoop/*.xml input
 ```
 
 然后通过ls命令查看下是否正确将文件上传到hdfs下:
 
 ```bash
-./bin/hdfs dfs -ls /user/hadoop/input
+hdfs dfs -ls input
 ```
 
 输出如下:
@@ -338,13 +493,13 @@ Found 9 items
 接下来，通过运行下面命令执行实例程序:
 
 ```bash
-./bin/hadoop jar ./share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep /user/hadoop/input output 'dfs[a-z.]+'
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep input output 'dfs[a-z.]+'
 ```
 
 过一会，等这个程序运行结束之后，就可以在hdfs上的output目录下查看到运行结果:
 
 ```bash
-./bin/hdfs dfs -cat output/*
+hdfs dfs -cat output/*
 
 1   dfsadmin
 1   dfs.replication
@@ -353,3 +508,35 @@ Found 9 items
 ```
 
 hdfs文件上的output目录下，输出程序正确的执行结果，hadoop分布式集群顺利执行grep程序
+
+#### 2. Spark加载HDFS文件
+
+   任务：编写一个Spark应用程序，对某个文件中的单词进行词频统计。
+   准备工作：请进入Linux系统，打开“终端”，进入Shell命令提示符状态，然后，执行如下命令新建目录：
+
+   ```bash
+mkdir /usr/local/spark/input
+vim /usr/local/spark/input/word
+   ```
+
+   你可以在文本文件中随意输入一些单词，用空格隔开，我们会编写Spark程序对该文件进行单词词频统计。
+
+   下面，我们把本地文件系统中的“/usr/local/spark/input/word”上传到分布式文件系统HDFS中：
+
+   ```bash
+hdfs dfs -put /usr/local/spark/input/word input
+   ```
+
+   在pyspark输入如下代码：
+
+   ```python
+textFile = sc.textFile("input/word")
+# 这句与以下两句是等价的
+# textFile = sc.textFile("/user/root/input/word")
+# textFile = sc.textFile("hdfs://localhost:9000/user/root/input/word")
+wordCount = textFile.flatMap(lambda line: line.split(" ")).map(lambda word: (word,1)).reduceByKey(lambda a, b : a + b)
+print(wordCount.collect())
+
+# 或者一行一行输出
+# wordCount.foreach(print)
+   ```

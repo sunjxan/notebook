@@ -1,6 +1,6 @@
-[原网页](<http://dblab.xmu.edu.cn/blog/1724-2/>)
-
 ### 连接MySQL
+
+[原网页](<http://dblab.xmu.edu.cn/blog/1724-2/>)
 
 1. 下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>）
 
@@ -28,9 +28,9 @@ jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<�
 jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<数据库>").option("driver","com.mysql.cj.jdbc.Driver").option("query", "select * from <表>").option("user", "root").option("password", "root").load()
 ```
 
-[原网页](<http://dblab.xmu.edu.cn/blog/1729-2/>)
-
 ### 编译安装Spark添加Hive支持
+
+[原网页](<http://dblab.xmu.edu.cn/blog/1729-2/>)
 
 为了让Spark能够访问Hive，必须为Spark添加Hive支持。Spark官方提供的预编译版本，通常是不包含Hive支持的，需要采用源码编译，编译得到一个包含Hive支持的Spark版本。
 
@@ -93,24 +93,16 @@ export PATH="${SPARK_HOME}/bin:$PATH"
 # 生效
 source ~/.zshrc
 
+# 如果安装的是without hadoop的版本，加入hadoop中的依赖包
+cd /usr/local/spark
+cp ./conf/spark-env.sh.template ./conf/spark-env.sh
+echo export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath) >> ./conf/spark-env.sh
+
 # 查看版本
 pyspark --version
 
 # 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者
 sudo chown -R <user> /usr/local/spark
-```
-
-安装后，还需要修改Spark的配置文件spark-env.sh
-
-```bash
-cd /usr/local/spark
-cp ./conf/spark-env.sh.template ./conf/spark-env.sh
-```
-
-编辑spark-env.sh文件，追加以下信息:
-
-```
-export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
 ```
 
 有了上面的配置信息以后，Spark就可以把数据存储到Hadoop分布式文件系统HDFS中，也可以从HDFS中读取数据。如果没有配置上面信息，Spark就只能读写本地数据，无法读写HDFS数据。配置完成后就可以直接使用，不需要像Hadoop运行启动命令。
@@ -119,16 +111,22 @@ export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
 
 ```
 run-example SparkPi 2>&1 | grep "Pi is"
+
+# 如果如果安装的是包含hadoop的版本,且hadoop(/usr/local/hadoop/share/hadoop/common/lib/)和spark(/usr/local/spark/jars/)有两个不同版本的guava jar包，会报错，应该删除低版本，并拷贝高版本
 ```
 
 ### 连接Hive读写数据
 
 现在我们看如何使用Spark读写Hive中的数据。注意，操作到这里之前，你一定已经按照前面的各个操作步骤，启动了Hadoop、Hive、MySQL和pyspark（包含Hive支持）。
 
+修改“/usr/local/sparkwithhive/conf/spark-env.sh”这个配置文件：
+
 ```
-export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
-export HIVE_CONF_DIR=/usr/local/hive/conf
-export SPARK_CLASSPATH=$SPARK_CLASSPATH:/usr/local/hive/lib/mysql-metadata-storage-0.12.0.jar
+export JAVA_HOME="/usr/local/jdk"
+export CLASSPATH="/usr/local/hive/lib:$CLASSPATH"
+export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
+export HIVE_CONF_DIR="/usr/local/hive/conf"
+export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.12.0.jar:$SPARK_CLASSPATH"
 ```
 
 在pyspark（包含Hive支持）中执行以下命令从Hive中读取数据：

@@ -202,8 +202,6 @@ export WINIP=$(cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' ')
 export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
 ```
 
-而且WSL2的IP在局域网中无法访问，只能在Windows中通过WSL2的IP访问。Windows和WSL2各自有自身的localhost(127.0.0.1)，但是使用Windows的localhost自动解析到WSL2的IP。
-
 如果要在局域网中访问WSL2里的服务，可以在CMD（以管理员身份运行）使用端口映射：
 
 ```

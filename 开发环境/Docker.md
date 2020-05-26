@@ -8,11 +8,17 @@
 4. 下载Docker Desktop并安装（https://www.docker.com/products/docker-desktop），勾选"Use the WSL 2 based engine"；
 5. 移动安装位置，以管理员身份运行CMD：
 ```
+# 进入用户主目录C:\Users\<用户名>
+
+# 复制软件安装目录和虚拟磁盘目录，虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置
 xcopy /E /H /K /X /Y /C "C:\Program Files\Docker" "D:\Docker"
+xcopy /E /H /K /X /Y /C ".\AppData\Local\Docker\wsl" "G:\WSL_Docker"
 
-# 关闭后台进程Docker.Service后删除目录C:\Program Files\Docker
+# 关闭后台进程Docker.Service后删除原目录
 
+# 创建符号链接
 mklink /d  "C:\Program Files\Docker" "D:\Docker"
+mklink /d ".\AppData\Local\Docker\wsl" "G:\WSL_Docker"
 ```
 6. 打开Docker桌面客户端，并启动Docker服务；
 7. 登录https://cr.console.aliyun.com/注册账号，得到一个专属的镜像加速地址；
@@ -59,8 +65,8 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 # 安装
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
 
 # 查看版本
 docker version

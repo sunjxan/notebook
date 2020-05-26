@@ -24,14 +24,7 @@ sudo chown -R <user> /usr/local/hive
 
 ### 配置MySQL
 
-1. 修改/usr/local/hive/conf下的hive-site.xml
-
-```
-mv conf/hive-default.xml.template conf/hive-default.xml
-vim conf/hive-site.xml
-```
-
-在hive-site.xml中粘贴如下配置信息：
+1. 创建/usr/local/hive/conf/hive-site.xml
 
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -56,6 +49,14 @@ vim conf/hive-site.xml
     <name>javax.jdo.option.ConnectionPassword</name>
     <value>hive</value>
     <description>password to use against metastore database</description>
+  </property>
+  <property>
+    <name>hive.server2.webui.host</name>
+    <value>master</value>
+  </property>
+  <property>
+    <name>hive.server2.webui.port</name>
+    <value>10002</value>
   </property>
 </configuration>
 ```
@@ -94,7 +95,10 @@ FLUSH PRIVILEGES;
 6. 启动hive
 
 ```
+# 打开客户端
 hive
+# 启动服务
+hive --service hiveserver2 >/dev/null 2>&1 &
 ```
 
 启动或者执行SQL的过程中HiveMetaStore相关报错
@@ -103,6 +107,8 @@ hive
 
 ```
 schematool -dbType mysql -initSchema
+
+# 如果hadoop(/usr/local/hadoop/share/hadoop/common/lib/)和hive(/usr/local/hive/lib/)有两个不同版本的guava jar包，会报错，应该删除低版本，并拷贝高版本
 ```
 
 #### 简单编程实践
