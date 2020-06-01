@@ -419,7 +419,7 @@ hbase shell
 这里启动关闭Hadoop和HBase的顺序一定是：
 启动Hadoop—>启动HBase—>关闭HBase—>关闭Hadoop
 
-#### 5. 启动mysql
+#### 5. 启动MySQL
 
 #### 6. 启动Hive
 

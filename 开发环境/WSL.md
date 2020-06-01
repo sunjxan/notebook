@@ -4,24 +4,31 @@
 - 加入 [Windows 预览体验计划](<https://insider.windows.com/zh-cn/>)并选择慢速更新；
 - 可以通过打开命令提示符并运行 `ver` 命令来检查 Windows 版本。
 
-2. 打开Wndows的【启用或关闭windows功能】，启用“适用于Linux的Windows子系统”和“虚拟机平台”；
+2. OS的Advanced->CPU Configuration里的Virtualization设置为Enabled；
 
-3. 在应用商店中安装Ubuntu，或下载安装包安装（<https://docs.microsoft.com/en-us/windows/wsl/install-manual>），安装后创建用户；
+3. 以管理员身份打开 PowerShell 并运行：
+```
+# 启用“适用于Linux的Windows子系统”
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+# 启用"虚拟机平台"
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+```
+运行后重启电脑；
 
-4. 安装升级WSL2（WSL与WSL2的不同 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions），在 `PowerShell` 中使用下面命令：
+4. 在应用商店中安装Ubuntu，或下载安装包安装（<https://docs.microsoft.com/en-us/windows/wsl/install-manual>），安装后创建用户；
+
+5. 安装升级WSL2（WSL与WSL2的不同 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions），在 `PowerShell` 中使用下面命令：
 ```
 # 列出所有子系统及版本
 wsl -l -v
 
 # 将子系统设置为WSL版本2
 wsl --set-version <子系统名> 2
+
 # 将所有子系统设置为WSL版本2
 wsl --set-default-version 2
-
-# 使用安装程序（如Ubuntu1804）设置默认用户
-<安装程序> config --default-user <用户名>
 ```
-5. 移动安装位置，WSL2虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置；
+6. 移动安装位置，WSL2虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置；
 
 ```
 # 关闭子系统
@@ -40,16 +47,19 @@ wsl -s <子系统名>
 
 # 删除文件
 del wsl.tar
+
+# 使用安装程序（如Ubuntu1804）设置默认用户
+<安装程序> config --default-user <用户名>
 ```
 
-6. 设置root密码的方法：
+7. 设置root密码的方法：
 ```
 # 以root身份进入wsl
 wsl -d <子系统名> -u root
 # 进入Linux Shell，当前用户是root，设置密码
 passwd
 ```
-7. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后打开进入Linux Shell，在设置里修改Linux Shell选项，添加：
+8. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后打开进入Linux Shell，在设置里修改Linux Shell选项，添加：
 ```
 # 默认终端
 "defaultProfile": <WSL guid>
@@ -57,7 +67,7 @@ passwd
 # 设置WSL终端
 "commandline": "wsl cd ~ && /bin/bash"
 ```
-8. 更换国内源
+9. 更换国内源
 
 备份原文件：
 ```
@@ -108,7 +118,7 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted
 sudo apt update && sudo apt upgrade -y
 ```
 
-9. 安装zsh
+10. 安装zsh
 
 ```
 # 安装 zsh
@@ -122,9 +132,9 @@ sudo chsh -s /bin/zsh <用户名>
 "commandline": "wsl cd ~ && /bin/zsh"
 ```
 
-10. 安装oh-my-zsh
+11. 安装oh-my-zsh
 
-下载 [install.sh](WSL2：安装Linux开发环境.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
+下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
 ```
 sudo bash install.sh
 ```
@@ -159,7 +169,7 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zshrc
 ```
 
-11. 路径问题
+12. 路径问题
 
 |  | Windows文件系统 | Linux文件系统 |
 | ----------- | --------------- | ------------- |
@@ -175,7 +185,7 @@ source ~/.zshrc
 
 Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows程序访问Linux文件系统可能有路径错误，所以把项目文件放在Windows文件系统。
 
-12. 添加开机启动项
+13. 添加开机启动项
 ```
 sudo vim /etc/init.wsl
 # 输入启动项
@@ -193,7 +203,7 @@ Set ws = WScript.CreateObject("WScript.Shell")
 ws.run "wsl -u root /etc/init.wsl"
 ```
 
-13. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+14. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
 ```
 # 关闭wsl
 wsl --shutdown
@@ -225,7 +235,7 @@ netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
 
 > 5）规则已经自动启用
 
-14. 子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
+15. 子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
 ```
 # 自动挂载
 [automount]
