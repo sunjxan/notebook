@@ -100,6 +100,8 @@ echo /etc/init.d/ssh start >> ~/.bashrc
 
 #### 6. 安装JDK8
 
+#### 7. 安装Maven3.6.3
+
 ## 安装Hadoop软件
 
 #### 1. 安装ZooKeeper3.6.1
@@ -112,7 +114,11 @@ echo /etc/init.d/ssh start >> ~/.bashrc
 
 #### 5. 安装Anaconda3
 
-#### 6. 安装Spark2.4.5
+#### 6. 编译Spark2.4.5-Hadoop2.10.0
+
+#### 7. 安装Spark2.4.5
+
+#### 8. 安装Sqoop1.4.7
 
 ## 配置分布式集群
 
@@ -279,7 +285,7 @@ slave01
 slave02
 ```
 
-#### 4. 配置Hive的MySQL支持
+#### 4.配置MySQL作为Hive元数据库
 
 #### 5. 配置Spark集群
 
@@ -287,7 +293,10 @@ slave02
 
 ```
 export JAVA_HOME="/usr/local/jdk"
+export CLASSPATH="/usr/local/hive/lib:$CLASSPATH"
 export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
+export HIVE_CONF_DIR="/usr/local/hive/conf"
+export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.9.2.jar:$SPARK_CLASSPATH"
 export SPARK_MASTER_HOST=master
 ```
 
@@ -301,15 +310,17 @@ slave01
 slave02
 ```
 
-#### 6. 保存镜像
+#### 6. 配置SparkSQL连接Hive
+
+#### 7. 保存镜像
 
 退出docker，保存这个镜像
 
 ```
 # 保存容器为镜像
-docker commit ubuntu18.04 ubuntu/hadoop
+docker commit ubuntu18.04 ubuntu/bigdata
 # 导出镜像
-docker save -o <tar文件地址> ubuntu/hadoop
+docker save -o ubuntu_bigdata.tar ubuntu/bigdata
 ```
 
 ## 启动分布式集群
@@ -319,11 +330,11 @@ docker save -o <tar文件地址> ubuntu/hadoop
 接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave01和slave02；
 
 ```bash
-docker run -it -p 50070:50070 -p 8088:8088 -p 16010:16010 -p 10002:10002 -p 8080:8080 -h master --name master ubuntu/hadoop
+docker run -it -p 50070:50070 -p 8088:8088 -p 16010:16010 -p 10002:10002 -p 8080:8080 -h master --name master ubuntu/bigdata
 
-docker run -it -h slave01 --name slave01 ubuntu/hadoop
+docker run -it -h slave01 --name slave01 ubuntu/bigdata
 
-docker run -it -h slave02 --name slave02 ubuntu/hadoop
+docker run -it -h slave02 --name slave02 ubuntu/bigdata
 ```
 
 接着配置master,slave01和slave02的地址信息，这样他们才能找到彼此，分别打开/etc/hosts可以查看本机的ip和主机名信息,最后得到三个ip和主机地址信息如下:
@@ -540,3 +551,30 @@ print(wordCount.collect())
 # 或者一行一行输出
 # wordCount.foreach(print)
    ```
+
+#### 3. SparkSQL连接Hive读写数据
+
+现在我们看如何使用Spark读写Hive中的数据，先启动Hadoop和MySQL。
+
+在pyspark（包含Hive支持）中执行以下命令从Hive中读取数据：
+
+```python
+from pyspark.sql import HiveContext
+hive_context = HiveContext(sc)
+hive_context.sql('use default')
+hive_context.sql('select * from student').show()
+ 
++---+--------+------+---+
+| id|    name|gender|age|
++---+--------+------+---+
+|  1| Xueqian|     F| 23|
+|  2|Weiliang|     M| 24|
++---+--------+------+---+
+```
+
+使用spark-sql命令行可以直接使用SQL语句
+
+```bash
+spark-sql
+```
+

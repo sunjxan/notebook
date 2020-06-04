@@ -8,6 +8,21 @@ sudo wget https://downloads.apache.org/hive/hive-2.3.7/apache-hive-2.3.7-bin.tar
 sudo tar -xvf apache-hive-2.3.7-bin.tar.gz
 sudo mv apache-hive-2.3.7-bin hive
 
+# 设置hive引擎为spark
+# 创建/usr/local/hive/conf/hive-site.xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <property>
+    <name>hive.execution.engine</name>
+    <value>spark</value>
+  </property>
+  <property>
+    <name>hive.metastore.schema.verification</name>
+    <value>false</value>
+  </property>
+</configuration>
+
 # 设置环境变量，在~/.zshrc追加
 export HIVE_HOME="/usr/local/hive"
 export PATH="${HIVE_HOME}/bin:$PATH"
@@ -22,7 +37,7 @@ hive --version
 sudo chown -R <user> /usr/local/hive
 ```
 
-### 配置MySQL
+### 配置MySQL作为元数据库
 
 1. 创建/usr/local/hive/conf/hive-site.xml
 
@@ -51,17 +66,13 @@ sudo chown -R <user> /usr/local/hive
     <description>password to use against metastore database</description>
   </property>
   <property>
-    <name>hive.server2.webui.host</name>
-    <value>master</value>
-  </property>
-  <property>
     <name>hive.server2.webui.port</name>
     <value>10002</value>
   </property>
 </configuration>
 ```
 
-2. 下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>）
+2. 下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>  Platform Independent）
 
 ```
 cd /usr/local/hive
@@ -101,7 +112,7 @@ hive
 hive --service hiveserver2 >/dev/null 2>&1 &
 ```
 
-启动或者执行SQL的过程中HiveMetaStore相关报错
+启动或者执行SQL的过程中出现metastore相关报错
 
 出错原因：以前曾经安装了Hive或MySQL，重新安装Hive和MySQL以后，导致版本、配置不一致。解决方法是，使用schematool工具。Hive现在包含一个用于 Hive Metastore 架构操控的脱机工具 schematool。此工具可用于初始化当前 Hive 版本的 Metastore 架构。此外，其还可处理从较旧版本到新版本的架构升级。所以，解决上述错误，你可以在终端执行如下命令，然后在启动hive。
 

@@ -6,6 +6,9 @@ sudo wget https://downloads.apache.org/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0
 sudo tar -xvf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 sudo mv sqoop-1.4.7.bin__hadoop-2.6.0 sqoop
 
+# 复制jar包
+sudo cp /usr/local/hive/lib/hive-common-2.3.7.jar  /usr/local/sqoop/lib
+
 # 修改配置
 cd sqoop/conf
 sudo cat sqoop-env-template.sh  >> sqoop-env.sh
@@ -35,7 +38,7 @@ sudo chown -R <user> /usr/local/sqoop
 
 ### 配置MySQL
 
-下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>）
+下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>  Platform Independent）
 
 ```
 cd /usr/local/sqoop
@@ -49,7 +52,7 @@ sudo mv mysql-connector-java-8.0.20/mysql-connector-java-8.0.20.jar lib
 # 启动MySQL服务
 sudo service mysql start
 # 测试连接MySQL
-sqoop list-databases --connect jdbc:mysql://127.0.0.1:3306/ --username root -P
+sqoop list-databases --connect jdbc:mysql://localhost:3306/ --username root -P
 ```
 
 [原网页](<http://dblab.xmu.edu.cn/blog/1059-2/>)
@@ -63,5 +66,5 @@ sqoop list-databases --connect jdbc:mysql://127.0.0.1:3306/ --username root -P
 
 ```bash
 ## export表示数据从 hive 复制到 mysql 中
-sqoop export --connect jdbc:mysql://localhost:3306/<数据库> --username root --password <root密码> --table <相同结构的表> --export-dir '/user/hive/warehouse/word_count' --fields-terminated-by '\t';
+sqoop export --connect jdbc:mysql://localhost:3306/<数据库> --driver com.mysql.cj.jdbc.Driver --username root --password <root密码> --table <相同结构的表名> --export-dir '/user/hive/warehouse/word_count' --fields-terminated-by '\t';
 ```

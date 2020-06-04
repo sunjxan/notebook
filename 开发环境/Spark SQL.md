@@ -117,7 +117,7 @@ run-example SparkPi 2>&1 | grep "Pi is"
 
 ### 连接Hive读写数据
 
-现在我们看如何使用Spark读写Hive中的数据。注意，操作到这里之前，你一定已经按照前面的各个操作步骤，启动了Hadoop、Hive、MySQL和pyspark（包含Hive支持）。
+现在我们看如何使用Spark读写Hive中的数据，先启动Hadoop和MySQL。
 
 修改“/usr/local/sparkwithhive/conf/spark-env.sh”这个配置文件：
 
@@ -126,7 +126,25 @@ export JAVA_HOME="/usr/local/jdk"
 export CLASSPATH="/usr/local/hive/lib:$CLASSPATH"
 export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
 export HIVE_CONF_DIR="/usr/local/hive/conf"
-export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.12.0.jar:$SPARK_CLASSPATH"
+export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.9.2.jar:$SPARK_CLASSPATH"
+```
+
+复制hive配置文件：
+
+```
+cp /usr/local/hive/conf/hive-site.xml /usr/local/spark/conf
+```
+
+下载jdbc驱动（<https://dev.mysql.com/downloads/connector/j/>  Platform Independent）：
+
+```
+cd /usr/local/spark
+sudo wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.20.tar.gz
+
+# 解压
+sudo tar -xvf mysql-connector-java-8.0.20.tar.gz
+# 移动到lib目录
+sudo mv mysql-connector-java-8.0.20/mysql-connector-java-8.0.20.jar jars
 ```
 
 在pyspark（包含Hive支持）中执行以下命令从Hive中读取数据：
@@ -151,8 +169,3 @@ hive_context.sql('select * from student').show()
 spark-sql
 ```
 
-两种方式创建的数据库文件
-
-在default数据库里创建的表都保存在hdfs目录/user/hive/warehouse里；
-
-新建的数据库保存至当前工作目录下spark-warehouse里

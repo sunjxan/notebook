@@ -318,7 +318,8 @@ source ~/.bashrc
 在Master节点主机上进行如下操作：
 
 - 配置slaves文件
-  将 slaves.template 拷贝到 slaves
+
+将 slaves.template 拷贝到 slaves
 
 ```bash
 cd /usr/local/spark/
@@ -334,23 +335,23 @@ slave02
 
 - 配置spark-env.sh文件
 
-  将 spark-env.sh.template 拷贝到 spark-env.sh
+将 spark-env.sh.template 拷贝到 spark-env.sh
 
-  ```bash
-  cp ./conf/spark-env.sh.template ./conf/spark-env.sh
-  ```
-
-  编辑spark-env.sh,添加如下内容：
-
-  ```
-  export JAVA_HOME="/usr/local/jdk"
-  export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
-  export SPARK_MASTER_HOST=master
-  ```
+```bash
+cp ./conf/spark-env.sh.template ./conf/spark-env.sh
 ```
+
+编辑spark-env.sh,添加如下内容：
+
+```
+export JAVA_HOME="/usr/local/jdk"
+export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
+export SPARK_MASTER_HOST=master
+```
+
 配置好后，将Master主机上的/usr/local/spark文件夹复制到各个节点上。在Master主机上执行如下命令：
 
-​```bash
+```bash
 cd /usr/local/
 tar -zcf ~/spark.master.tar.gz ./spark
 cd ~
@@ -379,61 +380,62 @@ sbin/start-all.sh
 
 1. 启动Master节点
 
-   在Master节点主机上运行如下命令：
+在Master节点主机上运行如下命令：
 
-   ```bash
-   cd /usr/local/spark/
-   sbin/start-master.sh
-   ```
+```bash
+cd /usr/local/spark/
+sbin/start-master.sh
+```
 
-   在Master节点上运行jps命令，可以看到多了个Master进程：
+在Master节点上运行jps命令，可以看到多了个Master进程：
 
-   ```
-   15093 Jps
-   14343 SecondaryNameNode
-   14121 NameNode
-   14891 Master
-   14509 ResourceManager
-   ```
+```
+15093 Jps
+14343 SecondaryNameNode
+14121 NameNode
+14891 Master
+14509 ResourceManager
+```
 
 2. 启动所有Slave节点
 
-   在Master节点主机上运行如下命令：
+在Master节点主机上运行如下命令：
 
-   ```bash
-   sbin/start-slaves.sh
-   ```
+```bash
+sbin/start-slaves.sh
+```
 
-   分别在slave01、slave02节点上运行jps命令，可以看到多了个Worker进程
+分别在slave01、slave02节点上运行jps命令，可以看到多了个Worker进程
 
-   ```
-   37553 DataNode
-   37684 NodeManager
-   37876 Worker
-   37924 Jps
-   ```
+```
+37553 DataNode
+37684 NodeManager
+37876 Worker
+37924 Jps
+```
 
 3. 在浏览器上查看Spark独立集群管理器的集群信息
-   在master主机上打开浏览器，访问[http://master:8080](http://master:8080/),如下图：
-   ![20161205_010](Spark.assets/4.png)
+
+在master主机上打开浏览器，访问[http://master:8080](http://master:8080/),如下图：
+
+![20161205_010](Spark.assets/4.png)
 
 #### 关闭Spark集群
 
 1. 关闭Master节点
 
-   ```bash
-   sbin/stop-master.sh
-   ```
+```bash
+sbin/stop-master.sh
+```
 
 2. 关闭Worker节点
 
-   ```bash
-   sbin/stop-slaves.sh
-   ```
+```bash
+sbin/stop-slaves.sh
+```
 
 3. 关闭Hadoop集群
 
-   ```bash
-   cd /usr/local/hadoop/sbin/stop-all.sh
-   ```
-
+```bash
+cd /usr/local/hadoop/sbin/stop-all.sh
+```
