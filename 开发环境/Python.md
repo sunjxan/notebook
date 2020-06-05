@@ -35,9 +35,9 @@ export PATH="/home/<user>/.local/bin:$PATH"
 # 生效
 source ~/.zshrc
 
-# 更换pip源到国内镜像，修改 ~/.pip/pip.conf (没有就创建一个)
-cd ~/.pip
-sudo vim pip.conf
+# 更换pip源到国内镜像，修改 ~/.pip/pip.conf
+sudo mkdir ~/.pip
+sudo vim ~/.pip/pip.conf
 
 [global]
 index-url = http://mirrors.aliyun.com/pypi/simple/

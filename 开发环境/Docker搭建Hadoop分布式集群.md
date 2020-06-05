@@ -330,7 +330,7 @@ docker save -o ubuntu_bigdata.tar ubuntu/bigdata
 接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave01和slave02；
 
 ```bash
-docker run -it -p 50070:50070 -p 8088:8088 -p 16010:16010 -p 10002:10002 -p 8080:8080 -h master --name master ubuntu/bigdata
+docker run -it -p 2222:22 -p 50070:50070 -p 8088:8088 -p 16010:16010 -p 10002:10002 -p 8080:8080 -h master --name master ubuntu/bigdata
 
 docker run -it -h slave01 --name slave01 ubuntu/bigdata
 
@@ -456,11 +456,15 @@ hive  http://localhost:10002
 
 spark  http://localhost:8080
 
-在WSL2中要使用子系统的ip来访问
+#### 9. 使用PyCharm连接
+
+在PyCharm中的ssh连接要使用子系统的ip
 
 ```
 export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
 ```
+
+配置远程解释器：创建一个目录作为项目目录；File->Settings->Project->Project Interpreter，添加解释器，选择SSH Interpreter，连接root@`WSLIP`:2222，选择ssh密钥文件（默认位置在Windows用户主目录下的.ssh目录），选择Python解释器路径，设置项目同步目录，勾选自动同步（手动同步在Tools->Deployment->Upload to）
 
 ## 实例程序
 
