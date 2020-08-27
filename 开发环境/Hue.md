@@ -23,12 +23,12 @@ make apps
 build/env/bin/hue version
 
 # 因为在hue中很多操作需要文件所有者权限，所以需要更改hue目录所有者
-sudo chown -R <user> /usr/local/hue
+sudo chown -R <user>:<user> /usr/local/hue
 
 # 启动hadoop和hive
-start-dfs.sh
-hive --service hiveserver2
-# 启动服务（http://localhost:8000）,创建账号
+start-dfs.sh && start-yarn.sh
+hive --service hiveserver2 >/dev/null 2>&1 &
+# 启动服务（http://localhost:8000），创建账号
 build/env/bin/hue runserver
 ```
 

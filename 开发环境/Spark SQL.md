@@ -22,10 +22,10 @@ pyspark
 3. 连接数据库
 ```
 # 获取整张表
-jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<数据库>").option("driver","com.mysql.cj.jdbc.Driver").option("dbtable", "<表>").option("user", "root").option("password", "root").load()
+jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://<服务器IP>:3306/<数据库名>").option("driver","com.mysql.cj.jdbc.Driver").option("user", "root").option("password", "<root密码>").option("dbtable", "<表名>").load()
 
 # 执行查询语句
-jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://localhost:3306/<数据库>").option("driver","com.mysql.cj.jdbc.Driver").option("query", "select * from <表>").option("user", "root").option("password", "root").load()
+jdbcDF = spark.read.format("jdbc").option("url", "jdbc:mysql://<服务器IP>:3306/<数据库名>").option("driver","com.mysql.cj.jdbc.Driver").option("user", "root").option("password", "<root密码>").option("query", "select * from <表名>").load()
 ```
 
 ### 编译安装Spark添加Hive支持
@@ -93,16 +93,27 @@ export PATH="${SPARK_HOME}/bin:$PATH"
 # 生效
 source ~/.zshrc
 
+# 查看版本
+pyspark --version
+
+# 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者
+sudo chown -R <user>:<user> /usr/local/spark
+
 # 如果安装的是without hadoop的版本，加入hadoop中的依赖包
 cd /usr/local/spark
 cp ./conf/spark-env.sh.template ./conf/spark-env.sh
 echo export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath) >> ./conf/spark-env.sh
 
-# 查看版本
-pyspark --version
-
-# 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者
-sudo chown -R <user> /usr/local/spark
+# 设置hive引擎为spark
+# 修改hive的hive-site.xml配置文件，configuration中添加
+<property>
+  <name>hive.execution.engine</name>
+  <value>spark</value>
+</property>
+<property>
+  <name>hive.metastore.schema.verification</name>
+  <value>false</value>
+</property>
 ```
 
 有了上面的配置信息以后，Spark就可以把数据存储到Hadoop分布式文件系统HDFS中，也可以从HDFS中读取数据。如果没有配置上面信息，Spark就只能读写本地数据，无法读写HDFS数据。配置完成后就可以直接使用，不需要像Hadoop运行启动命令。
@@ -143,29 +154,57 @@ sudo wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8
 
 # 解压
 sudo tar -xvf mysql-connector-java-8.0.20.tar.gz
-# 移动到lib目录
+# 移动到jars目录
 sudo mv mysql-connector-java-8.0.20/mysql-connector-java-8.0.20.jar jars
 ```
 
-在pyspark（包含Hive支持）中执行以下命令从Hive中读取数据：
+在python中使用hive-on-spark：
 
 ```python
-from pyspark.sql import HiveContext
-hive_context = HiveContext(sc)
-hive_context.sql('use default')
-hive_context.sql('select * from student').show()
- 
-+---+--------+------+---+
-| id|    name|gender|age|
-+---+--------+------+---+
-|  1| Xueqian|     F| 23|
-|  2|Weiliang|     M| 24|
-+---+--------+------+---+
+from pyspark.sql import SparkSession
+from pyspark import HiveContext
+ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
+sc = ss.sparkContext
+hc = HiveContext(sc)
+hc.sql('use default')
+hc.sql('select * from student').show()
 ```
-
+或
+```python
+from pyspark import SparkContext, HiveContext
+sc = SparkContext('local[2]', 'test')
+hc = HiveContext(sc)
+hc.sql('use default')
+hc.sql('select * from student').show()
+```
 使用spark-sql命令行可以直接使用SQL语句
 
 ```bash
 spark-sql
+```
+
+在python中使用spark-sql：
+
+```python
+from pyspark.sql import SparkSession
+from pyspark import SQLContext
+ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
+sc = ss.sparkContext
+sqlContext = SQLContext(sc)
+sqlContext.sql('use default')
+sqlContext.sql('select * from student').show()
+```
+或
+```python
+from pyspark.sql import SparkSession
+ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
+ss.sql('use default')
+ss.sql('select * from student').show()
+```
+
+```python
+SparkSession.builder.master("local[2]").appName("test").enableHiveSupport()
+# 等价于
+SparkSession.builder.config('spark.master', 'local[2]').config('spark.app.name', 'test').config('spark.sql.catalogImplementation', 'hive')
 ```
 

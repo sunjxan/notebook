@@ -8,21 +8,6 @@ sudo wget https://downloads.apache.org/hive/hive-2.3.7/apache-hive-2.3.7-bin.tar
 sudo tar -xvf apache-hive-2.3.7-bin.tar.gz
 sudo mv apache-hive-2.3.7-bin hive
 
-# 设置hive引擎为spark
-# 创建/usr/local/hive/conf/hive-site.xml
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<configuration>
-  <property>
-    <name>hive.execution.engine</name>
-    <value>spark</value>
-  </property>
-  <property>
-    <name>hive.metastore.schema.verification</name>
-    <value>false</value>
-  </property>
-</configuration>
-
 # 设置环境变量，在~/.zshrc追加
 export HIVE_HOME="/usr/local/hive"
 export PATH="${HIVE_HOME}/bin:$PATH"
@@ -34,7 +19,7 @@ source ~/.zshrc
 hive --version
 
 # 因为在hive中很多操作需要文件所有者权限，所以需要更改hive目录所有者
-sudo chown -R <user> /usr/local/hive
+sudo chown -R <user>:<user> /usr/local/hive
 ```
 
 ### 配置MySQL作为元数据库
@@ -65,10 +50,6 @@ sudo chown -R <user> /usr/local/hive
     <value>hive</value>
     <description>password to use against metastore database</description>
   </property>
-  <property>
-    <name>hive.server2.webui.port</name>
-    <value>10002</value>
-  </property>
 </configuration>
 ```
 
@@ -86,8 +67,9 @@ sudo mv mysql-connector-java-8.0.20/mysql-connector-java-8.0.20.jar lib
 
 3. 创建hive数据库
 ```
+sudo service mysql start
 # 登录MySQL
-mysql -u root -p
+sudo mysql -u root -p
 
 # 创建hive数据库
 CREATE DATABASE hive;
@@ -99,27 +81,46 @@ CREATE DATABASE hive;
 GRANT ALL PRIVILEGES ON *.* TO 'hive'@'localhost' IDENTIFIED BY 'hive' WITH GRANT OPTION;
 # 刷新mysql系统权限关系表，使其生效
 FLUSH PRIVILEGES;
-```
 
+# 初始化当前 Hive 版本的 Metastore 架构，还可处理从较旧版本到新版本的架构升级
+schematool -dbType mysql -initSchema
+
+# 如果hadoop(/usr/local/hadoop/share/hadoop/common/lib/)和hive(/usr/local/hive/lib/)有两个不同版本的guava jar包，会报错，应该删除低版本，并拷贝高版本
+```
 5. 启动hadoop
 
 6. 启动hive
 
 ```
-# 打开客户端
+# 1.使用的本地metastore，直接通过hive命令启动
 hive
-# 启动服务
+# 相当于以下命令
+hive --service cli
+
+# 2.使用远程的metastore，服务器开启metastore服务（端口号默认9083）
+hive --service metastore >/dev/null 2>&1 &
+# 客户端修改配置，然后启动cli即可
+<property>
+  <name>hive.metastore.uris</name>
+  <value>thrift://<metastore_server_ip>:9083</value>
+</property>
+
+# 3.启动hiveserver2，使其他服务可以通过thrift接入hive
+# 在hadoop的core-site.xml文件中配置hadoop代理用户，configuration中添加
+<property>
+  <name>hadoop.proxyuser.root.groups</name>
+  <value>*</value>
+</property>
+<property>
+  <name>hadoop.proxyuser.root.hosts</name>
+  <value>*</value>
+</property>
+# 设置完后，需要重启hadoop
+# 启动hiveserver2
 hive --service hiveserver2 >/dev/null 2>&1 &
-```
-
-启动或者执行SQL的过程中出现metastore相关报错
-
-出错原因：以前曾经安装了Hive或MySQL，重新安装Hive和MySQL以后，导致版本、配置不一致。解决方法是，使用schematool工具。Hive现在包含一个用于 Hive Metastore 架构操控的脱机工具 schematool。此工具可用于初始化当前 Hive 版本的 Metastore 架构。此外，其还可处理从较旧版本到新版本的架构升级。所以，解决上述错误，你可以在终端执行如下命令，然后在启动hive。
-
-```
-schematool -dbType mysql -initSchema
-
-# 如果hadoop(/usr/local/hadoop/share/hadoop/common/lib/)和hive(/usr/local/hive/lib/)有两个不同版本的guava jar包，会报错，应该删除低版本，并拷贝高版本
+# beeline工具测试使用jdbc方式连接
+beeline -u jdbc:hive2://localhost:10000
+# 同时启动一个webui（端口号默认10002），可以通过http://localhost:10002/访问
 ```
 
 #### 简单编程实践

@@ -8,11 +8,14 @@ sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.6.1/
 sudo tar -xvf apache-zookeeper-3.6.1-bin.tar.gz
 sudo mv apache-zookeeper-3.6.1-bin zookeeper
 
-sudo mkdir /usr/local/zookeeper/data
+# 因为在zookeeper中很多操作需要文件所有者权限，所以需要更改zookeeper目录所有者
+sudo chown -R <user>:<user> /usr/local/zookeeper
+
+mkdir /usr/local/zookeeper/data
 
 # 修改配置
-sudo cp /usr/local/zookeeper/conf/zoo_sample.cfg /usr/local/zookeeper/conf/zoo.cfg
-sudo vim /usr/local/zookeeper/conf/zoo.cfg
+cp /usr/local/zookeeper/conf/zoo_sample.cfg /usr/local/zookeeper/conf/zoo.cfg
+vim /usr/local/zookeeper/conf/zoo.cfg
 
 dataDir=/usr/local/zookeeper/data 
 admin.serverPort=8081
@@ -26,9 +29,6 @@ source ~/.zshrc
 
 # 查看版本
 zkServer.sh version
-
-# 因为在zookeeper中很多操作需要文件所有者权限，所以需要更改zookeeper目录所有者
-sudo chown -R <user> /usr/local/zookeeper
 
 # 启动
 zkServer.sh start

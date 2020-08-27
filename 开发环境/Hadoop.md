@@ -6,6 +6,14 @@ sudo wget https://archive.apache.org/dist/hadoop/common/hadoop-2.10.0/hadoop-2.1
 sudo tar -xvf hadoop-2.10.0.tar.gz
 sudo mv hadoop-2.10.0 hadoop
 
+# 因为在hadoop中很多操作需要文件所有者权限，所以需要更改hadoop目录所有者
+sudo chown -R <user>:<user> /usr/local/hadoop
+
+# 修改配置
+cd hadoop
+# 修改etc/hadoop/hadoop-env.sh，修改JAVA_HOME
+export JAVA_HOME="/usr/local/jdk"
+
 # 设置环境变量，在~/.zshrc追加
 export HADOOP_HOME="/usr/local/hadoop"
 export HADOOP_COMMON_LIB_NATIVE_DIR="${HADOOP_HOME}/lib/native"
@@ -17,8 +25,9 @@ source ~/.zshrc
 # 查看版本
 hadoop version
 
-# 因为在hadoop中很多操作需要文件所有者权限，所以需要更改hadoop目录所有者
-sudo chown -R <user> /usr/local/hadoop
+# 如果缺失jar包，下载放到目录
+cd share/hadoop/yarn/lib
+wget https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar
 ```
 
 ***

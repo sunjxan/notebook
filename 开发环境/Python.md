@@ -1,4 +1,13 @@
 ```
+# 更换pip源到国内镜像，修改 ~/.pip/pip.conf
+mkdir ~/.pip
+vim ~/.pip/pip.conf
+# 阿里云源
+[global]
+index-url = http://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host = mirrors.aliyun.com
+
 # 从零安装python2
 sudo apt install python
 # 查看版本
@@ -9,7 +18,6 @@ sudo apt upgrade python2.7
 # 安装pip2
 sudo apt install python-pip python-dev
 sudo pip install --upgrade pip
-
 
 # 从零安装python3
 sudo apt install python3
@@ -27,21 +35,18 @@ where python
 where python3
 # 查看优先使用的版本
 command -v python python2 python3 pip pip2 pip3
-# 不建议修改python软连接
 ls -al /usr/bin/python* /usr/bin/pip* /usr/local/bin/pip*
+# 不建议修改python软连接
+
+# 生成requirements.txt文件
+pip3 freeze > requirements.txt
+# 安装requirements.txt依赖
+pip3 install -r requirements.txt
 
 # 设置环境变量，在~/.zshrc追加
-export PATH="/home/<user>/.local/bin:$PATH"
+export PYTHONPATH=
+export PATH="~/.local/bin:$PATH"
 # 生效
 source ~/.zshrc
-
-# 更换pip源到国内镜像，修改 ~/.pip/pip.conf
-sudo mkdir ~/.pip
-sudo vim ~/.pip/pip.conf
-
-[global]
-index-url = http://mirrors.aliyun.com/pypi/simple/
-[install]
-trusted-host = mirrors.aliyun.com
 ```
 

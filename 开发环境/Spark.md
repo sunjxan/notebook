@@ -12,26 +12,39 @@ sudo tar -xvf spark-2.4.5-bin-without-hadoop.tgz
 sudo mv spark-2.4.5-bin-without-hadoop spark
 
 # 设置环境变量，在~/.zshrc追加
-# PYTHONPATH环境变量主要是为了在Python3中引入pyspark库，PYSPARK_PYTHON变量主要是设置pyspark运行的python版本
+# PYSPARK_PYTHON变量设置pyspark运行的python解释器，最新版本的python可能与pyspark不兼容
+# PYTHONPATH环境变量添加包的解析路径
 # 为避免与hadoop脚本冲突，不要把sbin目录加入PATH
 export SPARK_HOME="/usr/local/spark"
-export PYSPARK_PYTHON="/usr/local/anaconda/bin/python"
+export PYSPARK_PYTHON="/usr/bin/python3"
 export PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/pyspark.zip:${SPARK_HOME}/python/lib/py4j-0.10.7-src.zip:$PYTHONPATH"
 export PATH="${SPARK_HOME}/bin:$PATH"
 
 # 生效
 source ~/.zshrc
 
-# 如果安装的是without hadoop的版本，加入hadoop中的依赖包
-cd /usr/local/spark
-cp ./conf/spark-env.sh.template ./conf/spark-env.sh
-echo export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath) >> ./conf/spark-env.sh
-
 # 查看版本
 pyspark --version
 
 # 因为在spark中很多操作需要文件所有者权限，所以需要更改spark目录所有者
-sudo chown -R <user> /usr/local/spark
+sudo chown -R <user>:<user> /usr/local/spark
+
+# 如果安装的是without hadoop的版本，加入hadoop中的依赖包
+cd /usr/local
+cp spark/conf/spark-env.sh.template spark/conf/spark-env.sh
+# 在spark/conf/spark-env.sh追加
+export SPARK_DIST_CLASSPATH=$(/usr/local/hadoop/bin/hadoop classpath)
+
+# 设置hive引擎为spark
+# 修改hive的hive-site.xml配置文件，configuration中添加
+<property>
+  <name>hive.execution.engine</name>
+  <value>spark</value>
+</property>
+<property>
+  <name>hive.metastore.schema.verification</name>
+  <value>false</value>
+</property>
 ```
 
 有了上面的配置信息以后，Spark就可以把数据存储到Hadoop分布式文件系统HDFS中，也可以从HDFS中读取数据。如果没有配置上面信息，Spark就只能读写本地数据，无法读写HDFS数据。配置完成后就可以直接使用，不需要像Hadoop运行启动命令。

@@ -16,6 +16,8 @@ sudo netstat -anp | grep mysql
 # 或者
 sudo ps aux | grep mysql
 
+# 查看版本
+mysql --version
 # 登录MySQL（root初始密码为空）
 sudo mysql -u root -p
 

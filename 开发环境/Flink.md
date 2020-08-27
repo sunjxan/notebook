@@ -17,7 +17,7 @@ source ~/.zshrc
 flink -v
 
 # 因为在flink中很多操作需要文件所有者权限，所以需要更改flink目录所有者
-sudo chown -R <user> /usr/local/flink
+sudo chown -R <user>:<user> /usr/local/flink
 ```
 
 [原网页](<http://dblab.xmu.edu.cn/blog/2507-2/>)

@@ -69,17 +69,19 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io
 
 # 查看版本
-docker version
+sudo docker version
 
-# 启动
-sudo service docker start
 # 更换镜像地址，登录https://cr.console.aliyun.com/注册账号，得到一个专属的镜像加速地址
 sudo vim /etc/docker/daemon.json
 {
  "registry-mirrors": ["<镜像加速地址>"]
 }
-# 重启
-sudo service docker restart
+
+# 启动
+sudo service docker start
+
+# 查看信息，包含新镜像地址
+sudo docker info
 
 # 测试
 docker run hello-world

@@ -6,6 +6,15 @@ sudo wget http://mirrors.ibiblio.org/apache/flume/1.9.0/apache-flume-1.9.0-bin.t
 sudo tar -xvf apache-flume-1.9.0-bin.tar.gz
 sudo mv apache-flume-1.9.0-bin flume
 
+# 因为在flume中很多操作需要文件所有者权限，所以需要更改flume目录所有者
+sudo chown -R <user>:<user> /usr/local/flume
+
+# 修改配置
+cd flume
+cp conf/flume-env.sh.template conf/flume-env.sh
+# 修改flume-env.sh，修改JAVA_HOME
+export JAVA_HOME="/usr/local/jdk"
+
 # 设置环境变量，在~/.zshrc追加
 export FLUME_HOME="/usr/local/flume"
 export FLUME_CONF_DIR="${FLUME_HOME}/conf"
@@ -16,9 +25,6 @@ source ~/.zshrc
 
 # 查看版本
 flume-ng version
-
-# 因为在flume中很多操作需要文件所有者权限，所以需要更改flume目录所有者
-sudo chown -R <user> /usr/local/flume
 ```
 
 [原网页](<http://dblab.xmu.edu.cn/blog/1102/>)

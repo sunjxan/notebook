@@ -5,13 +5,13 @@
 安装好Docker之后，接下来就要在Docker上安装Ubuntu，其实和安装其他镜像一样，只需运行一个命令足矣，如下:
 
 ```bash
-docker pull ubuntu:18.04
+sudo docker pull ubuntu:18.04
 ```
 
 docker pull命令表示从Docker hub上拉取Ubuntu镜像到本地；这时可以在终端运行以下命令查看是否安装成功
 
 ```bash
-docker images
+sudo docker images
 ```
 
 有如下输出则表示安装成功:
@@ -53,14 +53,14 @@ deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted unive
 然后再在Docker上运行Ubuntu系统；
 
 ```bash
-docker run -it -p 80:80 -v /home/<user>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
+sudo docker run -it -p 2222:22 -p 8888:8888 -v /home/<用户名>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
 ```
 
 这里解析下这个命令参数：
 * docker run 表示运行一个镜像；
 * -i表示开启交互式；-t表示分配一个tty，可以理解为一个控制台；因此-it可以理解为在当前终端上与docker内部的ubuntu系统交互；
 * -p 表示将容器内的端口映射出来，可同时映射多对；
-* -v 表示docker内部的ubuntu系统`/root/docker_files`目录与本地`/home/<user>/docker_files`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
+* -v 表示docker内部的ubuntu系统`/root/docker_files`目录与本地`/home/<用户名>/docker_files`共享；这可以很方便将本地文件上传到Docker内部的Ubuntu系统；
 * –-name ubuntu 表示Ubuntu镜像启动名称，如果没有指定，那么Docker将会随机分配一个名字；
 * ubuntu 表示docker run启动的镜像文件；
 
@@ -84,25 +84,160 @@ cp /root/docker_files/sources.list /etc/apt/sources.list
 apt update && apt upgrade -y
 ```
 
-#### 2. 安装vim
-
-#### 3. 安装net-tools
-
-#### 4. 安装SSH
-
-设置开机自启，在~/.bashrc追加
+#### 2. 安装aptitude
 
 ```
-echo /etc/init.d/ssh start >> ~/.bashrc
+apt install aptitude -y
 ```
 
-#### 5. 安装MySQL
+#### 3. 安装sudo、vim、git
 
-#### 6. 安装JDK8
+```
+aptitude install sudo vim git -y
+```
 
-#### 7. 安装Maven3.6.3
+#### 4. 创建用户
 
-## 安装Hadoop软件
+```
+# 创建用户
+useradd <用户名>
+# 设置root密码
+passwd
+# 设置密码
+passwd <用户名>
+
+# 设置sudo用户
+vim /etc/sudoers
+# 追加
+<用户名> ALL=(ALL:ALL) NOPASSWD:ALL
+# 使用"wq!"保存
+
+# 切换用户
+su -s /bin/bash <用户名>
+```
+
+#### 5. 安装zsh并配置oh-my-zsh
+
+```
+# 安装 zsh
+sudo aptitude install zsh
+
+# 安装oh-my-zsh
+# 下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
+sudo bash install.sh
+# 修改用户配置文件所有者
+sudo chown -R <用户名>:<用户名> /home/<用户名>
+# 切换用户
+su -s /bin/zsh <用户名>
+
+# 修改默认Shell
+sudo chsh -s /bin/zsh <用户名>
+sudo chsh -s /bin/bash root
+
+# 下载插件：
+cd $ZSH_CUSTOM/plugins
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+git clone https://github.com/zsh-users/zsh-autosuggestions.git
+# 修改配置文件：
+vim ~/.zshrc
+
+# 修改主题
+ZSH_THEME="ys"
+
+# 在 plugins 一列中添加如下
+plugins=(
+         z
+         git
+         zsh-syntax-highlighting
+         zsh-autosuggestions
+         )
+         
+# 在文件最后添加
+source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+source ~/.zshrc
+```
+
+#### 6. 设置系统语言
+
+```
+sudo vim /etc/zsh/zshrc
+# 追加
+export LANG="C.UTF-8"
+
+source /etc/zsh/zshrc
+```
+
+#### 7. 安装net-tools
+
+```
+sudo aptitude install net-tools
+```
+
+#### 8. 安装SSH
+
+```
+sudo aptitude install ssh
+
+# 生成密钥
+ssh-keygen -t rsa
+# 将公钥加入授权
+cd ~/.ssh
+cat id_rsa.pub >> authorized_keys
+
+# 设置开机启动
+vim ~/.zshrc
+# 追加
+sudo /etc/init.d/ssh start
+```
+
+#### 9. 安装python、pip
+
+```
+# 更换pip源到国内镜像，修改 ~/.pip/pip.conf
+mkdir ~/.pip
+vim ~/.pip/pip.conf
+# 阿里云源
+[global]
+index-url = http://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host = mirrors.aliyun.com
+
+# 安装pip3
+sudo aptitude install python3 python3-pip python3-dev
+sudo pip3 install --upgrade pip
+
+# 设置环境变量，在~/.zshrc追加
+export PYTHONPATH=
+export PATH="~/.local/bin:$PATH"
+```
+
+#### 10. 安装Anaconda3
+
+#### 11. 安装JDK8
+
+#### 12. 安装Maven3.6.3
+
+#### 13. 安装MySQL
+
+#### 14. 保存镜像
+
+退出docker，保存这个镜像
+
+```
+# 保存容器为镜像
+sudo docker commit ubuntu18.04 ubuntu/basic
+# 导出镜像
+sudo docker save -o docker_ubuntu_basic.tar ubuntu/basic
+```
+
+## 安装大数据软件
+
+```
+# 重新进入docker环境
+sudo docker run -it -p 2222:22 -p 8888:8888 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
+```
 
 #### 1. 安装ZooKeeper3.6.1
 
@@ -112,11 +247,11 @@ echo /etc/init.d/ssh start >> ~/.bashrc
 
 #### 4. 安装Hive2.3.7
 
-#### 5. 安装Anaconda3
+#### 5. 编译Spark2.4.5-Hadoop2.10.0并安装
 
-#### 6. 编译Spark2.4.5-Hadoop2.10.0
+#### 6. 安装Flume1.9.0
 
-#### 7. 安装Spark2.4.5
+#### 7. 安装Kafka2.6.0
 
 #### 8. 安装Sqoop1.4.7
 
@@ -128,20 +263,13 @@ echo /etc/init.d/ssh start >> ~/.bashrc
 
 ```
 server.0=master:2888:3888
-server.1=slave01:2888:3888
-server.2=slave02:2888:3888
+server.1=slave1:2888:3888
+server.2=slave2:2888:3888
 ```
 
 #### 2. 配置Hadoop集群
 
-接下来，我们来看下如何配置Hadoop集群；对一些文件的设置和之前教程一样，首先打开etc/hadoop/hadoop_env.sh文件，修改JAVA_HOME
-
-```bash
-# 将export JAVA_HOME=${JAVA_HOME}替换成
-export JAVA_HOME="/usr/local/jdk"
-```
-
-接着打开etc/hadoop/core-site.xml，输入以下内容:
+打开etc/hadoop/core-site.xml，输入以下内容:
 
 ```
 <configuration>
@@ -176,13 +304,27 @@ export JAVA_HOME="/usr/local/jdk"
 </configuration>
 ```
 
-接下来修改etc/hadoop/mapred-site.xml（可能需要先重命名，默认文件名为 mapred-site.xml.template），输入以下内容:
+接下来修改etc/hadoop/mapred-site.xml
+
+```
+cp hadoop/etc/hadoop/mapred-site.xml.template hadoop/etc/hadoop/mapred-site.xml
+```
+
+输入以下内容:
 
 ```
 <configuration>
     <property>
         <name>mapreduce.framework.name</name>
         <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>master:10020</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>master:19888</value>
     </property>
     <property>
       <name>yarn.app.mapreduce.am.env</name>
@@ -214,29 +356,21 @@ export JAVA_HOME="/usr/local/jdk"
 </configuration>
 ```
 
-如果缺失jar包，自行下载
-
-```
-cd share/hadoop/yarn/lib
-wget https://repo1.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar
-```
-
 修改slaves列表
 ```
 # 默认为 localhost，所以在伪分布式配置时，节点即作为 NameNode 也作为 DataNode。分布式配置可以保留 localhost，也可以删掉，让 Master 节点仅作为 NameNode 使用
 vim /usr/local/hadoop/etc/hadoop/slaves(或/usr/local/hadoop/etc/hadoop/workers)
 # 将localhost替换成两个slave的主机名
 
-slave01
-slave02
+slave1
+slave2
 ```
 
-#### 3.   配置HBase集群
+#### 3. 配置HBase集群
 
-修改/usr/local/hbase/conf/hbase-env.sh，配置JAVA_HOME，HBASE_MANAGES_ZK设为false（不适用hbase自带zookeeper）
+修改/usr/local/hbase/conf/hbase-env.sh，HBASE_MANAGES_ZK设为false（不使用hbase自带zookeeper）
 
 ```shell
-export JAVA_HOME="/usr/local/jdk"
 export HBASE_MANAGES_ZK=false
 ```
 
@@ -264,7 +398,7 @@ export HBASE_MANAGES_ZK=false
         </property>
     	<property>
             <name>hbase.zookeeper.quorum</name>
-            <value>master,slave01,slave02</value>
+            <value>master,slave1,slave2</value>
         </property>
         <property>
             <name>hbase.zookeeper.property.dataDir</name>
@@ -281,15 +415,43 @@ hbase.rootdir指定HBase的存储目录；hbase.cluster.distributed设置集群�
 vim conf/regionservers
 
 master
-slave01
-slave02
+slave1
+slave2
 ```
 
-#### 4.配置MySQL作为Hive元数据库
+#### 4. 配置MySQL作为Hive元数据库
 
-#### 5. 配置Spark集群
+#### 5. 设置Hive引擎为Spark
 
-修改conf/spark-env.sh，追加
+```
+# 修改hive的hive-site.xml配置文件，configuration中添加
+<property>
+  <name>hive.execution.engine</name>
+  <value>spark</value>
+</property>
+<property>
+  <name>hive.metastore.schema.verification</name>
+  <value>false</value>
+</property>
+```
+
+#### 6. 配置Spark集群
+
+```
+cd /usr/local
+cp spark/conf/spark-defaults.conf.template spark/conf/spark-defaults.conf
+cp spark/conf/spark-env.sh.template spark/conf/spark-env.sh
+```
+
+修改conf/spark-defaults.conf，修改：
+
+```
+spark.eventLog.enabled  true
+spark.eventLog.compress true
+spark.eventLog.dir      hdfs://master:9000/spark-events
+```
+
+修改conf/spark-env.sh，追加：
 
 ```
 export JAVA_HOME="/usr/local/jdk"
@@ -298,67 +460,65 @@ export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
 export HIVE_CONF_DIR="/usr/local/hive/conf"
 export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.9.2.jar:$SPARK_CLASSPATH"
 export SPARK_MASTER_HOST=master
+export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://master:9000/spark-events"
 ```
 
 修改conf/slaves
 
 ```
-cp conf/slaves.template conf/slaves
-vim conf/slaves
+cp spark/conf/slaves.template spark/conf/slaves
+vim spark/conf/slaves
 
-slave01
-slave02
+slave1
+slave2
 ```
 
-#### 6. 配置SparkSQL连接Hive
+#### 7. 配置SparkSQL连接Hive
 
-#### 7. 保存镜像
+#### 8. 配置Sqoop连接MySQL
+
+#### 9. 保存镜像
 
 退出docker，保存这个镜像
 
 ```
 # 保存容器为镜像
-docker commit ubuntu18.04 ubuntu/bigdata
+sudo docker commit bigdata ubuntu/bigdata
 # 导出镜像
-docker save -o ubuntu_bigdata.tar ubuntu/bigdata
+sudo docker save -o docker_ubuntu_bigdata.tar ubuntu/bigdata
 ```
 
 ## 启动分布式集群
 
 #### 1. 运行容器
 
-接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave01和slave02；
+接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave1和slave2；
 
 ```bash
-docker run -it -p 2222:22 -p 50070:50070 -p 8088:8088 -p 16010:16010 -p 10002:10002 -p 8080:8080 -h master --name master ubuntu/bigdata
+sudo docker run -it -p 2222:22 -p 8888:8888 -p 50070:50070 -p 50090:50090 -p 19888:19888 -p 8088:8088 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 4040:4040 -p 18080:18080 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> -h master --name master ubuntu/bigdata /bin/zsh
 
-docker run -it -h slave01 --name slave01 ubuntu/bigdata
+sudo docker run -it -u <用户名> -w /home/<用户名> -h slave1 --name slave1 ubuntu/bigdata /bin/zsh
 
-docker run -it -h slave02 --name slave02 ubuntu/bigdata
+sudo docker run -it -u <用户名> -w /home/<用户名> -h slave2 --name slave2 ubuntu/bigdata /bin/zsh
 ```
 
-接着配置master,slave01和slave02的地址信息，这样他们才能找到彼此，分别打开/etc/hosts可以查看本机的ip和主机名信息,最后得到三个ip和主机地址信息如下:
+接着配置master,slave1和slave2的地址信息，这样他们才能找到彼此：
 
 ```
+sudo vim /etc/hosts
+
 172.17.0.2      master
-172.17.0.3      slave01
-172.17.0.4      slave02
-```
-修改每个结点的/etc/hosts
-```
-echo '172.17.0.3      slave01
-172.17.0.4      slave02' >> /etc/hosts
-scp /etc/hosts slave01:/etc
-scp /etc/hosts slave02:/etc
+172.17.0.3      slave1
+172.17.0.4      slave2
 ```
 
-最后把上述三个地址信息分别复制到master,slave01和slave02的/etc/hosts即可，**每次开启容器hosts文件会自动改变，需要重新配置**
+最后把上述三个地址信息分别复制到master,slave1和slave2的/etc/hosts即可，**每次开启容器hosts文件会自动改变，需要重新配置**
 
-我们可以用如下命令来检测下是否master是否可以连上slave01和slave02
+连接slave1和slave2并退出：
 
 ```
-ssh slave01
-ssh slave02
+ssh slave1
+ssh slave2
 ```
 
 #### 2. 启动ZooKeeper
@@ -384,6 +544,7 @@ zkServer.sh start
 ```bash
 hdfs namenode -format
 start-dfs.sh && start-yarn.sh
+mr-jobhistory-daemon.sh start historyserver
 ```
 
 > 如果遇到错误ERROR: but there is no HDFS_NAMENODE_USER defined
@@ -401,14 +562,14 @@ start-dfs.sh && start-yarn.sh
 > YARN_NODEMANAGER_USER=root
 > ```
 
-这时Hadoop集群就已经开启，我们可以在master,slave01和slave02上分别运行命令jps查看运行结果;
+这时Hadoop集群就已经开启，我们可以在master,slave1和slave2上分别运行命令jps查看运行结果;
 下面是运行结果图
 
 ![master运行结果](Docker搭建Hadoop分布式集群.assets/1.png)
 
-![slave01运行结果](Docker搭建Hadoop分布式集群.assets/2.png)
+![slave1运行结果](Docker搭建Hadoop分布式集群.assets/2.png)
 
-![slave02运行结果](Docker搭建Hadoop分布式集群.assets/3.png)
+![slave2运行结果](Docker搭建Hadoop分布式集群.assets/3.png)
 
 #### 4. 启动HBase
 
@@ -442,21 +603,92 @@ hive --service hiveserver2 >/dev/null 2>&1 &
 
 ```
 /usr/local/spark/sbin/start-all.sh
+
+# 创建保存日志相关信息的路径
+hadoop fs -mkdir /spark-events
+
+/usr/local/spark/sbin/start-history-server.sh
 ```
 
-#### 8. WebUI
+#### 8. 启动Kafka
 
-HDFS  http://localhost:50070/dfshealth.html  hadoop3+端口改为9870
+```
+cd /usr/local
+# 启动服务
+kafka-server-start.sh kafka/config/server.properties >/dev/null 2>&1 &
+# 创建topic
+kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic <topic名>
 
-yarn  http://localhost:8088/cluster
+# 获取数据的命令
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic <topic名>
+# 获取所有数据
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --topic <topic名>
+```
 
-hbase  http://localhost:16010/master-status
+#### 9. 启动Flume
 
-hive  http://localhost:10002
+在flume/conf目录下创建 avro.conf 配置文件
 
-spark  http://localhost:8080
+```
+a1.sources = r1
+a1.sinks = k1 k2
+a1.channels = c1 c2
 
-#### 9. 使用PyCharm连接
+a1.sources.r1.type = exec
+a1.sources.r1.command = tail -F <日志文件路径>
+ 
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+
+a1.channels.c2.type = memory
+a1.channels.c2.capacity = 1000
+a1.channels.c2.transactionCapacity = 100
+
+a1.sinks.k1.type = hdfs
+a1.sinks.k1.hdfs.path = hdfs://<服务器IP>:9000/flume/log
+a1.sinks.k1.hdfs.filePrefix = log
+a1.sinks.k1.hdfs.fileType = DataStream
+
+a1.sinks.k2.type = org.apache.flume.sink.kafka.KafkaSink
+a1.sinks.k2.topic = <topic名>
+a1.sinks.k2.brokerList = <服务器IP>:9092
+a1.sinks.k2.requiredAcks = 1
+a1.sinks.k2.batchSize = 20
+ 
+a1.sources.r1.channels = c1 c2
+a1.sinks.k1.channel = c1
+a1.sinks.k2.channel = c2
+```
+
+启动flume
+
+```
+cd /usr/local
+flume-ng agent -c flume/conf -f flume/conf/avro.conf -n a1 -Dflume.root.logger=INFO,console >/dev/null 2>&1 &
+```
+
+#### 10. 修改Anaconda环境
+
+```
+# 最新版本的python可能与pyspark不兼容，需要降级python
+# 创建环境
+conda create -n python37  python=3.7
+# 切换环境
+conda activate python37
+```
+
+#### 11. 安装Jupyter Notebook
+
+```
+conda install jupyter
+# 打开Jupyter服务器
+jupyter notebook --ip=0.0.0.0 --no-browser --allow-root >/dev/null 2>&1 &
+# 获取token
+jupyter notebook list
+```
+
+#### 12. 使用PyCharm连接
 
 在PyCharm中的ssh连接要使用子系统的ip
 
@@ -464,121 +696,40 @@ spark  http://localhost:8080
 export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
 ```
 
-配置远程解释器：创建一个目录作为项目目录；File->Settings->Project->Project Interpreter，添加解释器，选择SSH Interpreter，连接root@`WSLIP`:2222，选择ssh密钥文件（默认位置在Windows用户主目录下的.ssh目录），选择Python解释器路径，设置项目同步目录，勾选自动同步（手动同步在Tools->Deployment->Upload to）
+配置远程解释器：创建一个目录作为项目目录；File->Settings->Project->Project Interpreter，添加解释器，选择SSH Interpreter，连接root@`WSLIP`:2222，选择ssh密钥文件（默认位置在Windows用户主目录下的.ssh目录），选择Python解释器路径，设置项目同步目录，勾选自动同步（手动同步在Tools->Deployment->Upload to），也可以使用docker的同步功能
 
-## 实例程序
+#### 13. WebUI
 
-#### 1. 运行Hadoop实例程序grep
+Jupyter
 
-到目前为止，我们已经成功启动hadoop分布式集群，接下来，我们通过运行hadoop自带的grep实例来查看下如何在hadoop分布式集群运行程序；这里我们运行的实例是hadoop自带的grep
+http://localhost:8888
 
-因为要用到hdfs，所以我们先在hdfs上创建一个目录/user/root/user
+HDFS
 
-```bash
-hdfs dfs -mkdir -p input
-```
+Namenode  http://localhost:50070  (hadoop3+端口改为9870)
 
-然后将/usr/local/hadoop/etc/hadoop/目录下的所有文件拷贝到hdfs上的目录:
+SecondaryNamenode  http://localhost:50090
 
-```bash
-hdfs dfs -put /usr/local/hadoop/etc/hadoop/*.xml input
-```
+JobHistory  http://localhost:19888
 
-然后通过ls命令查看下是否正确将文件上传到hdfs下:
+Yarn
 
-```bash
-hdfs dfs -ls input
-```
+http://localhost:8088
 
-输出如下:
+HBase
 
-```
-Found 9 items
--rw-r--r--   3 root supergroup       4436 2016-12-26 07:40 /user/hadoop/input/capacity-scheduler.xml
--rw-r--r--   3 root supergroup       1090 2016-12-26 07:40 /user/hadoop/input/core-site.xml
--rw-r--r--   3 root supergroup       9683 2016-12-26 07:40 /user/hadoop/input/hadoop-policy.xml
--rw-r--r--   3 root supergroup       1133 2016-12-26 07:40 /user/hadoop/input/hdfs-site.xml
--rw-r--r--   3 root supergroup        620 2016-12-26 07:40 /user/hadoop/input/httpfs-site.xml
--rw-r--r--   3 root supergroup       3518 2016-12-26 07:40 /user/hadoop/input/kms-acls.xml
--rw-r--r--   3 root supergroup       5511 2016-12-26 07:40 /user/hadoop/input/kms-site.xml
--rw-r--r--   3 root supergroup        866 2016-12-26 07:40 /user/hadoop/input/mapred-site.xml
--rw-r--r--   3 root supergroup        947 2016-12-26 07:40 /user/hadoop/input/yarn-site.xml
-```
+- Master  http://localhost:16010
 
-接下来，通过运行下面命令执行实例程序:
+- RegionServer  http://localhost:16030
 
-```bash
-hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep input output 'dfs[a-z.]+'
-```
+Hive
 
-过一会，等这个程序运行结束之后，就可以在hdfs上的output目录下查看到运行结果:
+http://localhost:10002
 
-```bash
-hdfs dfs -cat output/*
+Spark
 
-1   dfsadmin
-1   dfs.replication
-1   dfs.namenode.name.dir
-1   dfs.datanode.data.dir
-```
+监控  http://localhost:8080
 
-hdfs文件上的output目录下，输出程序正确的执行结果，hadoop分布式集群顺利执行grep程序
+实时任务  http://localhost:4040
 
-#### 2. Spark加载HDFS文件
-
-   任务：编写一个Spark应用程序，对某个文件中的单词进行词频统计。
-   准备工作：请进入Linux系统，打开“终端”，进入Shell命令提示符状态，然后，执行如下命令新建目录：
-
-   ```bash
-mkdir /usr/local/spark/input
-vim /usr/local/spark/input/word
-   ```
-
-   你可以在文本文件中随意输入一些单词，用空格隔开，我们会编写Spark程序对该文件进行单词词频统计。
-
-   下面，我们把本地文件系统中的“/usr/local/spark/input/word”上传到分布式文件系统HDFS中：
-
-   ```bash
-hdfs dfs -put /usr/local/spark/input/word input
-   ```
-
-   在pyspark输入如下代码：
-
-   ```python
-textFile = sc.textFile("input/word")
-# 这句与以下两句是等价的
-# textFile = sc.textFile("/user/root/input/word")
-# textFile = sc.textFile("hdfs://localhost:9000/user/root/input/word")
-wordCount = textFile.flatMap(lambda line: line.split(" ")).map(lambda word: (word,1)).reduceByKey(lambda a, b : a + b)
-print(wordCount.collect())
-
-# 或者一行一行输出
-# wordCount.foreach(print)
-   ```
-
-#### 3. SparkSQL连接Hive读写数据
-
-现在我们看如何使用Spark读写Hive中的数据，先启动Hadoop和MySQL。
-
-在pyspark（包含Hive支持）中执行以下命令从Hive中读取数据：
-
-```python
-from pyspark.sql import HiveContext
-hive_context = HiveContext(sc)
-hive_context.sql('use default')
-hive_context.sql('select * from student').show()
- 
-+---+--------+------+---+
-| id|    name|gender|age|
-+---+--------+------+---+
-|  1| Xueqian|     F| 23|
-|  2|Weiliang|     M| 24|
-+---+--------+------+---+
-```
-
-使用spark-sql命令行可以直接使用SQL语句
-
-```bash
-spark-sql
-```
-
+历史任务  http://localhost:18080

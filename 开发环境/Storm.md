@@ -18,7 +18,7 @@ source ~/.zshrc
 storm version
 
 # 因为在storm中很多操作需要文件所有者权限，所以需要更改storm目录所有者
-sudo chown -R <user> /usr/local/storm
+sudo chown -R <user>:<user> /usr/local/storm
 
 # 修改配置conf/storm.yaml，修改storm.zookeeper.servers和nimbus.host
 storm.zookeeper.servers:

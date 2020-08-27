@@ -52,7 +52,7 @@ del wsl.tar
 <安装程序> config --default-user <用户名>
 ```
 
-7. 设置root密码的方法：
+7. 设置用户：
 ```
 # 以root身份进入wsl
 wsl -d <子系统名> -u root
@@ -72,6 +72,7 @@ passwd
 备份原文件：
 ```
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+sudo vim /etc/apt/sources.list
 ```
 
 替换source.list文件内容
@@ -118,46 +119,70 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted
 sudo apt update && sudo apt upgrade -y
 ```
 
-10. 安装zsh
+10. 从官方Ubuntu发行版复制软件包
+```
+# 原主机导出软件列表
+dpkg --get-selections > packages-backup.list
+
+# 新主机从软件列表安装
+apt install dselect
+dselect update
+dpkg --set-selections < packages-backup.list
+apt-get dselect-upgrade
+```
+
+11. 安装aptitude
+
+```
+sudo apt install aptitude
+```
+
+12. 安装zsh
 
 ```
 # 安装 zsh
-sudo apt install zsh
-
-# 修改默认的 Shell 为 zsh
-sudo chsh -s /bin/zsh root
-sudo chsh -s /bin/zsh <用户名>
+sudo aptitude install zsh
 
 # 修改Windows Terminal设置文件
 "commandline": "wsl cd ~ && /bin/zsh"
 ```
 
-11. 安装oh-my-zsh
+13. 安装oh-my-zsh
 
 下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
 ```
 sudo bash install.sh
+# 修改用户配置文件所有者
+sudo chown -R <用户名>:<用户名> /home/<用户名>
+# 切换用户
+su -s /bin/zsh <用户名>
+
+# 修改默认Shell
+sudo chsh -s /bin/zsh <用户名>
+sudo chsh -s /bin/bash root
 ```
 
 下载插件：
 
 ```
 cd $ZSH_CUSTOM/plugins
-sudo git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-sudo git clone https://github.com/zsh-users/zsh-autosuggestions.git
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+git clone https://github.com/zsh-users/zsh-autosuggestions.git
 ```
 
 修改配置文件：
 
 ```
-sudo vim ~/.zshrc
+vim ~/.zshrc
 
 # 修改主题
 ZSH_THEME="ys"
 
 # 在 plugins 一列中添加如下
 plugins=(
+         z
          git
+         docker
          zsh-syntax-highlighting
          zsh-autosuggestions
          )
@@ -169,23 +194,26 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zshrc
 ```
 
-12. 路径问题
+14. 安装pip并配置
+15. 安装mysql并配置
+16. 安装docker并配置
+17. 路径问题
 
 |  | Windows文件系统 | Linux文件系统 |
 | ----------- | --------------- | ------------- |
-| Linux路径   | /mnt/f/         | /home/user/   |
-| Windows路径 | F:\             | `\\wsl$\<子系统名>\home\user\` |
+| Linux路径   | /mnt/f/         | /home/   |
+| Windows路径 | F:\             | `\\wsl$\<子系统名>\home\` |
 
 使用file协议
 
 |  | Windows文件系统 | Linux文件系统 |
 | ----------- | --------------- | ------------- |
-| Linux路径   | file:///mnt/f/  | file:///home/user/ |
-| Windows路径 | file:///F:\     | `file://wsl$\<子系统名>\home\user\` |
+| Linux路径   | file:///mnt/f/  | file:///home/ |
+| Windows路径 | file:///F:\     | `file://wsl$\<子系统名>\home\` |
 
 Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows程序访问Linux文件系统可能有路径错误，所以把项目文件放在Windows文件系统。
 
-13. 添加开机启动项
+18. 添加开机启动项
 ```
 sudo vim /etc/init.wsl
 # 输入启动项
@@ -203,7 +231,7 @@ Set ws = WScript.CreateObject("WScript.Shell")
 ws.run "wsl -u root /etc/init.wsl"
 ```
 
-14. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+19. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
 ```
 # 关闭wsl
 wsl --shutdown
@@ -235,7 +263,7 @@ netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
 
 > 5）规则已经自动启用
 
-15. 子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
+20. 子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
 ```
 # 自动挂载
 [automount]

@@ -13,11 +13,11 @@ export PATH="${KAFKA_HOME}/bin:$PATH"
 # 生效
 source ~/.zshrc
 
+# 因为在kafka中很多操作需要文件所有者权限，所以需要更改kafka目录所有者
+sudo chown -R <user>:<user> /usr/local/kafka
+
 # 查看版本
 kafka-server-start.sh --version
-
-# 因为在kafka中很多操作需要文件所有者权限，所以需要更改kafka目录所有者
-sudo chown -R <user> /usr/local/kafka
 ```
 
 [原网页](<http://dblab.xmu.edu.cn/blog/1743-2/>)

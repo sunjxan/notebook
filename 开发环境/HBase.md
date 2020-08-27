@@ -7,6 +7,14 @@ sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/hbase/1.4.13/hbase-1.4.13-
 sudo tar -xvf hbase-1.4.13-bin.tar.gz
 sudo mv hbase-1.4.13 hbase
 
+# 因为在hbase中很多操作需要文件所有者权限，所以需要更改hbase目录所有者
+sudo chown -R <user>:<user> /usr/local/hbase
+
+# 修改配置
+cd hbase
+# 修改conf/hbase-env.sh，修改JAVA_HOME
+export JAVA_HOME="/usr/local/jdk"
+
 # 设置环境变量，在~/.zshrc追加
 export HBASE_HOME="/usr/local/hbase"
 export PATH="${HBASE_HOME}/bin:$PATH"
@@ -16,9 +24,6 @@ source ~/.zshrc
 
 # 查看版本
 hbase version
-
-# 因为在hbase中很多操作需要文件所有者权限，所以需要更改hbase目录所有者
-sudo chown -R <user> /usr/local/hbase
 ```
 
 [原网页](<http://dblab.xmu.edu.cn/blog/install-hbase/>)
