@@ -108,18 +108,18 @@ hive --service metastore >/dev/null 2>&1 &
 # 3.启动hiveserver2，使其他服务可以通过thrift接入hive
 # 在hadoop的core-site.xml文件中配置hadoop代理用户，configuration中添加
 <property>
-  <name>hadoop.proxyuser.root.groups</name>
+  <name>hadoop.proxyuser.<用户名>.groups</name>
   <value>*</value>
 </property>
 <property>
-  <name>hadoop.proxyuser.root.hosts</name>
+  <name>hadoop.proxyuser.<用户名>.hosts</name>
   <value>*</value>
 </property>
 # 设置完后，需要重启hadoop
 # 启动hiveserver2
 hive --service hiveserver2 >/dev/null 2>&1 &
 # beeline工具测试使用jdbc方式连接
-beeline -u jdbc:hive2://localhost:10000
+beeline -u jdbc:hive2://localhost:10000 -n <用户名>
 # 同时启动一个webui（端口号默认10002），可以通过http://localhost:10002/访问
 ```
 

@@ -37,8 +37,8 @@ from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.flume import FlumeUtils
 
-ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
-sc = ss.sparkContext
+spark = SparkSession.builder.master("yarn").appName("test").enableHiveSupport().getOrCreate()
+sc = spark.sparkContext
 ssc = StreamingContext(sc, 2)
 
 stream = FlumeUtils.createStream(ssc, 'localhost', 9091)
@@ -61,8 +61,8 @@ from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
-ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
-sc = ss.sparkContext
+spark = SparkSession.builder.master("yarn").appName("test").enableHiveSupport().getOrCreate()
+sc = spark.sparkContext
 ssc=StreamingContext(sc, 2)
 
 stream = KafkaUtils.createDirectStream(ssc, ["<topic名>"], {"metadata.broker.list": "localhost:9092"})

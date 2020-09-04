@@ -2,11 +2,11 @@
 ```
 # 在hadoop的core-site.xml文件中配置hadoop代理用户，configuration中添加
 <property>
-  <name>hadoop.proxyuser.root.groups</name>
+  <name>hadoop.proxyuser.<用户名>.groups</name>
   <value>*</value>
 </property>
 <property>
-  <name>hadoop.proxyuser.root.hosts</name>
+  <name>hadoop.proxyuser.<用户名>.hosts</name>
   <value>*</value>
 </property>
 # 设置完后，需要重启hadoop

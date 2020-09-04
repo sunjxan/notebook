@@ -86,13 +86,13 @@ CREATE TABLE <表名>(
 )
 row format delimited fields terminated by '<分割字符>';
 ```
-4. 导入数据到hive表：
+4. 导入数据到hive表（如果导入文件的hdfs路径就是hive数据库相应表的目录，不需要这一步）：
 ```
 load data inpath '<hdfs路径>' overwrite into table <表名>;
 ```
 5. 一条命令导入到hive表：
 ```
-sqoop import --connect jdbc:mysql://<服务器IP>:3306/<数据库> --driver com.mysql.cj.jdbc.Driver --username root --password <root密码> --table <表名> -m 1 --fields-terminated-by '<分割字符>' --hive-import --hive-database <hive数据库名> --hive-table <hive表名>
+sqoop import --connect jdbc:mysql://<服务器IP>:3306/<数据库> --driver com.mysql.cj.jdbc.Driver --username root --password <root密码> --table <表名> -m 1 --fields-terminated-by '<分割字符>' --hive-import --hive-drop-import-delims --hive-database <hive数据库名> --hive-table <hive表名>
 ```
 
 ### 将数据从Hive导入MySQL
@@ -125,7 +125,7 @@ sqoop import --connect jdbc:mysql://<服务器IP>:3306/<数据库> --driver com.
 
 --incremental append
 --check-column <检查列名>
---last-value <不导入的数据该列的最大数值>
+--last-value <不导入的数据该列的最大数值（首次导入写0）>
 ```
 
 ### 增量导入--lastmodified方式导入

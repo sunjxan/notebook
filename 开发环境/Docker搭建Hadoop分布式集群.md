@@ -53,7 +53,7 @@ deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted unive
 然后再在Docker上运行Ubuntu系统；
 
 ```bash
-sudo docker run -it -p 2222:22 -p 8888:8888 -v /home/<用户名>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
+sudo docker run -it -p 2222:22 -p 3306:3306 -p 8888:8888 -v /home/<用户名>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
 ```
 
 这里解析下这个命令参数：
@@ -169,13 +169,20 @@ export LANG="C.UTF-8"
 source /etc/zsh/zshrc
 ```
 
-#### 7. 安装net-tools
+#### 7. 设置系统时区
 
 ```
-sudo aptitude install net-tools
+sudo aptitude install tzdata
+tzselect
 ```
 
-#### 8. 安装SSH
+#### 8. 安装网络工具
+
+```
+sudo aptitude install netcat net-tools telnet -y
+```
+
+#### 9. 安装SSH
 
 ```
 sudo aptitude install ssh
@@ -192,36 +199,17 @@ vim ~/.zshrc
 sudo /etc/init.d/ssh start
 ```
 
-#### 9. 安装python、pip
+#### 10. 安装python、pip
 
-```
-# 更换pip源到国内镜像，修改 ~/.pip/pip.conf
-mkdir ~/.pip
-vim ~/.pip/pip.conf
-# 阿里云源
-[global]
-index-url = http://mirrors.aliyun.com/pypi/simple/
-[install]
-trusted-host = mirrors.aliyun.com
+#### 11. 安装Anaconda3
 
-# 安装pip3
-sudo aptitude install python3 python3-pip python3-dev
-sudo pip3 install --upgrade pip
+#### 12. 安装JDK8
 
-# 设置环境变量，在~/.zshrc追加
-export PYTHONPATH=
-export PATH="~/.local/bin:$PATH"
-```
+#### 13. 安装Maven3.6.3
 
-#### 10. 安装Anaconda3
+#### 14. 安装MySQL
 
-#### 11. 安装JDK8
-
-#### 12. 安装Maven3.6.3
-
-#### 13. 安装MySQL
-
-#### 14. 保存镜像
+#### 15. 保存镜像
 
 退出docker，保存这个镜像
 
@@ -236,7 +224,7 @@ sudo docker save -o docker_ubuntu_basic.tar ubuntu/basic
 
 ```
 # 重新进入docker环境
-sudo docker run -it -p 2222:22 -p 8888:8888 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
+sudo docker run -it -p 2222:22 -p 3306:3306 -p 8888:8888 -p 9001:9001 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
 ```
 
 #### 1. 安装ZooKeeper3.6.1
@@ -254,6 +242,10 @@ sudo docker run -it -p 2222:22 -p 8888:8888 -v /home/<用户名>/docker_files:/h
 #### 7. 安装Kafka2.6.0
 
 #### 8. 安装Sqoop1.4.7
+
+#### 9. 安装cron
+
+#### 10. 安装Supervisor
 
 ## 配置分布式集群
 
@@ -353,6 +345,14 @@ cp hadoop/etc/hadoop/mapred-site.xml.template hadoop/etc/hadoop/mapred-site.xml
           <name>yarn.nodemanager.aux-services</name>
           <value>mapreduce_shuffle</value>
       </property>
+      <property>
+          <name>yarn.nodemanager.pmem-check-enabled</name>
+          <value>false</value>
+      </property>
+      <property>
+          <name>yarn.nodemanager.vmem-check-enabled</name>
+          <value>false</value>
+      </property>
 </configuration>
 ```
 
@@ -446,6 +446,7 @@ cp spark/conf/spark-env.sh.template spark/conf/spark-env.sh
 修改conf/spark-defaults.conf，修改：
 
 ```
+spark.yarn.jars         /usr/local/spark/jars/*
 spark.eventLog.enabled  true
 spark.eventLog.compress true
 spark.eventLog.dir      hdfs://master:9000/spark-events
@@ -495,26 +496,14 @@ sudo docker save -o docker_ubuntu_bigdata.tar ubuntu/bigdata
 接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave1和slave2；
 
 ```bash
-sudo docker run -it -p 2222:22 -p 8888:8888 -p 50070:50070 -p 50090:50090 -p 19888:19888 -p 8088:8088 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 4040:4040 -p 18080:18080 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> -h master --name master ubuntu/bigdata /bin/zsh
+sudo docker run -it -p 2222:22 -p 3306:3306 -p 8888:8888 -p 50070:50070 -p 50090:50090 -p 19888:19888 -p 8088:8088 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 4040:4040 -p 18080:18080 -p 9001:9001 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> --ip 172.17.0.2 --add-host slave1:172.17.0.3 --add-host slave2:172.17.0.4 -h master --name master ubuntu/bigdata /bin/zsh
 
-sudo docker run -it -u <用户名> -w /home/<用户名> -h slave1 --name slave1 ubuntu/bigdata /bin/zsh
+sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.3 --add-host master:172.17.0.2 --add-host slave2:172.17.0.4 -h slave1 --name slave1 ubuntu/bigdata /bin/zsh
 
-sudo docker run -it -u <用户名> -w /home/<用户名> -h slave2 --name slave2 ubuntu/bigdata /bin/zsh
+sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.4 --add-host master:172.17.0.2 --add-host slave1:172.17.0.3 -h slave2 --name slave2 ubuntu/bigdata /bin/zsh
 ```
 
-接着配置master,slave1和slave2的地址信息，这样他们才能找到彼此：
-
-```
-sudo vim /etc/hosts
-
-172.17.0.2      master
-172.17.0.3      slave1
-172.17.0.4      slave2
-```
-
-最后把上述三个地址信息分别复制到master,slave1和slave2的/etc/hosts即可，**每次开启容器hosts文件会自动改变，需要重新配置**
-
-连接slave1和slave2并退出：
+在master主机连接slave1和slave2并退出：
 
 ```
 ssh slave1
@@ -537,7 +526,14 @@ echo 2 >> /usr/local/zookeeper/data/myid
 zkServer.sh start
 ```
 
-#### 3. 启动hadoop
+在各个主机都设置ZooKeeper开机启动：
+
+```
+# 设置环境变量，在~/.zshrc追加
+zkServer.sh start
+```
+
+#### 3. 启动Hadoop
 
 在master终端上，首先进入/usr/local/hadoop，然后运行如下命令:
 
@@ -592,6 +588,13 @@ hbase shell
 启动Hadoop—>启动HBase—>关闭HBase—>关闭Hadoop
 
 #### 5. 启动MySQL
+
+在master主机都设置MySQL开机启动：
+
+```
+# 设置环境变量，在~/.zshrc追加
+sudo /etc/init.d/mysql start
+```
 
 #### 6. 启动Hive
 
@@ -668,37 +671,24 @@ cd /usr/local
 flume-ng agent -c flume/conf -f flume/conf/avro.conf -n a1 -Dflume.root.logger=INFO,console >/dev/null 2>&1 &
 ```
 
-#### 10. 修改Anaconda环境
+#### 10. WebUI
+
+修改原主机环境hosts
 
 ```
-# 最新版本的python可能与pyspark不兼容，需要降级python
-# 创建环境
-conda create -n python37  python=3.7
-# 切换环境
-conda activate python37
+# 追加
+sudo vim /etc/hosts
+
+172.17.0.2      master
+172.17.0.4      slave2
+172.17.0.3      slave1
 ```
 
-#### 11. 安装Jupyter Notebook
+如果是Windows的WSL，修改Windows的hosts，或者手动修改网页域名将master改为localhost
 
 ```
-conda install jupyter
-# 打开Jupyter服务器
-jupyter notebook --ip=0.0.0.0 --no-browser --allow-root >/dev/null 2>&1 &
-# 获取token
-jupyter notebook list
+<WSLIP>     master
 ```
-
-#### 12. 使用PyCharm连接
-
-在PyCharm中的ssh连接要使用子系统的ip
-
-```
-export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
-```
-
-配置远程解释器：创建一个目录作为项目目录；File->Settings->Project->Project Interpreter，添加解释器，选择SSH Interpreter，连接root@`WSLIP`:2222，选择ssh密钥文件（默认位置在Windows用户主目录下的.ssh目录），选择Python解释器路径，设置项目同步目录，勾选自动同步（手动同步在Tools->Deployment->Upload to），也可以使用docker的同步功能
-
-#### 13. WebUI
 
 Jupyter
 
@@ -730,6 +720,57 @@ Spark
 
 监控  http://localhost:8080
 
-实时任务  http://localhost:4040
+运行时任务  http://localhost:4040（已废止）  http://localhost:8088/proxy/<Application ID>
 
 历史任务  http://localhost:18080
+
+Supervisor
+
+http://localhost:9001
+
+#### 11. 添加服务脚本
+
+```
+vim ~/start.sh
+
+#!/bin/sh
+start-dfs.sh && start-yarn.sh
+mr-jobhistory-daemon.sh start historyserver
+start-hbase.sh
+hive --service hiveserver2 >/dev/null 2>&1 &
+/usr/local/spark/sbin/start-all.sh
+/usr/local/spark/sbin/start-history-server.sh
+
+vim ~/stop.sh
+
+#!/bin/sh
+/usr/local/spark/sbin/stop-history-server.sh
+/usr/local/spark/sbin/stop-all.sh
+SIGNAL=${SIGNAL:-TERM}
+PIDS=$(jps -lm | grep -i 'org.apache.hadoop.util.RunJar' | awk '{print $1}')
+if [ -z "$PIDS" ]; then
+  echo "No HiveMetaStore server to stop"
+else
+  kill -s $SIGNAL $PIDS
+fi
+stop-hbase.sh
+mr-jobhistory-daemon.sh stop historyserver
+stop-dfs.sh && stop-yarn.sh
+
+vim ~/restart.sh
+
+#!/bin/sh
+~/stop.sh
+~/start.sh
+
+# 加权限
+chmod +x ~/start.sh ~/stop.sh ~/restart.sh
+
+# 启动
+~/start.sh
+# 停止
+~/stop.sh
+# 重启
+~/restart.sh
+```
+

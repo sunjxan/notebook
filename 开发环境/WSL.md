@@ -194,7 +194,7 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zshrc
 ```
 
-14. 安装pip并配置
+14. 安装python、pip并配置
 15. 安装mysql并配置
 16. 安装docker并配置
 17. 路径问题
@@ -220,7 +220,6 @@ sudo vim /etc/init.wsl
 
 #!/bin/sh
 /etc/init.d/ssh start
-/etc/init.d/mysql start
 
 # 给予脚本执行权限
 sudo chmod +x /etc/init.wsl
@@ -233,8 +232,6 @@ ws.run "wsl -u root /etc/init.wsl"
 
 19. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
 ```
-# 关闭wsl
-wsl --shutdown
 # 查看ip
 export WINIP=$(cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' ') 
 export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')

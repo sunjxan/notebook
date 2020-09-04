@@ -17,7 +17,7 @@ sudo apt upgrade python2.7
 
 # 安装pip2
 sudo apt install python-pip python-dev
-sudo pip install --upgrade pip
+pip2 install --upgrade pip
 
 # 从零安装python3
 sudo apt install python3
@@ -28,7 +28,7 @@ sudo apt upgrade python3.8
 
 # 安装pip3
 sudo apt install python3-pip python3-dev
-sudo pip3 install --upgrade pip
+pip3 install --upgrade pip
 
 # 查看个版本
 where python
@@ -44,8 +44,8 @@ pip3 freeze > requirements.txt
 pip3 install -r requirements.txt
 
 # 设置环境变量，在~/.zshrc追加
-export PYTHONPATH=
-export PATH="~/.local/bin:$PATH"
+export PYTHONPATH=.:..:$PYTHONPATH
+export PATH=~/.local/bin:$PATH
 # 生效
 source ~/.zshrc
 ```

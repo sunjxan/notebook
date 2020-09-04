@@ -158,53 +158,97 @@ sudo tar -xvf mysql-connector-java-8.0.20.tar.gz
 sudo mv mysql-connector-java-8.0.20/mysql-connector-java-8.0.20.jar jars
 ```
 
-在python中使用hive-on-spark：
-
-```python
-from pyspark.sql import SparkSession
-from pyspark import HiveContext
-ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
-sc = ss.sparkContext
-hc = HiveContext(sc)
-hc.sql('use default')
-hc.sql('select * from student').show()
-```
-或
-```python
-from pyspark import SparkContext, HiveContext
-sc = SparkContext('local[2]', 'test')
-hc = HiveContext(sc)
-hc.sql('use default')
-hc.sql('select * from student').show()
-```
-使用spark-sql命令行可以直接使用SQL语句
+使用Spark SQL命令行可以直接使用SQL语句
 
 ```bash
 spark-sql
 ```
 
-在python中使用spark-sql：
+在python中使用Spark SQL：
 
 ```python
 from pyspark.sql import SparkSession
-from pyspark import SQLContext
-ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
+from pyspark import SparkConf, SparkContext, HiveContext, SQLContext
+
+# 直接获取SparkContext
+sc = SparkContext('yarn', 'test')
+
+# 先获取SparkSession
+spark = SparkSession.builder.master("yarn").appName("test").enableHiveSupport().getOrCreate()
 sc = ss.sparkContext
-sqlContext = SQLContext(sc)
-sqlContext.sql('use default')
-sqlContext.sql('select * from student').show()
-```
-或
-```python
-from pyspark.sql import SparkSession
-ss = SparkSession.builder.master("local[2]").appName("test").enableHiveSupport().getOrCreate()
-ss.sql('use default')
-ss.sql('select * from student').show()
+
+# 使用SQLContext获取数据
+sqlCtx = SQLContext(sc)
+sqlCtx.sql('use default')
+sqlCtx.sql('select * from student').show()
+
+# HiveContext继承自SQLContext
+hc = HiveContext(sc)
+hc.sql('use default')
+hc.sql('select * from student').show()
+
+# SparkSession其实是封装了SQLContext和HiveContext
+spark.sql('use default')
+spark.sql('select * from student').show()
 ```
 
 ```python
-SparkSession.builder.master("local[2]").appName("test").enableHiveSupport()
+SparkSession.builder.master("yarn").appName("test").enableHiveSupport()
 # 等价于
-SparkSession.builder.config('spark.master', 'local[2]').config('spark.app.name', 'test').config('spark.sql.catalogImplementation', 'hive')
+SparkSession.builder.config('spark.master', 'yarn').config('spark.app.name', 'test').config('spark.sql.catalogImplementation', 'hive')
+```
+
+建立基类
+
+```python
+import sys
+sys.path.extend(['/usr/local/spark/python', '/usr/local/spark/python/lib/pyspark.zip', '/usr/local/spark/python/lib/py4j-0.10.7-src.zip'])
+
+from pyspark.sql import SparkSession
+from pyspark import SparkConf, SparkContext, HiveContext, SQLContext
+
+class SparkSessionBase:
+
+    SPARK_APP_NAME = "test"
+    SPARK_MASTER = "yarn"
+    SPARK_EXECUTOR_MEMORY = "2g"
+    SPARK_EXECUTOR_CORES = 2
+    SPARK_EXECUTOR_INSTANCES = 2
+
+    ENABLE_HIVE_SUPPORT = False
+
+    def _create_spark_session(self):
+
+        conf = SparkConf()  # 创建spark config对象
+        config = (
+            ("spark.app.name", self.SPARK_APP_NAME),  # 设置启动的spark的app名称，没有提供，将随机产生一个名称
+            ("spark.master", self.SPARK_MASTER),  # spark master的地址
+            ("spark.executor.memory", self.SPARK_EXECUTOR_MEMORY),  # 设置该app启动时占用的内存用量，默认2g
+            ("spark.executor.cores", self.SPARK_EXECUTOR_CORES),  # 设置spark executor使用的CPU核心数，默认是1核心
+            ("spark.executor.instances", self.SPARK_EXECUTOR_INSTANCES)
+        )
+        conf.setAll(config)
+
+        # 利用config对象，创建spark session
+        if self.ENABLE_HIVE_SUPPORT:
+            return SparkSession.builder.config(conf=conf).enableHiveSupport().getOrCreate()
+        else:
+            return SparkSession.builder.config(conf=conf).getOrCreate()
+```
+继承基类
+```
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from offline import SparkSessionBase
+class MySparkSession(SparkSessionBase):
+
+    SPARK_APP_NAME = "mySpark"
+
+    ENABLE_HIVE_SUPPORT = True
+
+    def __init__(self):
+        self.spark = self._create_spark_session()
+        self.sc = self.spark.sparkContext
 ```
 
