@@ -51,15 +51,17 @@ killasgroup=true
 
 # 启动
 supervisord
+# 关闭
+supervisorctl shutdown
 
 # 查看所有进程的状态
 supervisorctl status
 supervisorctl start <任务名>
 supervisorctl stop <任务名>
 supervisorctl restart <任务名>
-# 配置文件修改后使用该命令加载新的配置
+# 更新配置文件
 supervisorctl update
-# 重新启动配置中的所有程序
+# 重新启动supervisord
 supervisorctl reload
 
 # WebUI  http://localhost:9001

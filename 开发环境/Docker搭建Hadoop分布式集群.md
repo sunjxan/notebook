@@ -53,7 +53,7 @@ deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted unive
 然后再在Docker上运行Ubuntu系统；
 
 ```bash
-sudo docker run -it -p 2222:22 -p 3306:3306 -p 8888:8888 -v /home/<用户名>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -v /home/<用户名>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
 ```
 
 这里解析下这个命令参数：
@@ -100,7 +100,7 @@ aptitude install sudo vim git -y
 
 ```
 # 创建用户
-useradd <用户名>
+useradd -m <用户名>
 # 设置root密码
 passwd
 # 设置密码
@@ -224,7 +224,7 @@ sudo docker save -o docker_ubuntu_basic.tar ubuntu/basic
 
 ```
 # 重新进入docker环境
-sudo docker run -it -p 2222:22 -p 3306:3306 -p 8888:8888 -p 9001:9001 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
 ```
 
 #### 1. 安装ZooKeeper3.6.1
@@ -493,10 +493,10 @@ sudo docker save -o docker_ubuntu_bigdata.tar ubuntu/bigdata
 
 #### 1. 运行容器
 
-接下来，我们在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master,slave1和slave2；
+接下来，**按顺序**在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master、slave1和slave2；
 
 ```bash
-sudo docker run -it -p 2222:22 -p 3306:3306 -p 8888:8888 -p 50070:50070 -p 50090:50090 -p 19888:19888 -p 8088:8088 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 4040:4040 -p 18080:18080 -p 9001:9001 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> --ip 172.17.0.2 --add-host slave1:172.17.0.3 --add-host slave2:172.17.0.4 -h master --name master ubuntu/bigdata /bin/zsh
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -p 50070:50070 -p 50090:50090 -p 19888:19888 -p 8088:8088 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 18080:18080 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> --ip 172.17.0.2 --add-host slave1:172.17.0.3 --add-host slave2:172.17.0.4 -h master --name master ubuntu/bigdata /bin/zsh
 
 sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.3 --add-host master:172.17.0.2 --add-host slave2:172.17.0.4 -h slave1 --name slave1 ubuntu/bigdata /bin/zsh
 
@@ -676,57 +676,64 @@ flume-ng agent -c flume/conf -f flume/conf/avro.conf -n a1 -Dflume.root.logger=I
 修改原主机环境hosts
 
 ```
-# 追加
-sudo vim /etc/hosts
+# 修改/etc/hosts，删除原master，追加
 
 172.17.0.2      master
-172.17.0.4      slave2
 172.17.0.3      slave1
+172.17.0.4      slave2
+
+
+# 如果是Windows的WSL，修改/etc/wsl.conf，修改
+
+# 网络
+[network]
+# 子系统是否生成静态域名映射文件/etc/hosts
+generateHosts=false
 ```
 
 如果是Windows的WSL，修改Windows的hosts，或者手动修改网页域名将master改为localhost
 
 ```
-<WSLIP>     master
+<WSLIP>    master
 ```
 
-Jupyter
+- HDFS
 
-http://localhost:8888
+  - Namenode  http://master:50070  （hadoop3+端口改为9870）
 
-HDFS
+  - SecondaryNamenode  http://master:50090
 
-Namenode  http://localhost:50070  (hadoop3+端口改为9870)
+- Yarn
 
-SecondaryNamenode  http://localhost:50090
+  - All Applications  http://master:8088
 
-JobHistory  http://localhost:19888
+  - JobHistory  http://master:19888
 
-Yarn
+- HBase
 
-http://localhost:8088
+  - Master  http://master:16010
 
-HBase
+  - Region Server  http://master:16030
 
-- Master  http://localhost:16010
+- Hive
 
-- RegionServer  http://localhost:16030
+  - HiveServer2  http://master:10002
 
-Hive
+- Spark
 
-http://localhost:10002
+  - Master  http://master:8080
 
-Spark
+  - History Server  http://master:18080
 
-监控  http://localhost:8080
+  - Application  http://master:8088/proxy/<Application ID>  http://master:4040（每创建一个Application即从4040递增寻找没有被占用的接口） 
 
-运行时任务  http://localhost:4040（已废止）  http://localhost:8088/proxy/<Application ID>
+- Jupyter Notebook
 
-历史任务  http://localhost:18080
+  http://master:8889（默认端口号为8888）
 
-Supervisor
+- Supervisor
 
-http://localhost:9001
+  http://master:9002（默认端口号为9001）
 
 #### 11. 添加服务脚本
 

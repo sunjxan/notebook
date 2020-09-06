@@ -37,4 +37,4 @@
 }
 ```
 
-9. 左下角切换anaconda环境的python解释器，即可使用Jupyter notebook：打开ipynb文件或者Ctrl+Shift+P输入 jupyter选择Python: Create New Blank Jupyter Notebook
+9. 安装Jupyter 后，左下角切换anaconda环境的python解释器，即可使用Jupyter notebook：打开ipynb文件或者Ctrl+Shift+P输入 jupyter选择Python: Create New Blank Jupyter Notebook

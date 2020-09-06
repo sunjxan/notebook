@@ -50,3 +50,12 @@ export PATH=~/.local/bin:$PATH
 source ~/.zshrc
 ```
 
+```
+pip3 install jupyter
+
+# 打开Jupyter服务器
+jupyter notebook --ip=0.0.0.0 --no-browser --allow-root >/dev/null 2>&1 &
+# 获取token
+jupyter notebook list
+```
+

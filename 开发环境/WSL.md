@@ -1,5 +1,18 @@
 [原网页](https://docs.microsoft.com/zh-cn/windows/wsl/install-win10)
 
+|  | Windows文件系统 | Linux文件系统 |
+| ----------- | --------------- | ------------- |
+| Linux路径   | /mnt/f/         | /home/   |
+| Windows路径 | F:\             | `\\wsl$\<子系统名>\home\` |
+
+| 使用file协议 | Windows文件系统 | Linux文件系统 |
+| ----------- | --------------- | ------------- |
+| Linux路径   | file:///mnt/f/  | file:///home/ |
+| Windows路径 | file:///F:\     | `file://wsl$\<子系统名>\home\` |
+
+
+
+
 1. 运行 Windows 10 **版本 19041** 或更高版本：
 - 加入 [Windows 预览体验计划](<https://insider.windows.com/zh-cn/>)并选择慢速更新；
 - 可以通过打开命令提示符并运行 `ver` 命令来检查 Windows 版本。
@@ -27,6 +40,16 @@ wsl --set-version <子系统名> 2
 
 # 将所有子系统设置为WSL版本2
 wsl --set-default-version 2
+
+# 运行脚本
+bash -c "<command>"
+bash -c <file>
+
+<安装程序>（如Ubuntu1804） run <command>
+<安装程序>（如Ubuntu1804） run <file>
+
+wsl -u root <command>
+wsl -u root <file>
 ```
 6. 移动安装位置，WSL2虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置；
 
@@ -197,70 +220,8 @@ source ~/.zshrc
 14. 安装python、pip并配置
 15. 安装mysql并配置
 16. 安装docker并配置
-17. 路径问题
 
-|  | Windows文件系统 | Linux文件系统 |
-| ----------- | --------------- | ------------- |
-| Linux路径   | /mnt/f/         | /home/   |
-| Windows路径 | F:\             | `\\wsl$\<子系统名>\home\` |
-
-使用file协议
-
-|  | Windows文件系统 | Linux文件系统 |
-| ----------- | --------------- | ------------- |
-| Linux路径   | file:///mnt/f/  | file:///home/ |
-| Windows路径 | file:///F:\     | `file://wsl$\<子系统名>\home\` |
-
-Linux程序访问Windows文件系统和Linux文件系统没有区别，Windows程序访问Linux文件系统可能有路径错误，所以把项目文件放在Windows文件系统。
-
-18. 添加开机启动项
-```
-sudo vim /etc/init.wsl
-# 输入启动项
-
-#!/bin/sh
-/etc/init.d/ssh start
-
-# 给予脚本执行权限
-sudo chmod +x /etc/init.wsl
-
-# Windows下Win+R输入shell:startup进入目录
-# 创建文件linux-start.vbs，输入内容
-Set ws = WScript.CreateObject("WScript.Shell")        
-ws.run "wsl -u root /etc/init.wsl"
-```
-
-19. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
-```
-# 查看ip
-export WINIP=$(cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' ') 
-export WSLIP=$(ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/')
-```
-
-如果要在局域网中访问WSL2里的服务，可以在CMD（以管理员身份运行）使用端口映射：
-
-```
-# 添加映射
-netsh interface portproxy add v4tov4 listenport=<WSL2服务的端口> connectaddress=<WSL2的IP>
-# 查看映射
-netsh interface portproxy show v4tov4
-# 删除映射
-netsh interface portproxy delete v4tov4 listenport=<WSL2服务的端口>
-```
-
-然后添加Windows防火墙规则并启用：
-
-> 1）防火墙和网络保护 -> 高级设置
-
-> 2）入站规则 -> 新建规则
-
-> 3）端口 -> 协议类型：TCP，特定本地端口：<WSL2服务的端口>
-
-> 4）设置名称：WSL2，完成
-
-> 5）规则已经自动启用
-
-20. 子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
+17. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
 ```
 # 自动挂载
 [automount]
@@ -276,14 +237,92 @@ options=""
 # 网络
 [network]
 # 子系统是否生成静态域名映射文件/etc/hosts
-generateHosts=true
+generateHosts=false
 # 子系统是否生成DNS服务器列表文件/etc/resolv.conf
 generateResolvConf=true
 
-# 互操作
+# 互操作，在wsl中使用Windows程序，如 explorer.exe
 [interop]
 # 允许在子系统中打开Windows程序
 enabled=true
 # 允许将Windows环境变量PATH加入到子系统
 appendWindowsPath=true
 ```
+
+18. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
+在WSL中创建启动加载文件 `/etc/init.sh`
+```
+#!/bin/sh
+/etc/init.d/ssh start
+```
+
+在Windows中创建启动加载文件 `wsl2.ps1`
+```
+wsl -u root bash /etc/init.sh
+```
+
+控制面板->管理工具->事件查看器，Windows日志->系统，在来源为“ Hyper-V-VmSwith”的事件中，搜索信息为“Port xxxxxxxxxx (Friendly Name: xxxxxxxxxx) successfully created on switch xxxxxxxxxx (Friendly Name: WSL).”的事件，右键该项，选择 将任务附加到该事件。
+
+操作选择 启动程序，程序中填 PowerShell，参数填 `-File wsl2.ps1的绝对地址` ，后面加上`-WindowStyle Hidden` 可以在启动时隐藏 powershell 窗口，完成。
+
+为了使ps1脚本成功执行，使用管理员身份运行PowerShell，输入 `set-ExecutionPolicy RemoteSigned`，选择 `Y`。
+
+控制面板->管理工具->任务计划程序，任务计划程序库->事件查看器任务，找到刚创建的任务，右键属性，然后勾选下面的复选框：使用最高权限运行。
+
+如果出现MMC管理单元错误，不能自动获取管理员身份，则手动获取。在 `wsl2.ps1` **开始处**检测如果不是管理员身份，则重新以管理员身份打开：
+
+```
+$currentWi = [Security.Principal.WindowsIdentity]::GetCurrent()
+$currentWp = [Security.Principal.WindowsPrincipal]$currentWi
+ 
+if(-not $currentWp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+  $boundPara = ($MyInvocation.BoundParameters.Keys | foreach{
+     '-{0} {1}' -f  $_ ,$MyInvocation.BoundParameters[$_]} ) -join ' '
+  $currentFile = (Resolve-Path  $MyInvocation.InvocationName).Path
+  $fullPara = $boundPara + ' ' + $args -join ' '
+  Start-Process -FilePath "PowerShell" -Verb runAs -Argumentlist "-File $currentFile $fullPara"
+  return
+}
+```
+
+
+19. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+```
+# Windows IP
+cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '
+# WSL2 IP
+ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'
+```
+
+修改hosts文件添加master域名映射，在 `wsl2.ps1`文件中添加：
+
+```
+$host_path = "$env:windir\System32\drivers\etc\hosts"
+$wsl_hostname = "master"
+$wsl_ip = bash -c "ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'"
+
+((Get-Content -Path $host_path | Select-String -Pattern '# WSL2 host' -NotMatch | Out-String).Trim() + "`n$wsl_ip`t`t$wsl_hostname`t`t`t# WSL2 host").Trim() | Out-File -FilePath $host_path -encoding ascii
+```
+
+如果要在局域网中访问WSL2里的服务，使用端口映射，在 `wsl2.ps1`文件中添加：
+
+```
+$ports = @(80, 443, 8080)
+
+$addr = '0.0.0.0'
+$ports_a = $ports -join ","
+
+iex "Remove-NetFireWallRule -DisplayName 'WSL2 Firewall Unlock'" | Out-Null
+
+iex "New-NetFireWallRule -DisplayName 'WSL2 Firewall Unlock' -Direction Outbound -LocalPort $ports_a -Action Allow -Protocol TCP"  | Out-Null
+iex "New-NetFireWallRule -DisplayName 'WSL2 Firewall Unlock' -Direction Inbound -LocalPort $ports_a -Action Allow -Protocol TCP"  | Out-Null
+
+for ($i = 0; $i -lt $ports.length; $i++) {
+  $port = $ports[$i]
+  iex "netsh interface portproxy delete v4tov4 listenport=$port listenaddress=$addr"  | Out-Null
+  iex "netsh interface portproxy add v4tov4 listenport=$port listenaddress=$addr connectport=$port connectaddress=$wsl_ip"  | Out-Null
+}
+
+ipconfig /flushdns | Out-Null
+```
+

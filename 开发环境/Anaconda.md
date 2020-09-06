@@ -88,10 +88,5 @@ conda remove <模块名>
 conda env export > environment.yaml
 # 从yaml文件创建环境
 conda env create -f environment.yaml
-
-# 打开Jupyter服务器
-jupyter notebook --ip=0.0.0.0 --no-browser --allow-root >/dev/null 2>&1 &
-# 获取token
-jupyter notebook list
 ```
 
