@@ -31,7 +31,7 @@ custom_channels:
 
 cd ~
 # 下载脚本（https://www.anaconda.com/products/individual）
-wget https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
+wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2020.07-Linux-x86_64.sh
 # 安装
 sudo bash Anaconda3-2020.07-Linux-x86_64.sh
 # 安装到/usr/local/anaconda，运行conda init

@@ -37,7 +37,7 @@ from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.flume import FlumeUtils
 
-spark = SparkSession.builder.master("yarn").appName("test").enableHiveSupport().getOrCreate()
+spark = SparkSession.builder.master("mesos://master:5050").appName("test").enableHiveSupport().getOrCreate()
 sc = spark.sparkContext
 ssc = StreamingContext(sc, 2)
 
@@ -61,7 +61,7 @@ from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
-spark = SparkSession.builder.master("yarn").appName("test").enableHiveSupport().getOrCreate()
+spark = SparkSession.builder.master("mesos://master:5050").appName("test").enableHiveSupport().getOrCreate()
 sc = spark.sparkContext
 ssc=StreamingContext(sc, 2)
 

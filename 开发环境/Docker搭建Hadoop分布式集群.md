@@ -2,7 +2,7 @@
 
 ## 在Docker安装Ubuntu系统
 
-安装好Docker之后，接下来就要在Docker上安装Ubuntu，其实和安装其他镜像一样，只需运行一个命令足矣，如下:
+安装好Docker并启动服务，接下来就要在Docker上安装Ubuntu，其实和安装其他镜像一样，只需运行一个命令足矣，如下:
 
 ```bash
 sudo docker pull ubuntu:18.04
@@ -53,7 +53,7 @@ deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted unive
 然后再在Docker上运行Ubuntu系统；
 
 ```bash
-sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -v /home/<用户名>/docker_files:/root/docker_files --name ubuntu18.04 <镜像ID>
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -v /home/<用户名>/docker_files:/root/docker_files --name Ubuntu1804 <镜像ID>
 ```
 
 这里解析下这个命令参数：
@@ -113,23 +113,24 @@ vim /etc/sudoers
 # 使用"wq!"保存
 
 # 切换用户
-su -s /bin/bash <用户名>
+su -s /bin/bash - <用户名>
 ```
 
 #### 5. 安装zsh并配置oh-my-zsh
 
 ```
 # 安装 zsh
-sudo aptitude install zsh
+sudo aptitude install zsh -y
 
 # 安装oh-my-zsh
 # 下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
-sudo bash install.sh
-# 修改用户配置文件所有者
-sudo chown -R <用户名>:<用户名> /home/<用户名>
-# 切换用户
-su -s /bin/zsh <用户名>
+sudo bash /root/docker_files/install.sh
+# 安装完成后，退出root
+exit
+source ~/.zshrc
 
+# 修改用户配置文件所有者
+sudo chown -R <用户名>:<用户名> ~
 # 修改默认Shell
 sudo chsh -s /bin/zsh <用户名>
 sudo chsh -s /bin/bash root
@@ -156,12 +157,14 @@ plugins=(
 source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-source ~/.zshrc
+exit
+su - <用户名>
 ```
 
 #### 6. 设置系统语言
 
 ```
+sudo vim /etc/bash.bashrc
 sudo vim /etc/zsh/zshrc
 # 追加
 export LANG="C.UTF-8"
@@ -179,13 +182,13 @@ tzselect
 #### 8. 安装网络工具
 
 ```
-sudo aptitude install netcat net-tools telnet -y
+sudo aptitude install iputils-ping netcat net-tools telnet -y
 ```
 
 #### 9. 安装SSH
 
 ```
-sudo aptitude install ssh
+sudo aptitude install ssh -y
 
 # 生成密钥
 ssh-keygen -t rsa
@@ -199,23 +202,23 @@ vim ~/.zshrc
 sudo /etc/init.d/ssh start
 ```
 
-#### 10. 安装python、pip
+#### 10. 安装Python、pip、Jupyter并配置
 
-#### 11. 安装Anaconda3
+#### 11. 安装Supervisor并配置Jupyter任务
 
-#### 12. 安装JDK8
+#### 12. 安装JDK8并配置
 
-#### 13. 安装Maven3.6.3
+#### 13. 安装Maven3.6.3并配置
 
-#### 14. 安装MySQL
+#### 14. 安装MySQL并配置
 
-#### 15. 保存镜像
-
-退出docker，保存这个镜像
+#### 15. 安装cron
 
 ```
+# 退出docker，保存这个镜像
+
 # 保存容器为镜像
-sudo docker commit ubuntu18.04 ubuntu/basic
+sudo docker commit Ubuntu1804 ubuntu/basic
 # 导出镜像
 sudo docker save -o docker_ubuntu_basic.tar ubuntu/basic
 ```
@@ -223,52 +226,20 @@ sudo docker save -o docker_ubuntu_basic.tar ubuntu/basic
 ## 安装大数据软件
 
 ```
-# 重新进入docker环境
-sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
+# 进入docker环境
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -p 5050:5050 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata ubuntu/basic /bin/zsh
 ```
 
-#### 1. 安装ZooKeeper3.6.1
+#### 1. 安装Mesos1.9.0
 
-#### 2. 安装Hadoop2.10.0
+#### 2. 安装ZooKeeper3.6.1
 
-#### 3. 安装HBase1.6.0
-
-#### 4. 安装Hive2.3.7
-
-#### 5. 编译Spark2.4.5-Hadoop2.10.0并安装
-
-#### 6. 安装Flume1.9.0
-
-#### 7. 安装Kafka2.6.0
-
-#### 8. 安装Sqoop1.4.7
-
-#### 9. 安装cron
-
-#### 10. 安装Supervisor
-
-## 配置分布式集群
-
-#### 1. 配置ZooKeeper集群
-
-在conf/zoo.cfg中追加
-
-```
-server.0=master:2888:3888
-server.1=slave1:2888:3888
-server.2=slave2:2888:3888
-```
-
-#### 2. 配置Hadoop集群
+#### 3. 安装Hadoop2.10.0并配置
 
 打开etc/hadoop/core-site.xml，输入以下内容:
 
 ```
 <configuration>
-      <property>
-          <name>fs.defaultFS</name>
-          <value>hdfs://master:9000</value>
-      </property>
       <property>
           <name>hadoop.tmp.dir</name>
           <value>file:///usr/local/hadoop/tmp</value>
@@ -289,10 +260,6 @@ server.2=slave2:2888:3888
         <name>dfs.datanode.data.dir</name>
         <value>file:///usr/local/hadoop/datanode_dir</value>
     </property>
-    <property>
-        <name>dfs.replication</name>
-        <value>3</value>
-    </property>
 </configuration>
 ```
 
@@ -309,14 +276,6 @@ cp hadoop/etc/hadoop/mapred-site.xml.template hadoop/etc/hadoop/mapred-site.xml
     <property>
         <name>mapreduce.framework.name</name>
         <value>yarn</value>
-    </property>
-    <property>
-        <name>mapreduce.jobhistory.address</name>
-        <value>master:10020</value>
-    </property>
-    <property>
-        <name>mapreduce.jobhistory.webapp.address</name>
-        <value>master:19888</value>
     </property>
     <property>
       <name>yarn.app.mapreduce.am.env</name>
@@ -337,23 +296,175 @@ cp hadoop/etc/hadoop/mapred-site.xml.template hadoop/etc/hadoop/mapred-site.xml
 
 ```
 <configuration>
-      <property>
-          <name>yarn.resourcemanager.hostname</name>
-          <value>master</value>
-      </property>
-      <property>
-          <name>yarn.nodemanager.aux-services</name>
-          <value>mapreduce_shuffle</value>
-      </property>
-      <property>
-          <name>yarn.nodemanager.pmem-check-enabled</name>
-          <value>false</value>
-      </property>
-      <property>
-          <name>yarn.nodemanager.vmem-check-enabled</name>
-          <value>false</value>
-      </property>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.pmem-check-enabled</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+    </property>
 </configuration>
+```
+
+#### 4. 安装HBase1.6.0并配置
+
+修改/usr/local/hbase/conf/hbase-env.sh，HBASE_MANAGES_ZK设为false（不使用hbase自带zookeeper）
+
+```shell
+export HBASE_MANAGES_ZK=false
+```
+
+修改/usr/local/hbase/conf/hbase-site.xml
+
+```xml
+<configuration>
+    <property>
+        <name>hbase.master.info.port</name>
+        <value>16010</value>
+    </property>
+    <property>
+        <name>hbase.unsafe.stream.capability.enforce</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/usr/local/zookeeper/data</value>
+    </property>
+</configuration>
+```
+
+#### 5. 安装Hive2.3.7并配置
+
+配置MySQL作为Hive元数据库。
+
+设置Hive引擎为Spark，在/usr/local/hive/conf/hive-site.xml添加以下内容：
+
+```
+<property>
+  <name>hive.execution.engine</name>
+  <value>spark</value>
+</property>
+<property>
+  <name>hive.metastore.schema.verification</name>
+  <value>false</value>
+</property>
+```
+
+#### 6. 编译Spark2.4.5-Hadoop2.10.0并安装配置
+
+```
+cd /usr/local
+cp spark/conf/spark-defaults.conf.template spark/conf/spark-defaults.conf
+cp spark/conf/spark-env.sh.template spark/conf/spark-env.sh
+```
+
+修改conf/spark-defaults.conf，修改：
+
+```
+spark.mesos.executor.home  /usr/local/spark
+spark.yarn.jars         /usr/local/spark/jars/*
+spark.eventLog.enabled  true
+spark.eventLog.compress true
+```
+
+修改conf/spark-env.sh，追加：
+
+```
+export JAVA_HOME="/usr/local/jdk"
+export CLASSPATH="/usr/local/hive/lib:$CLASSPATH"
+export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
+export HIVE_CONF_DIR="/usr/local/hive/conf"
+export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.9.2.jar:$SPARK_CLASSPATH"
+export MESOS_NATIVE_JAVA_LIBRARY="/usr/local/mesos/lib/libmesos.so"
+```
+
+配置SparkSQL连接Hive。
+
+#### 7. 安装Sqoop1.4.7并配置
+
+配置Sqoop连接MySQL。
+
+#### 8. 安装Flume1.9.0
+
+#### 9. 安装Kafka2.6.0
+
+#### 10. 安装Storm2.1.0
+
+```
+# 退出docker，保存这个镜像
+
+# 保存容器为镜像
+sudo docker commit bigdata ubuntu/bigdata
+# 导出镜像
+sudo docker save -o docker_ubuntu_bigdata.tar ubuntu/bigdata
+```
+
+## 配置分布式集群
+
+```
+# 进入docker环境
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -p 5050:5050 -v /home/<用户名>/docker_files:/home/<用户名>/docker_files -u <用户名> -w /home/<用户名> --name bigdata_3 ubuntu/bigdata /bin/zsh
+```
+
+#### 1. 配置ZooKeeper集群
+
+在conf/zoo.cfg中追加
+
+```
+server.0=master:2888:3888
+server.1=slave1:2888:3888
+server.2=slave2:2888:3888
+```
+
+#### 2. 配置Hadoop集群
+
+打开etc/hadoop/core-site.xml，添加以下内容:
+
+```
+<property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://master:9000</value>
+</property>
+<property>
+    <name>ha.zookeeper.quorum</name>
+    <value>master:2181,slave1:2181,slave2:2181</value>
+</property>
+```
+
+然后再打开etc/hadoop/hdfs-site.xml添加以下内容（dfs.replication设为 节点数）:
+
+```
+<property>
+    <name>dfs.replication</name>
+    <value>3</value>
+</property>
+```
+
+接下来修改etc/hadoop/mapred-site.xml，添加以下内容:
+
+```
+<property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>master:10020</value>
+</property>
+<property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>master:19888</value>
+</property>
+```
+
+最后修改etc/hadoop/yarn-site.xml文件，添加以下内容:
+
+```
+<property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>master</value>
+</property>
 ```
 
 修改slaves列表
@@ -368,99 +479,45 @@ slave2
 
 #### 3. 配置HBase集群
 
-修改/usr/local/hbase/conf/hbase-env.sh，HBASE_MANAGES_ZK设为false（不使用hbase自带zookeeper）
-
-```shell
-export HBASE_MANAGES_ZK=false
-```
-
-配置/usr/local/hbase/conf/hbase-site.xml
-
-修改hbase.rootdir，指定HBase数据在HDFS上的存储路径；将属性hbase.cluter.distributed设置为true。假设当前Hadoop集群运行在伪分布式模式下，在本机上运行，且NameNode运行在9000端口。
+修改/usr/local/hbase/conf/hbase-site.xml，添加以下内容：
 
 ```xml
-<configuration>
-        <property>
-                <name>hbase.rootdir</name>
-                <value>hdfs://master:9000/hbase</value>
-        </property>
-        <property>
-                <name>hbase.cluster.distributed</name>
-                <value>true</value>
-        </property>
-        <property>
-            <name>hbase.master.info.port</name>
-            <value>16010</value>
-        </property>
-    	<property>
-        	<name>hbase.unsafe.stream.capability.enforce</name>
-        	<value>false</value>
-        </property>
-    	<property>
-            <name>hbase.zookeeper.quorum</name>
-            <value>master,slave1,slave2</value>
-        </property>
-        <property>
-            <name>hbase.zookeeper.property.dataDir</name>
-            <value>/usr/local/zookeeper/data</value>
-        </property>
-</configuration>
+<property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://master:9000/hbase</value>
+</property>
+<property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+</property>
+<property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>master,slave1,slave2</value>
+</property>
 ```
 
-hbase.rootdir指定HBase的存储目录；hbase.cluster.distributed设置集群处于分布式模式
-
-修改regionservers
+修改/usr/local/hbase/conf/regionservers
 
 ```
-vim conf/regionservers
-
 master
 slave1
 slave2
 ```
 
-#### 4. 配置MySQL作为Hive元数据库
-
-#### 5. 设置Hive引擎为Spark
-
-```
-# 修改hive的hive-site.xml配置文件，configuration中添加
-<property>
-  <name>hive.execution.engine</name>
-  <value>spark</value>
-</property>
-<property>
-  <name>hive.metastore.schema.verification</name>
-  <value>false</value>
-</property>
-```
-
-#### 6. 配置Spark集群
-
-```
-cd /usr/local
-cp spark/conf/spark-defaults.conf.template spark/conf/spark-defaults.conf
-cp spark/conf/spark-env.sh.template spark/conf/spark-env.sh
-```
+#### 4. 配置Spark集群
 
 修改conf/spark-defaults.conf，修改：
 
 ```
-spark.yarn.jars         /usr/local/spark/jars/*
-spark.eventLog.enabled  true
-spark.eventLog.compress true
+spark.master            mesos://master:5050
 spark.eventLog.dir      hdfs://master:9000/spark-events
 ```
 
 修改conf/spark-env.sh，追加：
 
 ```
-export JAVA_HOME="/usr/local/jdk"
-export CLASSPATH="/usr/local/hive/lib:$CLASSPATH"
-export HADOOP_CONF_DIR="/usr/local/hadoop/etc/hadoop"
-export HIVE_CONF_DIR="/usr/local/hive/conf"
-export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.9.2.jar:$SPARK_CLASSPATH"
 export SPARK_MASTER_HOST=master
+export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=master:2181,slave1:2181,slave2:2181 -Dspark.deploy.zookeeper.dir=/spark"
 export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.retainedApplications=3 -Dspark.history.fs.logDirectory=hdfs://master:9000/spark-events"
 ```
 
@@ -474,36 +531,35 @@ slave1
 slave2
 ```
 
-#### 7. 配置SparkSQL连接Hive
 
-#### 8. 配置Sqoop连接MySQL
-
-#### 9. 保存镜像
-
-退出docker，保存这个镜像
 
 ```
+# 退出docker，保存这个镜像
+
 # 保存容器为镜像
-sudo docker commit bigdata ubuntu/bigdata
-# 导出镜像
-sudo docker save -o docker_ubuntu_bigdata.tar ubuntu/bigdata
+sudo docker commit bigdata_3 ubuntu/bigdata_3
 ```
 
 ## 启动分布式集群
 
 #### 1. 运行容器
 
-接下来，**按顺序**在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master、slave1和slave2；
+接下来，在三个终端上开启三个容器运行镜像，分别表示Hadoop集群中的master、slave1和slave2；
 
 ```bash
-sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -p 50070:50070 -p 50090:50090 -p 19888:19888 -p 8088:8088 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 18080:18080 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> --ip 172.17.0.2 --add-host slave1:172.17.0.3 --add-host slave2:172.17.0.4 -h master --name master ubuntu/bigdata /bin/zsh
+sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.2 --add-host master:172.17.0.4 --add-host slave2:172.17.0.3 -h slave1 --name slave1 ubuntu/bigdata_3 /bin/zsh
 
-sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.3 --add-host master:172.17.0.2 --add-host slave2:172.17.0.4 -h slave1 --name slave1 ubuntu/bigdata /bin/zsh
+sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.3 --add-host master:172.17.0.4 --add-host slave1:172.17.0.2 -h slave2 --name slave2 ubuntu/bigdata_3 /bin/zsh
 
-sudo docker run -it -u <用户名> -w /home/<用户名> --ip 172.17.0.4 --add-host master:172.17.0.2 --add-host slave1:172.17.0.3 -h slave2 --name slave2 ubuntu/bigdata /bin/zsh
+sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -p 5050:5050 -p 50070:50070 -p 50090:50090 -p 8088:8088 -p 19888:19888 -p 16010:16010 -p 16030:16030 -p 10002:10002 -p 8080:8080 -p 18080:18080 -p 4040:4040 -v /home/<用户名>/projects:/home/<用户名>/projects -u <用户名> -w /home/<用户名> --ip 172.17.0.4 --add-host slave1:172.17.0.2 --add-host slave2:172.17.0.3 -h master --name master ubuntu/bigdata_3 /bin/zsh
+
+# 之后的运行命令，需要按顺序以保证ip分配正确，-i 打开交互，如果所有任务都设置开机自启，可以不交互
+sudo docker start -i slave1
+sudo docker start -i slave2
+sudo docker start -i master
 ```
 
-在master主机连接slave1和slave2并退出：
+在master主机连接slave1和slave2：
 
 ```
 ssh slave1
@@ -512,7 +568,7 @@ ssh slave2
 
 #### 2. 启动ZooKeeper
 
-在配置conf/zoo.cfg中dataDir的路径为每个结点创建myid文件，并启动zkServer
+在配置conf/zoo.cfg中dataDir的路径为每个结点创建myid文件（这里序号要与zoo.cfg文件中序号一致），并启动zkServer
 
 ```
 # 若显示 “Starting zookeeper … STARTED”表示启动成功
@@ -526,14 +582,21 @@ echo 2 >> /usr/local/zookeeper/data/myid
 zkServer.sh start
 ```
 
-在各个主机都设置ZooKeeper开机启动：
+在各个主机都设置ZooKeeper开机启动。
+
+#### 3. 启动Mesos
 
 ```
-# 设置环境变量，在~/.zshrc追加
-zkServer.sh start
+# 启动master
+mesos-master --ip=0.0.0.0 --work_dir=/var/lib/mesos >/dev/null 2>&1 &
+
+# 启动slave1,slave2
+mesos-slave --ip=0.0.0.0 --master=master:5050 --work_dir=/var/lib/mesos --no-systemd_enable_support >/dev/null 2>&1 &
 ```
 
-#### 3. 启动Hadoop
+在各个主机都设置Mesos开机启动。
+
+#### 4. 启动Hadoop
 
 在master终端上，首先进入/usr/local/hadoop，然后运行如下命令:
 
@@ -567,7 +630,7 @@ mr-jobhistory-daemon.sh start historyserver
 
 ![slave2运行结果](Docker搭建Hadoop分布式集群.assets/3.png)
 
-#### 4. 启动HBase
+#### 5. 启动HBase
 
 ```bash
 start-hbase.sh
@@ -587,22 +650,22 @@ hbase shell
 这里启动关闭Hadoop和HBase的顺序一定是：
 启动Hadoop—>启动HBase—>关闭HBase—>关闭Hadoop
 
-#### 5. 启动MySQL
+#### 6. 启动MySQL
 
-在master主机都设置MySQL开机启动：
+然后在master主机设置MySQL开机启动：
 
 ```
 # 设置环境变量，在~/.zshrc追加
 sudo /etc/init.d/mysql start
 ```
 
-#### 6. 启动Hive
+#### 7. 启动Hive
 
 ```
 hive --service hiveserver2 >/dev/null 2>&1 &
 ```
 
-#### 7. 启动Spark
+#### 8. 启动Spark
 
 ```
 /usr/local/spark/sbin/start-all.sh
@@ -613,7 +676,7 @@ hadoop fs -mkdir /spark-events
 /usr/local/spark/sbin/start-history-server.sh
 ```
 
-#### 8. 启动Kafka
+#### 9. 启动Kafka
 
 ```
 cd /usr/local
@@ -628,7 +691,7 @@ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic <topic名>
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --from-beginning --topic <topic名>
 ```
 
-#### 9. 启动Flume
+#### 10. 启动Flume
 
 在flume/conf目录下创建 avro.conf 配置文件
 
@@ -649,13 +712,13 @@ a1.channels.c2.capacity = 1000
 a1.channels.c2.transactionCapacity = 100
 
 a1.sinks.k1.type = hdfs
-a1.sinks.k1.hdfs.path = hdfs://<服务器IP>:9000/flume/log
+a1.sinks.k1.hdfs.path = hdfs://master:9000/flume/log
 a1.sinks.k1.hdfs.filePrefix = log
 a1.sinks.k1.hdfs.fileType = DataStream
 
 a1.sinks.k2.type = org.apache.flume.sink.kafka.KafkaSink
 a1.sinks.k2.topic = <topic名>
-a1.sinks.k2.brokerList = <服务器IP>:9092
+a1.sinks.k2.brokerList = master:9092
 a1.sinks.k2.requiredAcks = 1
 a1.sinks.k2.batchSize = 20
  
@@ -671,16 +734,16 @@ cd /usr/local
 flume-ng agent -c flume/conf -f flume/conf/avro.conf -n a1 -Dflume.root.logger=INFO,console >/dev/null 2>&1 &
 ```
 
-#### 10. WebUI
+#### 11. WebUI
 
 修改原主机环境hosts
 
 ```
 # 修改/etc/hosts，删除原master，追加
 
-172.17.0.2      master
-172.17.0.3      slave1
-172.17.0.4      slave2
+172.17.0.4      master
+172.17.0.2      slave1
+172.17.0.3      slave2
 
 
 # 如果是Windows的WSL，修改/etc/wsl.conf，修改
@@ -691,19 +754,17 @@ flume-ng agent -c flume/conf -f flume/conf/avro.conf -n a1 -Dflume.root.logger=I
 generateHosts=false
 ```
 
-如果是Windows的WSL，修改Windows的hosts，或者手动修改网页域名将master改为localhost
+- Mesos
 
-```
-<WSLIP>    master
-```
+  http://master:5050
 
 - HDFS
 
-  - Namenode  http://master:50070  （hadoop3+端口改为9870）
+  - NameNode  http://master:50070  （hadoop3+端口改为9870）
 
-  - SecondaryNamenode  http://master:50090
+  - SecondaryNameNode  http://master:50090
 
-- Yarn
+- YARN
 
   - All Applications  http://master:8088
 
@@ -725,7 +786,7 @@ generateHosts=false
 
   - History Server  http://master:18080
 
-  - Application  http://master:8088/proxy/<Application ID>  http://master:4040（每创建一个Application即从4040递增寻找没有被占用的接口） 
+  - Application  http://master:4040（每创建一个Application即从4040递增寻找没有被占用的接口）   http://master:8088/proxy/<Application ID>
 
 - Jupyter Notebook
 
@@ -735,7 +796,7 @@ generateHosts=false
 
   http://master:9002（默认端口号为9001）
 
-#### 11. 添加服务脚本
+#### 12. 添加服务脚本
 
 ```
 vim ~/start.sh
@@ -762,7 +823,7 @@ else
 fi
 stop-hbase.sh
 mr-jobhistory-daemon.sh stop historyserver
-stop-dfs.sh && stop-yarn.sh
+stop-yarn.sh && stop-dfs.sh
 
 vim ~/restart.sh
 

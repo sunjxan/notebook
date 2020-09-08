@@ -3,7 +3,7 @@
 ```
 cd /usr/local
 # 下载安装包（https://hive.apache.org/downloads.html）
-sudo wget https://downloads.apache.org/hive/hive-2.3.7/apache-hive-2.3.7-bin.tar.gz
+sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-2.3.7/apache-hive-2.3.7-bin.tar.gz
 # 解压
 sudo tar -xvf apache-hive-2.3.7-bin.tar.gz
 sudo mv apache-hive-2.3.7-bin hive

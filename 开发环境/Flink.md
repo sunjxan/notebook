@@ -1,7 +1,7 @@
 ```
 cd /usr/local
 # 下载安装包（https://flink.apache.org/downloads.html）
-sudo wget http://www.trieuvan.com/apache/flink/flink-1.10.1/flink-1.10.1-bin-scala_2.12.tgz
+sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/flink/flink-1.10.1/flink-1.10.1-bin-scala_2.12.tgz
 # 解压
 sudo tar -xvf flink-1.10.1-bin-scala_2.12.tgz
 sudo mv flink-1.10.1 flink

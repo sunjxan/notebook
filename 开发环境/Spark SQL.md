@@ -174,7 +174,7 @@ from pyspark import SparkConf, SparkContext, HiveContext, SQLContext
 sc = SparkContext('yarn', 'test')
 
 # 先获取SparkSession
-spark = SparkSession.builder.master("yarn").appName("test").enableHiveSupport().getOrCreate()
+spark = SparkSession.builder.master("mesos://master:5050").appName("test").enableHiveSupport().getOrCreate()
 sc = ss.sparkContext
 
 # 使用SQLContext获取数据
@@ -193,7 +193,7 @@ spark.sql('select * from student').show()
 ```
 
 ```python
-SparkSession.builder.master("yarn").appName("test").enableHiveSupport()
+SparkSession.builder.master("mesos://master:5050").appName("test").enableHiveSupport()
 # 等价于
 SparkSession.builder.config('spark.master', 'yarn').config('spark.app.name', 'test').config('spark.sql.catalogImplementation', 'hive')
 ```
@@ -210,7 +210,7 @@ from pyspark import SparkConf, SparkContext, HiveContext, SQLContext
 class SparkSessionBase:
 
     SPARK_APP_NAME = "test"
-    SPARK_MASTER = "yarn"
+    SPARK_MASTER = "mesos://master:5050"
     SPARK_EXECUTOR_MEMORY = "2g"
     SPARK_EXECUTOR_CORES = 2
     SPARK_EXECUTOR_INSTANCES = 2

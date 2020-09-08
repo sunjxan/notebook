@@ -1,10 +1,10 @@
 1. 下载数据（https://grouplens.org/datasets/movielens/），并解压，得到一系列csv文件或者dat文件；
-2. 修改配置my.cnf文件，添加文件目录：
+2. 修改配置my.cnf文件，添加导入权限：
 ```
 sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
 
 # 在[mysqld]后添加
-secure_file_priv = <csv文件目录>
+secure_file_priv =
 # 重启mysql服务即可生效
 ```
 3. 启动mysql服务；
@@ -44,26 +44,26 @@ CREATE TABLE tag(
 
 6. 加载csv文件到MySQL：
 ```
-LOAD DATA INFILE '<csv文件目录>/movies.csv'
+LOAD DATA INFILE 'movies.csv'
 INTO TABLE movie 
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
-LOAD DATA INFILE '<csv文件目录>/links.csv'
+LOAD DATA INFILE 'links.csv'
 INTO TABLE link
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
 (movieId, imdbId, @tmdbId) SET tmdbId = NULLif(@tmdbId,'');
 
-LOAD DATA INFILE '<csv文件目录>/ratings.csv'
+LOAD DATA INFILE 'ratings.csv'
 INTO TABLE rating
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
-LOAD DATA INFILE '<csv文件目录>/tags.csv'
+LOAD DATA INFILE 'tags.csv'
 INTO TABLE tag
 FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\r\n'
@@ -73,23 +73,23 @@ IGNORE 1 LINES;
 或者加载dat文件到MySQL：
 
 ```
-LOAD DATA INFILE '<csv文件目录>/movies.dat'
+LOAD DATA INFILE 'movies.dat'
 INTO TABLE movie
 FIELDS TERMINATED BY '::' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\n';
 
-LOAD DATA INFILE '<csv文件目录>/links.dat'
+LOAD DATA INFILE 'links.dat'
 INTO TABLE link
 FIELDS TERMINATED BY '::' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\n'
 (movieId, imdbId, @tmdbId) SET tmdbId = NULLif(@tmdbId,'');
 
-LOAD DATA INFILE '<csv文件目录>/ratings.dat'
+LOAD DATA INFILE 'ratings.dat'
 INTO TABLE rating
 FIELDS TERMINATED BY '::' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\n';
 
-LOAD DATA INFILE '<csv文件目录>/tags.dat'
+LOAD DATA INFILE 'tags.dat'
 INTO TABLE tag
 FIELDS TERMINATED BY '::' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '"'
 LINES TERMINATED BY '\n';

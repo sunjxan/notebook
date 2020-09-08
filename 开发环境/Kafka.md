@@ -1,7 +1,7 @@
 ```
 cd /usr/local
 # 下载安装包（https://kafka.apache.org/downloads.html）
-sudo wget http://mirror.metrocast.net/apache/kafka/2.5.0/kafka_2.13-2.5.0.tgz
+sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.5.0/kafka_2.13-2.5.0.tgz
 # 解压
 sudo tar -xvf kafka_2.13-2.5.0.tgz
 sudo mv kafka_2.13-2.5.0 kafka

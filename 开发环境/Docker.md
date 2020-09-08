@@ -72,9 +72,10 @@ sudo apt install docker-ce docker-ce-cli containerd.io
 sudo docker version
 
 # 更换镜像地址，登录https://cr.console.aliyun.com/注册账号，得到一个专属的镜像加速地址
+sudo mkdir /etc/docker
 sudo vim /etc/docker/daemon.json
 {
- "registry-mirrors": ["<镜像加速地址>"]
+  "registry-mirrors": ["https://prj2n5cu.mirror.aliyuncs.com"]
 }
 
 # 启动

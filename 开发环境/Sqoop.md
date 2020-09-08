@@ -1,7 +1,7 @@
 ```
 cd /usr/local
 # 下载安装包（http://www.apache.org/dyn/closer.lua/sqoop/）
-sudo wget https://downloads.apache.org/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 # 解压
 sudo tar -xvf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
 sudo mv sqoop-1.4.7.bin__hadoop-2.6.0 sqoop

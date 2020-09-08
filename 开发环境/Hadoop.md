@@ -1,7 +1,7 @@
 ```
 cd /usr/local
 # 下载安装包（https://hadoop.apache.org/releases.html）
-sudo wget https://archive.apache.org/dist/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz
+sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.10.0/hadoop-2.10.0.tar.gz
 # 解压
 sudo tar -xvf hadoop-2.10.0.tar.gz
 sudo mv hadoop-2.10.0 hadoop

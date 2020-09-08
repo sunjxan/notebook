@@ -1,7 +1,7 @@
 ```
 cd /usr/local
 # 下载安装包（http://www.apache.org/dyn/closer.lua/flume/）
-sudo wget http://mirrors.ibiblio.org/apache/flume/1.9.0/apache-flume-1.9.0-bin.tar.gz
+sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/flume/1.9.0/apache-flume-1.9.0-bin.tar.gz
 # 解压
 sudo tar -xvf apache-flume-1.9.0-bin.tar.gz
 sudo mv apache-flume-1.9.0-bin flume
@@ -12,7 +12,7 @@ sudo chown -R <user>:<user> /usr/local/flume
 # 修改配置
 cd flume
 cp conf/flume-env.sh.template conf/flume-env.sh
-# 修改flume-env.sh，修改JAVA_HOME
+# 修改conf/flume-env.sh，修改JAVA_HOME
 export JAVA_HOME="/usr/local/jdk"
 
 # 设置环境变量，在~/.zshrc追加

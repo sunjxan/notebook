@@ -20,7 +20,7 @@
 2. OS的Advanced->CPU Configuration里的Virtualization设置为Enabled；
 
 3. 以管理员身份打开 PowerShell 并运行：
-```
+```powershell
 # 启用“适用于Linux的Windows子系统”
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 # 启用"虚拟机平台"
@@ -93,7 +93,7 @@ passwd
 9. 更换国内源
 
 备份原文件：
-```
+```bash
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 sudo vim /etc/apt/sources.list
 ```
@@ -138,12 +138,12 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted
 
 更新升级
 
-```
+```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
 10. 从官方Ubuntu发行版复制软件包
-```
+```bash
 # 原主机导出软件列表
 dpkg --get-selections > packages-backup.list
 
@@ -156,30 +156,34 @@ apt-get dselect-upgrade
 
 11. 安装aptitude
 
-```
-sudo apt install aptitude
+```bash
+sudo apt install aptitude -y
 ```
 
 12. 安装zsh
 
-```
+```bash
 # 安装 zsh
-sudo aptitude install zsh
+sudo aptitude install zsh -y
 
 # 修改Windows Terminal设置文件
 "commandline": "wsl cd ~ && /bin/zsh"
+
+# 进入zsh，选择选项2，生成默认.zshrc文件
 ```
 
 13. 安装oh-my-zsh
 
 下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
-```
+```bash
 sudo bash install.sh
-# 修改用户配置文件所有者
-sudo chown -R <用户名>:<用户名> /home/<用户名>
-# 切换用户
-su -s /bin/zsh <用户名>
 
+# 安装完成后，退出root
+exit
+source ~/.zshrc
+
+# 修改用户配置文件所有者
+sudo chown -R <用户名>:<用户名> ~
 # 修改默认Shell
 sudo chsh -s /bin/zsh <用户名>
 sudo chsh -s /bin/bash root
@@ -187,7 +191,7 @@ sudo chsh -s /bin/bash root
 
 下载插件：
 
-```
+```bash
 cd $ZSH_CUSTOM/plugins
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone https://github.com/zsh-users/zsh-autosuggestions.git
@@ -195,7 +199,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions.git
 
 修改配置文件：
 
-```
+```bash
 vim ~/.zshrc
 
 # 修改主题
@@ -214,14 +218,16 @@ plugins=(
 source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-source ~/.zshrc
+# 重新打开zsh
+exit
 ```
 
-14. 安装python、pip并配置
-15. 安装mysql并配置
-16. 安装docker并配置
-
-17. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
+14. 安装python、pip、jupyter并配置
+15. 安装supervisor并配置jupyter任务
+16. 安装mysql并配置
+17. 安装cron
+18. 安装docker并配置
+19. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
 ```
 # 自动挂载
 [automount]
@@ -249,15 +255,15 @@ enabled=true
 appendWindowsPath=true
 ```
 
-18. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
+20. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
 在WSL中创建启动加载文件 `/etc/init.sh`
-```
+```bash
 #!/bin/sh
 /etc/init.d/ssh start
 ```
 
 在Windows中创建启动加载文件 `wsl2.ps1`
-```
+```powershell
 wsl -u root bash /etc/init.sh
 ```
 
@@ -271,7 +277,7 @@ wsl -u root bash /etc/init.sh
 
 如果出现MMC管理单元错误，不能自动获取管理员身份，则手动获取。在 `wsl2.ps1` **开始处**检测如果不是管理员身份，则重新以管理员身份打开：
 
-```
+```powershell
 $currentWi = [Security.Principal.WindowsIdentity]::GetCurrent()
 $currentWp = [Security.Principal.WindowsPrincipal]$currentWi
  
@@ -286,8 +292,8 @@ if(-not $currentWp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
 ```
 
 
-19. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
-```
+21. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+```bash
 # Windows IP
 cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '
 # WSL2 IP
@@ -296,7 +302,7 @@ ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'
 
 修改hosts文件添加master域名映射，在 `wsl2.ps1`文件中添加：
 
-```
+```powershell
 $host_path = "$env:windir\System32\drivers\etc\hosts"
 $wsl_hostname = "master"
 $wsl_ip = bash -c "ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'"
@@ -306,7 +312,7 @@ $wsl_ip = bash -c "ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1
 
 如果要在局域网中访问WSL2里的服务，使用端口映射，在 `wsl2.ps1`文件中添加：
 
-```
+```powershell
 $ports = @(80, 443, 8080)
 
 $addr = '0.0.0.0'

@@ -31,7 +31,7 @@ command=<命令>
 directory=<工作目录>
 user=<用户名>
 #supervisor启动的时候是否随着同时启动，默认true
-autostart=true
+autostart=false
 #这个选项是子进程启动多少秒之后，此时状态如果是running，则我们认为启动成功了。默认值为1
 startsecs=1
 #程序异常退出后自动重启
