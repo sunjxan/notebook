@@ -171,7 +171,7 @@ from pyspark.sql import SparkSession
 from pyspark import SparkConf, SparkContext, HiveContext, SQLContext
 
 # 直接获取SparkContext
-sc = SparkContext('yarn', 'test')
+sc = SparkContext('mesos://master:5050', 'test')
 
 # 先获取SparkSession
 spark = SparkSession.builder.master("mesos://master:5050").appName("test").enableHiveSupport().getOrCreate()
@@ -195,27 +195,32 @@ spark.sql('select * from student').show()
 ```python
 SparkSession.builder.master("mesos://master:5050").appName("test").enableHiveSupport()
 # 等价于
-SparkSession.builder.config('spark.master', 'yarn').config('spark.app.name', 'test').config('spark.sql.catalogImplementation', 'hive')
+SparkSession.builder.config('spark.master', 'mesos://master:5050').config('spark.app.name', 'test').config('spark.sql.catalogImplementation', 'hive')
 ```
 
 建立基类
 
 ```python
-import sys
+import sys, os
 sys.path.extend(['/usr/local/spark/python', '/usr/local/spark/python/lib/pyspark.zip', '/usr/local/spark/python/lib/py4j-0.10.7-src.zip'])
+
+PYSPARK_PYTHON = "/usr/bin/python3"
+# 当存在多个版本时，不指定很可能会导致出错
+os.environ["PYSPARK_PYTHON"] = PYSPARK_PYTHON
+os.environ["PYSPARK_DRIVER_PYTHON"] = os.environ["PYSPARK_PYTHON"]
 
 from pyspark.sql import SparkSession
 from pyspark import SparkConf, SparkContext, HiveContext, SQLContext
 
 class SparkSessionBase:
 
-    SPARK_APP_NAME = "test"
+    SPARK_APP_NAME = "MySpark"
     SPARK_MASTER = "mesos://master:5050"
     SPARK_EXECUTOR_MEMORY = "2g"
     SPARK_EXECUTOR_CORES = 2
     SPARK_EXECUTOR_INSTANCES = 2
 
-    ENABLE_HIVE_SUPPORT = False
+    ENABLE_HIVE_SUPPORT = True
 
     def _create_spark_session(self):
 
@@ -236,19 +241,19 @@ class SparkSessionBase:
             return SparkSession.builder.config(conf=conf).getOrCreate()
 ```
 继承基类
-```
+```python
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from offline import SparkSessionBase
+
 class MySparkSession(SparkSessionBase):
-
-    SPARK_APP_NAME = "mySpark"
-
-    ENABLE_HIVE_SUPPORT = True
 
     def __init__(self):
         self.spark = self._create_spark_session()
         self.sc = self.spark.sparkContext
+        self.sql = self.spark.sql
+        self.sqlContext = self.spark._wrapped
+        self.sqlCtx = self.sqlContext
 ```
 

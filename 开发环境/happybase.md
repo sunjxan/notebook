@@ -16,25 +16,23 @@ pip3 install happybase
 ```
 import happybase
 
-# 创建连接
-hostname = 'localhost'
+host = 'localhost'
 tablename = 'test'
 rowname = 'x'
 columnname = 'y'
 
-conn = happybase.Connection(hostname)
+pool = happybase.ConnectionPool(size=10, host=host)
 
-# 读取表列表
-print(conn.tables())
+with pool.connection() as conn:
+    # 读取表列表
+    print(conn.tables())
 
-# 获取表
-table = conn.table(tablename)
+    # 获取表
+    table = conn.table(tablename)
 
-# 获取行，得到一个字典
-row = table.row(rowname)
+    # 获取行，得到一个字典
+    row = table.row(rowname)
 
-# 获取值
-print(table.cells(rowname, columnname))
-
-conn.close()
+    # 获取值
+    print(table.cells(rowname, columnname))
 ```

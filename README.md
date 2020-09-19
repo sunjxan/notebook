@@ -38,6 +38,7 @@
 	- [Java](开发环境/Java.md)
 	- [Kafka](开发环境/Kafka.md)
 	- [Maven](开发环境/Maven.md)
+	- [Mesos](开发环境/Mesos.md)
 	- [MySQL](开发环境/MySQL.md)
 	- [NGINX](开发环境/NGINX.md)
 	- [Node.js](开发环境/Node.js.md)

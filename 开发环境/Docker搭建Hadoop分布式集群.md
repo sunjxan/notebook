@@ -206,13 +206,19 @@ sudo /etc/init.d/ssh start
 
 #### 11. 安装Supervisor并配置Jupyter任务
 
-#### 12. 安装JDK8并配置
+#### 12. 安装numpy、pandas、matplotlib、APScheduler
 
-#### 13. 安装Maven3.6.3并配置
+```
+pip3 install numpy pandas matplotlib APScheduler
+```
 
-#### 14. 安装MySQL并配置
+#### 13. 安装JDK8并配置
 
-#### 15. 安装cron
+#### 14. 安装Maven3.6.3并配置
+
+#### 15. 安装MySQL并配置
+
+#### 16. 安装cron
 
 ```
 # 退出docker，保存这个镜像
@@ -338,6 +344,12 @@ export HBASE_MANAGES_ZK=false
 </configuration>
 ```
 
+pip安装happybase
+
+```
+pip3 install happybase
+```
+
 #### 5. 安装Hive2.3.7并配置
 
 配置MySQL作为Hive元数据库。
@@ -383,7 +395,15 @@ export SPARK_CLASSPATH="/usr/local/hive/lib/mysql-metadata-storage-0.9.2.jar:$SP
 export MESOS_NATIVE_JAVA_LIBRARY="/usr/local/mesos/lib/libmesos.so"
 ```
 
-配置SparkSQL连接Hive。
+配置SparkSQL连接Hive；
+
+配置SparkSQL支持HBase：
+
+```
+cp /usr/local/hbase/lib/hbase-*.jar /usr/local/spark/jars
+cp /usr/local/hive/lib/hive-*.jar /usr/local/spark/jars
+cp /usr/local/hive/lib/htrace-*.jar /usr/local/spark/jars
+```
 
 #### 7. 安装Sqoop1.4.7并配置
 
@@ -805,6 +825,7 @@ vim ~/start.sh
 start-dfs.sh && start-yarn.sh
 mr-jobhistory-daemon.sh start historyserver
 start-hbase.sh
+hbase thrift start >/dev/null 2>&1 &
 hive --service hiveserver2 >/dev/null 2>&1 &
 /usr/local/spark/sbin/start-all.sh
 /usr/local/spark/sbin/start-history-server.sh
@@ -818,6 +839,12 @@ SIGNAL=${SIGNAL:-TERM}
 PIDS=$(jps -lm | grep -i 'org.apache.hadoop.util.RunJar' | awk '{print $1}')
 if [ -z "$PIDS" ]; then
   echo "No HiveMetaStore server to stop"
+else
+  kill -s $SIGNAL $PIDS
+fi
+PIDS=$(jps -lm | grep -i 'org.apache.hadoop.hbase.thrift.ThriftServer' | awk '{print $1}')
+if [ -z "$PIDS" ]; then
+  echo "No HBase ThriftServer to stop"
 else
   kill -s $SIGNAL $PIDS
 fi
