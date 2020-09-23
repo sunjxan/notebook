@@ -172,11 +172,17 @@ export LANG="C.UTF-8"
 source /etc/zsh/zshrc
 ```
 
-#### 7. 设置系统时区
+#### 7. 设置系统时间
 
 ```
+# 设置时区
 sudo aptitude install tzdata
 tzselect
+
+# 同步时间
+sudo aptitude install ntpdate
+# docker中需要赋予权限才能执行，docker run -it --cap-add=SYS_TIME
+sudo ntpdate ntp.ntsc.ac.cn
 ```
 
 #### 8. 安装网络工具
@@ -622,6 +628,7 @@ mesos-slave --ip=0.0.0.0 --master=master:5050 --work_dir=/var/lib/mesos --no-sys
 
 ```bash
 hdfs namenode -format
+
 start-dfs.sh && start-yarn.sh
 mr-jobhistory-daemon.sh start historyserver
 ```
@@ -654,6 +661,7 @@ mr-jobhistory-daemon.sh start historyserver
 
 ```bash
 start-hbase.sh
+hbase thrift start >/dev/null 2>&1 &
 ```
 
 启动成功，输入命令jps，看到以下界面说明hbase启动成功
@@ -667,6 +675,15 @@ hbase shell
 ```
 
 注意：如果在操作HBase的过程中发生错误，可以通过{HBASE_HOME}目录（/usr/local/hbase）下的logs子目录中的日志文件查看错误原因。
+
+如果出现相关启动失败，三台hbase同步下时间：
+
+```
+# 时间有误差问题同步一下
+# docker中需要赋予权限才能执行，docker run -it --cap-add=SYS_TIME
+sudo ntpdate ntp.ntsc.ac.cn
+```
+
 这里启动关闭Hadoop和HBase的顺序一定是：
 启动Hadoop—>启动HBase—>关闭HBase—>关闭Hadoop
 
@@ -754,7 +771,34 @@ cd /usr/local
 flume-ng agent -c flume/conf -f flume/conf/avro.conf -n a1 -Dflume.root.logger=INFO,console >/dev/null 2>&1 &
 ```
 
-#### 11. WebUI
+#### 11. JPS
+
+```
+# master
+QuorumPeerMain: ZooKeeper
+NameNode: Hadoop
+SecondaryNameNode: Hadoop
+ResourceManager: Yarn
+JobHistoryServer: Yarn
+HMaster: HBase
+HRegionServer: HBase
+ThriftServer: HBase
+RunJar: Hive
+Master: Spark
+HistoryServer: Spark
+SparkSubmit: Spark
+Application: Flume
+Kafka: Kafka
+
+# slave1, slave2
+QuorumPeerMain: ZooKeeper
+DataNode: Hadoop
+NodeManager: Yarn
+HRegionServer: HBase
+Worker: Spark
+```
+
+#### 12. WebUI
 
 修改原主机环境hosts
 
@@ -816,7 +860,7 @@ generateHosts=false
 
   http://master:9002（默认端口号为9001）
 
-#### 12. 添加服务脚本
+#### 13. 添加服务脚本
 
 ```
 vim ~/start.sh
