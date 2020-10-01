@@ -92,8 +92,9 @@ passwd
 ```
 9. 更换国内源
 
-备份原文件：
+查看Ubuntu版本，选择更换源版本：
 ```bash
+cat /etc/lsb-release
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
 sudo vim /etc/apt/sources.list
 ```
@@ -221,13 +222,38 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 # 重新打开zsh
 exit
 ```
+14. 设置系统语言
 
-14. 安装python、pip、jupyter并配置
-15. 安装supervisor并配置jupyter任务
-16. 安装mysql并配置
-17. 安装cron
-18. 安装docker并配置
-19. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
+```
+# 安装语言包
+sudo aptitude install language-pack-zh-hans
+
+# 开机设置
+sudo vim /etc/bash.bashrc
+sudo vim /etc/zsh/zshrc
+# 追加
+export LANG="zh_CN.utf8"
+export LANGUAGE="zh_CN:zh"
+
+source /etc/zsh/zshrc
+```
+
+15. 设置系统时间
+
+```
+# 设置时区
+tzselect
+
+# 同步时间
+sudo aptitude install ntpdate
+sudo ntpdate ntp.ntsc.ac.cn
+```
+16. 安装python、pip、jupyter并配置
+17. 安装supervisor并配置jupyter任务
+18. 安装mysql并配置
+19. 安装cron
+20. 安装docker并配置
+21. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
 ```
 # 自动挂载
 [automount]
@@ -255,7 +281,7 @@ enabled=true
 appendWindowsPath=true
 ```
 
-20. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
+22. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
 在WSL中创建启动加载文件 `/etc/init.sh`
 ```bash
 #!/bin/sh
@@ -292,7 +318,7 @@ if(-not $currentWp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
 ```
 
 
-21. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+23. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
 ```bash
 # Windows IP
 cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '

@@ -164,10 +164,15 @@ su - <用户名>
 #### 6. 设置系统语言
 
 ```
+# 安装语言包
+sudo aptitude install language-pack-zh-hans
+
+# 开机设置
 sudo vim /etc/bash.bashrc
 sudo vim /etc/zsh/zshrc
 # 追加
-export LANG="C.UTF-8"
+export LANG="zh_CN.utf8"
+export LANGUAGE="zh_CN:zh"
 
 source /etc/zsh/zshrc
 ```
@@ -782,9 +787,9 @@ ResourceManager: Yarn
 JobHistoryServer: Yarn
 HMaster: HBase
 HRegionServer: HBase
-ThriftServer: HBase
-RunJar: Hive
-Master: Spark
+ThriftServer: HBase(HBase RPC)
+RunJar: Hive(HiveServer2)
+Master: Spark(Spark App)
 HistoryServer: Spark
 SparkSubmit: Spark
 Application: Flume
@@ -796,6 +801,7 @@ DataNode: Hadoop
 NodeManager: Yarn
 HRegionServer: HBase
 Worker: Spark
+CoarseGrainedExecutorBackend: Spark(Spark App)
 ```
 
 #### 12. WebUI

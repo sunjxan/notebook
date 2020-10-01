@@ -139,7 +139,7 @@ done
 sudo apt install cron
 # 启动
 sudo service cron start
-# 设置
+# 编辑定时任务（cron把屏幕输出都发送到email，不要直接向屏幕输出内容，而是重定向到一个文件）
 crontab -e
 ```
 

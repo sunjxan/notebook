@@ -23,4 +23,39 @@ redis-server --version
 redis-server >/dev/null 2>&1 &
 # 打开客户端
 redis-cli
+
+# 安装python包
+pip3 install redis
 ```
+
+```
+import redis
+
+# 连接
+r = redis.StrictRedis(host='localhost', port=6379)
+# 兼容连接
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+# 连接池
+pool = redis.ConnectionPool(host='localhost', port=6379, decode_responses=True)
+r = redis.Redis(connection_pool=pool)
+
+# 键值对
+r.set('foo', 'bar')
+r.get('foo')
+
+# 添加列表
+r.lpush('list', 1, 2, 3)
+r.llen('list')
+r.lrange('list', 0, -1)
+
+# 添加集合
+r.sadd('set', 1, 2, 3)
+r.scard('set')
+r.smembers('set')
+
+# 添加字典
+r.zadd('dict', {'a': 1, 'b': 2, 'c': 3})
+r.zcard('dict')
+r.zrange('dict', 0, -1, withscores=True)
+```
+

@@ -60,9 +60,11 @@ def serve():
     helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port('localhost:50051')
     server.start()
+    _ONE_DAY_IN_SECONDS = 60 * 60 * 24
+    # 使用 ctrl+c 可以退出服务
     try:
         while True:
-            time.sleep(60*60*24) # one day in seconds
+            time.sleep(_ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
         server.stop(0)
 
@@ -77,13 +79,13 @@ import helloworld_pb2_grpc
 
 def run():
     # 连接 rpc 服务器
-    channel = grpc.insecure_channel('localhost:50051')
-    # 调用 rpc 服务
-    stub = helloworld_pb2_grpc.GreeterStub(channel)
-    response = stub.SayHello(helloworld_pb2.HelloRequest(name='jack'))
-    print("Greeter client received: " + response.message)
-    response = stub.SayHelloAgain(helloworld_pb2.HelloRequest(name='jack'))
-    print("Greeter client received: " + response.message)
+    with grpc.insecure_channel('localhost:50051') as channel:
+        # 调用 rpc 服务
+        stub = helloworld_pb2_grpc.GreeterStub(channel)
+        response = stub.SayHello(helloworld_pb2.HelloRequest(name='jack'))
+        print("Greeter client received: " + response.message)
+        response = stub.SayHelloAgain(helloworld_pb2.HelloRequest(name='jack'))
+        print("Greeter client received: " + response.message)
 
 if __name__ == '__main__':
     run()
