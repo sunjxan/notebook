@@ -170,7 +170,9 @@ list(model.parameters())
 ### 损失函数
 
 ```
+# 为批量计算的数据求损失，再平均
 criterion = nn.MSELoss()
+# 损失函数(预测值，标签值)
 loss = criterion(torch.tensor([[1.,2.]]), torch.tensor([[2., 4.]]))
 ```
 
@@ -196,7 +198,7 @@ y = torch.tensor([[2., 3.], [4., 6.]])
 y_pred = model(X)
 # 计算损失
 criterion = nn.MSELoss()
-loss = criterion(y, y_pred)
+loss = criterion(y_pred, y)
 
 # 清零所有参数(parameter）的梯度缓存
 model.zero_grad()
@@ -234,7 +236,7 @@ num_batches = 100
 for batch_index in range(num_batches):
   optimizer.zero_grad()
   y_pred = model(X)
-  loss = criterion(y, y_pred)
+  loss = criterion(y_pred, y)
   loss.backward()
   optimizer.step()
 
@@ -280,6 +282,24 @@ plt.imshow(train_data[0], cmap="gray")
 plt.show()
 ```
 
+### 批量获取数据
+
+```
+class MNISTLoader():
+    def __init__(self):
+        # MNIST中的图像默认为uint8（0-255的数字）。以下代码将其归一化到0-1之间的浮点数，并在最后增加一维作为颜色通道
+        self.train_data = np.expand_dims(train_data.astype(np.float32) / 255.0, axis=1)      # [60000, 28, 28, 1]
+        self.test_data = np.expand_dims(test_data.astype(np.float32) / 255.0, axis=1)        # [10000, 28, 28, 1]
+        self.train_labels = train_labels.astype(np.int32)
+        self.test_labels = test_labels.astype(np.int32)
+        self.num_train_data, self.num_test_data = self.train_data.shape[0], self.test_data.shape[0]
+
+    def get_batch(self, batch_size):
+        # 从数据集中随机取出batch_size个元素并返回
+        index = np.random.randint(0, self.num_train_data, batch_size)
+        return self.train_data[index, :], self.train_labels[index]
+```
+
 ### 建立模型
 
 ```
@@ -309,9 +329,33 @@ class CNNModel(nn.Module):
 
 # [batch_size, 1, width, height]
 model = CNNModel()
+```
 
+### 交叉熵损失
+
+```
+# 输出层不需做Softmax激活，CrossEntropyLoss函数直接处理
+criterion = nn.CrossEntropyLoss()
+loss = criterion(torch.tensor([[5., 5.], [5., 5.]]), torch.tensor([0, 1]))
+```
+
+### 训练模型
+
+```
 import numpy as np
-train_data = torch.tensor(np.expand_dims(train_data.float(), 1))[:10]
-model(train_data)
+X = torch.tensor(np.expand_dims(train_data.float(), axis=1))[:10]
+y = torch.tensor(train_labels)[:10]
+
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(model.parameters(), 5e-4)
+
+# 迭代次数
+num_batches = 100
+for batch_index in range(num_batches):
+  optimizer.zero_grad()
+  y_pred = model(X)
+  loss = criterion(y_pred, y)
+  loss.backward()
+  optimizer.step()
 ```
 

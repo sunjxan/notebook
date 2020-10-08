@@ -165,6 +165,8 @@ model.weights
 ### 损失函数
 
 ```
+# 为批量计算的数据求损失，再平均
+# 损失函数(标签值, 预测值)
 loss = tf.reduce_mean(keras.losses.MSE(tf.constant([[1., 2.]]), tf.constant([[2., 4.]])))
 ```
 
@@ -277,6 +279,26 @@ plt.imshow(train_data[0], cmap="gray")
 plt.show()
 ```
 
+### 批量获取数据
+
+```
+class MNISTLoader():
+    def __init__(self):
+        # MNIST中的图像默认为uint8（0-255的数字）。以下代码将其归一化到0-1之间的浮点数，并在最后增加一维作为颜色通道
+        self.train_data = np.expand_dims(train_data.astype(np.float32) / 255.0, axis=-1)      # [60000, 28, 28, 1]
+        self.test_data = np.expand_dims(test_data.astype(np.float32) / 255.0, axis=-1)        # [10000, 28, 28, 1]
+        self.train_labels = train_labels.astype(np.int32)
+        self.test_labels = test_labels.astype(np.int32)
+        self.num_train_data, self.num_test_data = self.train_data.shape[0], self.test_data.shape[0]
+
+    def get_batch(self, batch_size):
+        # 从数据集中随机取出batch_size个元素并返回
+        index = np.random.randint(0, self.num_train_data, batch_size)
+        return self.train_data[index, :], self.train_labels[index]
+
+data_loader  = MNISTLoader()
+```
+
 ### 建立模型
 
 ```
@@ -288,7 +310,7 @@ class CNNModel(keras.Model):
     self.conv2 = tf.keras.layers.Conv2D(filters=20, kernel_size=(5, 5), strides=(1, 1), padding='same', activation='relu')
     self.flatten = keras.layers.Flatten()
     self.dense1 = keras.layers.Dense(50, input_dim=20*7*7, activation='relu')
-    self.dense2 = keras.layers.Dense(10, input_dim=50)
+    self.dense2 = keras.layers.Dense(10, input_dim=50, activation='softmax')
 
   def call(self, inputs):
     x = self.conv1(inputs)
@@ -302,9 +324,37 @@ class CNNModel(keras.Model):
 
 # [batch_size, width, height, 1]
 model = CNNModel()
+```
 
+### 交叉熵损失
+
+```
+# SparseCategoricalCrossentropy函数直接处理
+criterion = keras.losses.SparseCategoricalCrossentropy()
+loss = criterion([0, 1], [[.5, .5], [.5, .5]])
+
+# CategoricalCrossentropy函数需要先对数据做one hot编码
+criterion = keras.losses.CategoricalCrossentropy()
+loss = criterion([[1, 0], [0, 1]], [[.5, .5], [.5, .5]])
+loss = criterion(tf.one_hot([0, 1], 2), [[.5, .5], [.5, .5]])
+```
+
+### 训练模型
+
+```
 import numpy as np
-train_data = np.expand_dims(train_data.astype(np.float32), -1)[:10]
-model(train_data)
+X = np.expand_dims(train_data.astype(np.float32), axis=-1)[:10]
+y = train_labels[:10]
+
+criterion = keras.losses.SparseCategoricalCrossentropy()
+optimizer = keras.optimizers.SGD(5e-4)
+
+num_batches = 100
+for batch_index in range(num_batches):
+  with tf.GradientTape() as tape:
+    y_pred = model(X)
+    loss = criterion(y, y_pred)
+    grads = tape.gradient(loss, model.variables)
+    optimizer.apply_gradients(zip(grads, model.variables))
 ```
 
