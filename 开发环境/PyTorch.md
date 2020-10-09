@@ -245,7 +245,7 @@ for param in model.parameters():
   print(param.grad)
 ```
 
-###　BatchNormalization
+### BatchNormalization
 
 ```
 x = nn.BatchNorm1d(num_features, eps=1e-5, momentum=.1)(x)
@@ -265,14 +265,17 @@ x = nn.Dropout(p=.2)(x)
 # 导入视觉包
 import torchvision as tv
 
+# 将PIL Image转换为Tensor
+transform = tv.transforms.Compose([tv.transforms.ToTensor()])
+
 # 加载MNIST数据，训练数据60000张28*28的灰度值图片，测试数据10000张28*28的灰度值图片
 # 加载训练数据
-train_set = tv.datasets.MNIST(root='./data', train=True, download=True)
+train_set = tv.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
 train_data = train_set.train_data
 train_labels = train_set.train_labels
 
 # 加载测试数据
-test_set = tv.datasets.MNIST(root='./data', train=False, download=True)
+test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 test_data = test_set.test_data
 test_labels = test_set.test_labels
 
@@ -282,22 +285,18 @@ plt.imshow(train_data[0], cmap="gray")
 plt.show()
 ```
 
-### 批量获取数据
+### 数据分批
 
 ```
-class MNISTLoader():
-    def __init__(self):
-        # MNIST中的图像默认为uint8（0-255的数字）。以下代码将其归一化到0-1之间的浮点数，并在最后增加一维作为颜色通道
-        self.train_data = np.expand_dims(train_data.astype(np.float32) / 255.0, axis=1)      # [60000, 28, 28, 1]
-        self.test_data = np.expand_dims(test_data.astype(np.float32) / 255.0, axis=1)        # [10000, 28, 28, 1]
-        self.train_labels = train_labels.astype(np.int32)
-        self.test_labels = test_labels.astype(np.int32)
-        self.num_train_data, self.num_test_data = self.train_data.shape[0], self.test_data.shape[0]
+# 一个epoch内，不同batch间、一个batch内数据都不重复，所有数据都计算一次
 
-    def get_batch(self, batch_size):
-        # 从数据集中随机取出batch_size个元素并返回
-        index = np.random.randint(0, self.num_train_data, batch_size)
-        return self.train_data[index, :], self.train_labels[index]
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=100, shuffle=True)
+# 训练数据生成器
+iter(train_loader)
+
+test_loader = torch.utils.data.DataLoader(test_set, batch_size=100, shuffle=True)
+# 测试数据生成器
+iter(test_loader)
 ```
 
 ### 建立模型
@@ -311,6 +310,7 @@ class CNNModel(nn.Module):
     self.relu = nn.ReLU()
     self.conv2 = nn.Conv2d(in_channels=10, out_channels=20, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), padding_mode='zeros')
     self.flatten = nn.Flatten()
+    # 经过两次池化后得到的矩阵大小为(28/2/2, 28/2/2)
     self.fc1 = nn.Linear(20*7*7, 50)
     self.fc2 = nn.Linear(50, 10)
 
@@ -336,26 +336,40 @@ model = CNNModel()
 ```
 # 输出层不需做Softmax激活，CrossEntropyLoss函数直接处理
 criterion = nn.CrossEntropyLoss()
-loss = criterion(torch.tensor([[5., 5.], [5., 5.]]), torch.tensor([0, 1]))
+criterion(torch.tensor([[5., 5.], [5., 5.]]), torch.tensor([0, 1]))
 ```
 
 ### 训练模型
 
 ```
-import numpy as np
-X = torch.tensor(np.expand_dims(train_data.float(), axis=1))[:10]
-y = torch.tensor(train_labels)[:10]
-
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), 5e-4)
 
-# 迭代次数
-num_batches = 100
-for batch_index in range(num_batches):
-  optimizer.zero_grad()
-  y_pred = model(X)
-  loss = criterion(y_pred, y)
-  loss.backward()
-  optimizer.step()
+epochs = 10
+for epoch_index in range(epochs):
+  train_iter = iter(train_loader)
+  for X, y in train_iter:
+    optimizer.zero_grad()
+    y_pred = model(X)
+    loss = criterion(y_pred, y)
+    loss.backward()
+    optimizer.step()
+```
+
+### 评估模型
+
+```
+correct = 0
+total = 0
+test_iter = iter(test_loader)
+
+# 阻止autograd跟踪设置了 requires_grad=True 的张量的历史记录
+with torch.no_grad():
+  for X, y in test_iter:
+    y_pred = model(X)
+    total += y.size(0)
+    correct += (torch.argmax(y_pred, -1) == y).sum().item()
+
+print('%.4f' % (correct / total))
 ```
 
