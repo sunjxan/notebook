@@ -213,9 +213,9 @@ vim ~/.zshrc
 sudo /etc/init.d/ssh start
 ```
 
-#### 10. 安装Python、pip、Jupyter并配置
+#### 10. 安装Python、pip、JupyterLab并配置
 
-#### 11. 安装Supervisor并配置Jupyter任务
+#### 11. 安装Supervisor并配置JupyterLab任务
 
 #### 12. 安装numpy、pandas、matplotlib、APScheduler
 

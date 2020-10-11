@@ -59,3 +59,12 @@ jupyter notebook --ip=0.0.0.0 --allow-root >/dev/null 2>&1 &
 jupyter notebook list
 ```
 
+```
+pip3 install jupyterlab
+
+# 打开Jupyter服务器
+jupyter-lab --ip=0.0.0.0 --allow-root >/dev/null 2>&1 &
+# 获取token
+jupyter notebook list
+```
+

@@ -88,10 +88,10 @@ c.backward(torch.ones(c.shape))
 print(c, a.grad, b.grad)
 ```
 
-## 神经网络
+## 神经网络 Neural Networks
 
 ```
-import torch.nn as nn
+from torch import nn
 ```
 
 ### 神经元层
@@ -257,7 +257,7 @@ x = nn.BatchNorm1d(num_features, eps=1e-5, momentum=.1)(x)
 x = nn.Dropout(p=.2)(x)
 ```
 
-## 卷积神经网络CNN
+## 卷积神经网络 Convolutional Neural Networks
 
 ### 加载数据
 
@@ -290,13 +290,11 @@ plt.show()
 ```
 # 一个epoch内，不同batch间、一个batch内数据都不重复，所有数据都计算一次
 
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=100, shuffle=True)
 # 训练数据生成器
-iter(train_loader)
+train_loader = torch.utils.data.DataLoader(train_set, batch_size=100, shuffle=True)
 
-test_loader = torch.utils.data.DataLoader(test_set, batch_size=100, shuffle=True)
 # 测试数据生成器
-iter(test_loader)
+test_loader = torch.utils.data.DataLoader(test_set, batch_size=100, shuffle=True)
 ```
 
 ### 建立模型
@@ -305,10 +303,14 @@ iter(test_loader)
 class CNNModel(nn.Module):
   def __init__(self):
     super().__init__()
+    # 卷积层1
     self.conv1 = nn.Conv2d(in_channels=1, out_channels=10, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), padding_mode='zeros')
+    # 池化层
     self.pool = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
     self.relu = nn.ReLU()
+    # 卷积层2
     self.conv2 = nn.Conv2d(in_channels=10, out_channels=20, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), padding_mode='zeros')
+    # 展平层
     self.flatten = nn.Flatten()
     # 经过两次池化后得到的矩阵大小为(28/2/2, 28/2/2)
     self.fc1 = nn.Linear(20*7*7, 50)
@@ -347,8 +349,7 @@ optimizer = torch.optim.SGD(model.parameters(), 5e-4)
 
 epochs = 10
 for epoch_index in range(epochs):
-  train_iter = iter(train_loader)
-  for X, y in train_iter:
+  for X, y in train_loader:
     optimizer.zero_grad()
     y_pred = model(X)
     loss = criterion(y_pred, y)
@@ -361,15 +362,149 @@ for epoch_index in range(epochs):
 ```
 correct = 0
 total = 0
-test_iter = iter(test_loader)
 
 # 阻止autograd跟踪设置了 requires_grad=True 的张量的历史记录
 with torch.no_grad():
-  for X, y in test_iter:
+  for X, y in test_loader:
     y_pred = model(X)
     total += y.size(0)
     correct += (torch.argmax(y_pred, -1) == y).sum().item()
 
 print('%.4f' % (correct / total))
+```
+
+## 循环神经网络 Recurrent Neural Networks
+
+### RNNCell
+
+```
+# input_size 每个神经元输入数
+# hidden_size 神经元个数，每个神经元状态数
+cell = nn.RNNCell(input_size, hidden_size, bias=True, nonlinearity='tanh')
+
+# weight_ih 输入权重(hidden_size, input_size)
+# bias_ih 输入偏置(hidden_size,)
+# weight_hh 状态权重(hidden_size, hidden_size)
+# bias_hh 状态偏置(hidden_size,)
+cell.weight_ih, cell.bias_ih, cell.weight_hh, cell.bias_hh
+
+# 输入和状态
+input = torch.ones((batch, input_size))
+hidden = torch.ones((batch, hidden_size))
+
+# 输入和输入权重矩阵乘，加上输入偏置
+# 状态和状态权重矩阵乘，加上状态偏置
+# 全部相加，激活函数激活
+# 返回(batch, hidden_size)
+cell(input, hidden)
+```
+
+### RNN
+
+```
+# 一个RNN是多个RNNCell首尾相连
+# num_layers 包含RNNCell层数
+# input_size 第一层每个神经元输入数
+# hidden_size 每层神经元个数，除第一层外每个神经元输入数，每个神经元状态数
+rnn = nn.RNN(input_size, hidden_size, num_layers, bias=True, nonlinearity='tanh')
+
+# 对每一层（index从0开始），都有以下：
+# weight_ih_l<index> 输入权重(hidden_size, hidden_size), weight_ih_l0(hidden_size, input_size)
+# bias_ih_l<index> 输入偏置(hidden_size,)
+# weight_hh_l<index> 状态权重(hidden_size, hidden_size)
+# bias_hh_l<index> 状态偏置(hidden_size,)
+cell.weight_ih_l<index>, cell.bias_ih_l<index>, cell.weight_hh_l<index>, cell.bias_hh_l<index>
+
+# 输入和初始状态
+# input的一个batch包含第一个cell每次循环的输入数据，seq_len次循环
+input = torch.ones((seq_len, batch, input_size))
+hidden = torch.ones((num_layers, batch, hidden_size))
+
+# 对每个RNNCell，获取初始状态，进行seq_len次循环，在一次循环中：
+# 输入和输入权重矩阵乘，加上输入偏置，状态和状态权重矩阵乘，加上状态偏置，全部相加，激活函数激活
+# 将循环的结果作为下一次循环的状态，并取对应的输入数据，进入下一次循环
+# 前一个RNNCell所有循环结束后，将得到的所有结果，作为后一个RNNCell的输入数据
+# 返回最后一个RNNCell每次循环的结果output(seq_len, batch, hidden_size)
+# 和每个RNNCell最后一次循环的结果hidden(num_layers, batch, hidden_size)
+rnn(input, hidden)
+```
+
+## 可视化
+
+```
+pip3 install tensorboard
+
+tensorboard --logdir=./pytorch --bind_all >/dev/null 2>&1 &
+
+# 浏览器打开http://localhost:6006/
+```
+
+### 记录数值
+
+```
+# 创建日志文件句柄
+summary_writer = torch.utils.tensorboard.SummaryWriter()
+# 横坐标
+step = 0
+
+for epoch_index in range(epochs):
+  for x_train, y_train in train_loader:
+    optimizer.zero_grad()
+    y_pred = model(x_train)
+    loss = criterion(y_pred, y_train)
+    loss.backward()
+    optimizer.step()
+    # 记录损失
+    writer.add_scalar('model_loss', loss, step)
+    step += 1
+```
+
+## 模型保存
+
+### 保存模型参数
+
+```
+torch.save(model.state_dict(), './parameter.pkl')
+
+model.load_state_dict(torch.load('./parameter.pkl'))
+```
+
+### 保存模型
+
+ ```
+torch.save(model, './my_model.pkl')
+
+model = torch.load('./my_model.pkl')
+ ```
+
+### Hub 模型
+
+```
+# 官方网站
+# https://pytorch.org/hub/
+
+# 从GitHub加载模型 repo_owner/repo_name[:tag_name]
+model = torch.hub.load('facebookresearch/pytorch_GAN_zoo:hub', model ='DCGAN', pretrained=True, useGPU=torch.cuda.is_available())
+
+# 可以先在GitHub下载zip模型包，放入目录.cache/torch/hub/再加载
+```
+
+### 模型使用
+
+```
+# DCGAN 深度卷积生成对抗神经网络
+# 生成64x64大小的图片
+num_images = 1
+noise, _ = model.buildNoiseData(num_images)
+with torch.no_grad():
+  generated_images = model.test(noise)
+
+import matplotlib.pyplot as plt
+import torchvision
+
+# 打印结果
+plt.axis(False)
+plt.imshow(torchvision.utils.make_grid(generated_images).permute(1, 2, 0))
+plt.show()
 ```
 

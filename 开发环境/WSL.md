@@ -248,8 +248,8 @@ tzselect
 sudo aptitude install ntpdate
 sudo ntpdate ntp.ntsc.ac.cn
 ```
-16. 安装python、pip、jupyter并配置
-17. 安装supervisor并配置jupyter任务
+16. 安装python、pip、JupyterLab并配置
+17. 安装Supervisor并配置JupyterLab任务
 18. 安装mysql并配置
 19. 安装cron
 20. 安装docker并配置
