@@ -7,8 +7,11 @@ sudo tar -xvf node-v12.16.3-linux-x64.tar.xz
 sudo mv node-v12.16.3-linux-x64 node
 
 #安装yarn（https://classic.yarnpkg.com/en/docs/install#debian-stable）
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+# 添加GPG key
+curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+# 添加仓库
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
 sudo apt update && sudo apt install yarn
 
 # 设置环境变量，在~/.zshrc追加
@@ -20,9 +23,7 @@ source ~/.zshrc
 
 # 查看版本
 node -v
-
-# 更换源到国内镜像
-npm config set registry https://registry.npm.taobao.org
-yarn config set registry https://registry.npm.taobao.org
+npm -v
+yarn -v
 ```
 

@@ -28,7 +28,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 ```
 运行后重启电脑；
 
-4. 在应用商店中安装Ubuntu，或下载安装包安装（<https://docs.microsoft.com/en-us/windows/wsl/install-manual>），安装后创建用户；
+4. 下载 Linux 内核更新包并更新（https://docs.microsoft.com/zh-cn/windows/wsl/wsl2-kernel）；
 
 5. 安装升级WSL2（WSL与WSL2的不同 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions），在 `PowerShell` 中使用下面命令：
 ```
@@ -51,7 +51,8 @@ bash -c <file>
 wsl -u root <command>
 wsl -u root <file>
 ```
-6. 移动安装位置，WSL2虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置；
+6. 在应用商店中安装Ubuntu，或下载安装包安装（<https://docs.microsoft.com/zh-cn/windows/wsl/install-manual>），安装后创建用户；
+7. 移动安装位置，WSL2虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置；
 
 ```
 # 关闭子系统
@@ -75,14 +76,14 @@ del wsl.tar
 <安装程序> config --default-user <用户名>
 ```
 
-7. 设置用户：
+8. 设置用户：
 ```
 # 以root身份进入wsl
 wsl -d <子系统名> -u root
 # 进入Linux Shell，当前用户是root，设置密码
 passwd
 ```
-8. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后打开进入Linux Shell，在设置里修改Linux Shell选项，添加：
+9. `Windows Terminal` 是一款命令行工具，在应用商店里搜索并下载安装，或下载安装包安装（<https://github.com/microsoft/terminal/releases>），安装后打开进入Linux Shell，在设置里修改Linux Shell选项，添加：
 ```
 # 默认终端
 "defaultProfile": <WSL guid>
@@ -90,7 +91,7 @@ passwd
 # 设置WSL终端
 "commandline": "wsl cd ~ && /bin/bash"
 ```
-9. 更换国内源
+10. 更换国内源
 
 查看Ubuntu版本，选择更换源版本：
 ```bash
@@ -143,7 +144,7 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted
 sudo apt update && sudo apt upgrade -y
 ```
 
-10. 从官方Ubuntu发行版复制软件包
+11. 从官方Ubuntu发行版复制软件包
 ```bash
 # 原主机导出软件列表
 dpkg --get-selections > packages-backup.list
@@ -155,13 +156,13 @@ dpkg --set-selections < packages-backup.list
 apt-get dselect-upgrade
 ```
 
-11. 安装aptitude
+12. 安装aptitude
 
 ```bash
 sudo apt install aptitude -y
 ```
 
-12. 安装zsh
+13. 安装zsh
 
 ```bash
 # 安装 zsh
@@ -173,7 +174,7 @@ sudo aptitude install zsh -y
 # 进入zsh，选择选项2，生成默认.zshrc文件
 ```
 
-13. 安装oh-my-zsh
+14. 安装oh-my-zsh
 
 下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
 ```bash
@@ -222,11 +223,16 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 # 重新打开zsh
 exit
 ```
-14. 设置系统语言
+15. 设置系统语言
 
 ```
+# 查看当前语言
+echo $LANG
+
 # 安装语言包
 sudo aptitude install language-pack-zh-hans
+# 查看安装结果
+locale -a
 
 # 开机设置
 sudo vim /etc/bash.bashrc
@@ -238,7 +244,7 @@ export LANGUAGE="zh_CN:zh"
 source /etc/zsh/zshrc
 ```
 
-15. 设置系统时间
+16. 设置系统时间
 
 ```
 # 设置时区
@@ -248,12 +254,13 @@ tzselect
 sudo aptitude install ntpdate
 sudo ntpdate ntp.ntsc.ac.cn
 ```
-16. 安装python、pip、JupyterLab并配置
-17. 安装Supervisor并配置JupyterLab任务
-18. 安装mysql并配置
-19. 安装cron
-20. 安装docker并配置
-21. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
+17. 安装Node.js并配置
+18. 安装python、pip、JupyterLab并配置
+19. 安装Supervisor并配置JupyterLab任务
+20. 安装mysql并配置
+21. 安装cron
+22. 安装docker并配置
+23. 设置子系统配置文件`/etc/wsl.conf`（https://devblogs.microsoft.com/commandline/automatically-configuring-wsl/）
 ```
 # 自动挂载
 [automount]
@@ -281,7 +288,7 @@ enabled=true
 appendWindowsPath=true
 ```
 
-22. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
+24. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
 在WSL中创建启动加载文件 `/etc/init.sh`
 ```bash
 #!/bin/sh
@@ -318,7 +325,7 @@ if(-not $currentWp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
 ```
 
 
-23. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+25. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
 ```bash
 # Windows IP
 cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '

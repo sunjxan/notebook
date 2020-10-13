@@ -51,20 +51,17 @@ source ~/.zshrc
 ```
 
 ```
-pip3 install jupyter
+pip3 install jupyter jupyterlab
 
 # 打开Jupyter服务器
-jupyter notebook --ip=0.0.0.0 --allow-root >/dev/null 2>&1 &
+jupyter lab --ip=0.0.0.0 --allow-root >/dev/null 2>&1 &
 # 获取token
 jupyter notebook list
-```
 
-```
-pip3 install jupyterlab
-
-# 打开Jupyter服务器
-jupyter-lab --ip=0.0.0.0 --allow-root >/dev/null 2>&1 &
-# 获取token
-jupyter notebook list
+# 安装插件，需要先安装Node.js
+# 如果网页安装失败，使用命令行安装
+jupyter-labextension install @author/plug
+# 安装完成后重启
+jupyter lab build
 ```
 

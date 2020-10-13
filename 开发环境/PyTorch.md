@@ -1,6 +1,6 @@
 ```
 # https://pytorch.org/get-started/locally/
-pip3 install torch
+pip3 install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 ```
@@ -13,8 +13,10 @@ print(torch.cuda.is_available())
 
 # 查看电脑GPU
 print(torch.cuda.device_count())
-print(torch.cuda.get_device_name(0))
 print(torch.cuda.current_device())
+print(torch.cuda.get_device_name(0))
+
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 ```
 
 ## 基础知识

@@ -16,10 +16,8 @@ print(tf.test.is_built_with_cuda())
 print(tf.config.list_logical_devices())
 print(tf.config.list_physical_devices())
 print(tf.config.get_visible_devices())
-import os
-from tensorflow.python.client import device_lib
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "99"
-print(device_lib.list_local_devices())
+
+device = tf.device('/device:gpu:0')
 ```
 
 ## 基础知识
@@ -277,7 +275,7 @@ x = keras.layers.BatchNormalization(axis, epsilon=1e-5, momentum=.1)(x)
 ### Dropout
 
 ```
-x = nn.dropout(x, rate=.2)
+x = keras.layers.Dropout(rate=.2)(x)
 ```
 
 ## 卷积神经网络 Convolutional Neural Networks
@@ -710,7 +708,7 @@ apt安装
 curl -fsSL https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | apt-key add -
 
 # 添加仓库
-sudo add-apt-repository  "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal"
+echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
 
 # 安装
 sudo apt update

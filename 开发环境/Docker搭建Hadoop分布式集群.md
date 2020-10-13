@@ -164,8 +164,13 @@ su - <用户名>
 #### 6. 设置系统语言
 
 ```
+# 查看当前语言
+echo $LANG
+
 # 安装语言包
 sudo aptitude install language-pack-zh-hans
+# 查看安装结果
+locale -a
 
 # 开机设置
 sudo vim /etc/bash.bashrc
@@ -193,7 +198,7 @@ sudo ntpdate ntp.ntsc.ac.cn
 #### 8. 安装网络工具
 
 ```
-sudo aptitude install iputils-ping netcat net-tools telnet -y
+sudo aptitude install iputils-ping netcat net-tools telnet curl -y
 ```
 
 #### 9. 安装SSH
@@ -213,23 +218,25 @@ vim ~/.zshrc
 sudo /etc/init.d/ssh start
 ```
 
-#### 10. 安装Python、pip、JupyterLab并配置
+#### 10. 安装Node.js并配置
 
-#### 11. 安装Supervisor并配置JupyterLab任务
+#### 11. 安装Python、pip、JupyterLab并配置
 
-#### 12. 安装numpy、pandas、matplotlib、APScheduler
+#### 12. 安装Supervisor并配置JupyterLab任务
+
+#### 13. 安装numpy、pandas、matplotlib、APScheduler
 
 ```
 pip3 install numpy pandas matplotlib APScheduler
 ```
 
-#### 13. 安装JDK8并配置
+#### 14. 安装JDK8并配置
 
-#### 14. 安装Maven3.6.3并配置
+#### 15. 安装Maven3.6.3并配置
 
-#### 15. 安装MySQL并配置
+#### 16. 安装MySQL并配置
 
-#### 16. 安装cron
+#### 17. 安装cron
 
 ```
 # 退出docker，保存这个镜像
@@ -858,7 +865,7 @@ generateHosts=false
 
   - Application  http://master:4040（每创建一个Application即从4040递增寻找没有被占用的接口）   http://master:8088/proxy/<Application ID>
 
-- Jupyter Notebook
+- Jupyter
 
   http://master:8889（默认端口号为8888）
 
