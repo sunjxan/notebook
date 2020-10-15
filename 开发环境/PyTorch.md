@@ -14,9 +14,22 @@ print(torch.cuda.is_available())
 # 查看电脑GPU
 print(torch.cuda.device_count())
 print(torch.cuda.current_device())
-print(torch.cuda.get_device_name(0))
+print(torch.cuda.get_device_name('cuda'))
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+a = torch.tensor(1)
+print(a.device)
+# cpu
+
+# 或 b = a.cuda()
+b = a.to('cuda')
+print(b.device)
+# cuda:0
+
+# 直接在GPU上创建tensor
+a = torch.tensor([[1., 2., 3.], [4., 5., 6.]], device=torch.device('cuda'))
+# 使用to方法移动tensor到任何设备（默认是CPU），也能在移动时改变dtype
+b = torch.tensor([[1, 2], [3, 4], [5, 6]]).to('cuda', torch.float32)
+c = torch.matmul(a, b)
 ```
 
 ## 基础知识
@@ -26,7 +39,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 ```
 x = torch.zeros((3, 4))
 y = torch.ones((3, 4))
-z = torch.randn((3, 4))
+z = torch.rand((3, 4))
 x2 = torch.zeros_like(x)
 y2 = torch.ones_like(y)
 a = torch.full((2,3), 5.)
@@ -52,29 +65,53 @@ x.clone()
 x.T
 ```
 
+### 改变类型
+
+```
+x.float()
+x.double()
+```
+
 ### 改变形状
 
 ```
-x2 = x.view((2, 6))
+# 展平
+x.flatten()
+
+# 压缩
+x.squeeze()
+
+# 最内维度不变，其他维度复制
+x.expand((1, 2, -1))
+
+# 指定形状
+x.view((2, -1))
+x.reshape((-1, 6))
 ```
 
 ### 赋值
 
 ```
-x[:, 2] = 1
-```
-
-### 创建张量
-
-```
-a = torch.tensor([[2, 3]], dtype=torch.float32)
+x[0, :] = 1
+x[1, ...] = 2
 ```
 
 ### 初始化函数
 
 ```
 nn.init.zeros_(a)
+
+# xavier_normal_只能对多维数据初始化
 nn.init.xavier_normal_(a)
+```
+
+### 创建张量
+
+```
+a = torch.empty((2, 3))
+nn.init.xavier_normal_(a)
+
+b = torch.tensor([[2, 3]], dtype=torch.float32)
 ```
 
 ### 自动求导
@@ -110,17 +147,17 @@ layer.bias
 
 # 初始化权重和偏置
 nn.init.xavier_normal_(layer.weight)
-nn.init.zeros_(layer.bias)
+nn.init.xavier_normal_(layer.bias.view((1, -1)))
 
 # 计算
-X = torch.tensor([[1, 1, 1]], dtype=torch.float32)
-y = layer(X)
+x = torch.tensor([[1, 1, 1]], dtype=torch.float32)
+logits = layer(x)
 
 # 激活
 f1 = nn.Sigmoid()
-z = f1(y)
+y = f1(logits)
 f2 = nn.Softmax(dim=-1)
-z = f2(y)
+y = f2(logits)
 ```
 
 ### 模型堆叠
@@ -132,8 +169,11 @@ model = nn.Sequential(
   nn.Linear(2, 3),
   nn.Softmax(-1)
 )
-X = torch.tensor([[1, 1]], dtype=torch.float32)
-y = model(X)
+
+print(model)
+
+x = torch.tensor([[1, 1]], dtype=torch.float32)
+y = model(x)
 ```
 
 ### 模型子类化
@@ -160,13 +200,14 @@ class MyModel(nn.Module):
 
 model = MyModel()
 
-X = torch.tensor([[1, 1]], dtype=torch.float32)
-y = model(X)
+x = torch.tensor([[1, 1]], dtype=torch.float32)
+y = model(x)
 
 # 查看模型层
 list(model.children())
 # 查看模型权重和偏置
 list(model.parameters())
+model.state_dict()
 ```
 
 ### 损失函数
@@ -193,11 +234,11 @@ class MyModel(nn.Module):
 
 model = MyModel()
 
-X = torch.tensor([[1., 1., 1.], [2., 2., 2.]])
+x = torch.tensor([[1., 1., 1.], [2., 2., 2.]])
 y = torch.tensor([[2., 3.], [4., 6.]])
 
 # 计算预测值
-y_pred = model(X)
+y_pred = model(x)
 # 计算损失
 criterion = nn.MSELoss()
 loss = criterion(y_pred, y)
@@ -237,14 +278,10 @@ optimizer = torch.optim.SGD(model.parameters(), 5e-4)
 num_batches = 100
 for batch_index in range(num_batches):
   optimizer.zero_grad()
-  y_pred = model(X)
+  y_pred = model(x)
   loss = criterion(y_pred, y)
   loss.backward()
   optimizer.step()
-
-print(loss)
-for param in model.parameters():
-  print(param.grad)
 ```
 
 ### BatchNormalization
@@ -259,6 +296,13 @@ x = nn.BatchNorm1d(num_features, eps=1e-5, momentum=.1)(x)
 x = nn.Dropout(p=.2)(x)
 ```
 
+### 多设备并行
+
+```python
+if torch.cuda.device_count() > 1: 
+  model = nn.DataParallel(model)
+```
+
 ## 卷积神经网络 Convolutional Neural Networks
 
 ### 加载数据
@@ -267,23 +311,21 @@ x = nn.Dropout(p=.2)(x)
 # 导入视觉包
 import torchvision as tv
 
-# 将PIL Image转换为Tensor
-transform = tv.transforms.Compose([tv.transforms.ToTensor()])
-
 # 加载MNIST数据，训练数据60000张28*28的灰度值图片，测试数据10000张28*28的灰度值图片
-# 加载训练数据
-train_set = tv.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-train_data = train_set.train_data
-train_labels = train_set.train_labels
-
-# 加载测试数据
-test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
-test_data = test_set.test_data
-test_labels = test_set.test_labels
-
+# 加载训练数据，得到PIL.Image.Image类型的图片
+train_set = tv.datasets.MNIST(root='./data', train=True, download=True)
 # 显示图片
 import matplotlib.pyplot as plt
-plt.imshow(train_data[0], cmap="gray")
+plt.axis(False)
+plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
+plt.show()
+
+transform = tv.transforms.Compose([tv.transforms.ToTensor()])
+# 加载测试数据，将PIL Image转换为Tensor
+test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+# 显示图片
+plt.axis(False)
+plt.imshow(test_set[0][0][0], cmap=plt.get_cmap('gray'))
 plt.show()
 ```
 
@@ -291,6 +333,11 @@ plt.show()
 
 ```
 # 一个epoch内，不同batch间、一个batch内数据都不重复，所有数据都计算一次
+
+# 要进行计算，必须将PIL Image转换为Tensor
+transform = tv.transforms.Compose([tv.transforms.ToTensor()])
+train_set = tv.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
+test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 
 # 训练数据生成器
 train_loader = torch.utils.data.DataLoader(train_set, batch_size=100, shuffle=True)
@@ -351,9 +398,9 @@ optimizer = torch.optim.SGD(model.parameters(), 5e-4)
 
 epochs = 10
 for epoch_index in range(epochs):
-  for X, y in train_loader:
+  for x, y in train_loader:
     optimizer.zero_grad()
-    y_pred = model(X)
+    y_pred = model(x)
     loss = criterion(y_pred, y)
     loss.backward()
     optimizer.step()
@@ -367,8 +414,8 @@ total = 0
 
 # 阻止autograd跟踪设置了 requires_grad=True 的张量的历史记录
 with torch.no_grad():
-  for X, y in test_loader:
-    y_pred = model(X)
+  for x, y in test_loader:
+    y_pred = model(x)
     total += y.size(0)
     correct += (torch.argmax(y_pred, -1) == y).sum().item()
 
@@ -466,17 +513,21 @@ for epoch_index in range(epochs):
 ### 保存模型参数
 
 ```
-torch.save(model.state_dict(), './parameter.pkl')
+x = torch.tensor([1])
+torch.save(x, './tensor.pt')
+x = torch.load('./tensor.pt')
 
-model.load_state_dict(torch.load('./parameter.pkl'))
+torch.save(model.state_dict(), './parameter.pt')
+
+model.load_state_dict(torch.load('./parameter.pt'))
 ```
 
 ### 保存模型
 
  ```
-torch.save(model, './my_model.pkl')
+torch.save(model, './my_model.pt')
 
-model = torch.load('./my_model.pkl')
+model = torch.load('./my_model.pt')
  ```
 
 ### Hub 模型

@@ -8,16 +8,38 @@ import tensorflow as tf
 print(tf.__version__)
 
 # 查看GPU和CUDA支持
-print(tf.test.is_gpu_available())
 print(tf.test.is_built_with_gpu_support())
 print(tf.test.is_built_with_cuda())
 
-# 查看电脑GPU和CPU
-print(tf.config.list_logical_devices())
+# 查看电脑CPU和GPU
 print(tf.config.list_physical_devices())
-print(tf.config.get_visible_devices())
+print(tf.config.list_physical_devices('GPU'))
 
-device = tf.device('/device:gpu:0')
+a = tf.constant(1)
+# 打印张量的设备
+print(a.device)
+# /job:localhost/replica:0/task:0/device:CPU:0
+
+# 系统将运算分配给设备时优先使用 GPU 设备，如果系统上有多个 GPU，则默认情况下会选择具有最小 ID 的 GPU
+b = a * 1
+print(b.device)
+# /job:localhost/replica:0/task:0/device:GPU:0
+```
+
+```
+import tensorflow as tf
+
+# 启用设备放置记录将导致任何张量分配或运算被打印
+tf.debugging.set_log_device_placement(True)
+
+# 指定运行设备
+with tf.device('/GPU:0'):
+  a = tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+  b = tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+  c = tf.matmul(a, b)
+
+# 结果会打印记录
+# Executing op MatMul in device /job:localhost/replica:0/task:0/device:GPU:0
 ```
 
 ## 基础知识
@@ -49,10 +71,24 @@ x.dtype
 tf.transpose(x)
 ```
 
+### 改变类型
+
+```
+tf.cast(x, tf.float32)
+tf.cast(x, tf.double)
+```
+
 ### 改变形状
 
 ```
-x2 = tf.reshape(x, (2, 6))
+# 压缩
+tf.squeeze(x)
+
+# 扩展维度
+tf.expand_dims(x, axis=0)
+
+# 指定形状
+tf.reshape(x, (2, 6))
 ```
 
 ### 初始化函数
@@ -60,12 +96,10 @@ x2 = tf.reshape(x, (2, 6))
 ```
 # 创建初始化器
 initializer = keras.initializers.zeros()
+initializer = keras.initializers.glorot_normal()
 
 # 初始化器生产张量
 a = initializer(dtype=tf.float32, shape=(1,2))
-
-initializer = keras.initializers.glorot_normal()
-b= initializer(dtype=tf.float32, shape=(1,2))
 ```
 
 ### 创建张量
@@ -75,10 +109,10 @@ initializer = keras.initializers.zeros()
 a = initializer(dtype=tf.float32, shape=(1,2))
 
 # 常量
-b = tf.constant(a, dtype=tf.float32, shape=(1,2))
+b = tf.constant([[2, 3]], dtype=tf.float32, shape=(1,2))
 
 # 变量
-c = tf.Variable(a, dtype=tf.float32, shape=(1,2))
+c = tf.Variable([[2, 3]], dtype=tf.float32, shape=(1,2))
 ```
 
 ### 自动求导
@@ -114,15 +148,15 @@ keras.__version__
 layer = keras.layers.Dense(units, input_dim, use_bias=True, name, activation=None, kernel_initializer='glorot_uniform', bias_initializer=keras.initializers.zeros)
 
 # 计算
-X = tf.constant([[1, 1, 1]])
-y = layer(X)
+x = tf.constant([[1, 1, 1]])
+logits = layer(x)
 
 # 权重和偏置（计算后生成）
 layer.weights
 
 # 激活
-z = nn.sigmoid(y)
-z = nn.softmax(y)
+y = nn.sigmoid(logits)
+y = nn.softmax(logits)
 ```
 
 ### 模型堆叠
@@ -133,8 +167,9 @@ model = keras.Sequential([
   keras.layers.Dense(3, input_dim=2),
   keras.layers.Activation(nn.softmax)
 ])
-X = tf.constant([[1, 1, 1, 1]])
-y = model(X)
+
+x = tf.constant([[1, 1, 1, 1]])
+y = model(x)
 ```
 
 ### 模型子类化
@@ -143,7 +178,7 @@ y = model(X)
 class MyModel(keras.Model):
   def __init__(self):
     super().__init__()
-    self.dense1 = keras.layers.Dense(2, input_dim=4, activation='sigmoid', kernel_initializer='glorot_uniform', bias_initializer='glorot_uniform'
+    self.dense1 = keras.layers.Dense(2, input_dim=4, activation='sigmoid', kernel_initializer='glorot_uniform', bias_initializer='glorot_uniform')
     self.dense2 = keras.layers.Dense(3, input_dim=2, activation='softmax', kernel_initializer='glorot_uniform', bias_initializer='glorot_uniform')
 
   def call(self, inputs):
@@ -153,8 +188,8 @@ class MyModel(keras.Model):
 
 model = MyModel()
 
-X = tf.constant([[1, 1, 1, 1]])
-y = model(X)
+x = tf.constant([[1, 1, 1, 1]])
+y = model(x)
 
 # 查看模型层
 model.layers
@@ -183,16 +218,16 @@ class MyModel(keras.Model):
 
 model = MyModel()
 
-X = tf.constant([[1., 1., 1.], [2., 2., 2.]])
+x = tf.constant([[1., 1., 1.], [2., 2., 2.]])
 y = tf.constant([[2., 3.], [4., 6.]])
 
 with tf.GradientTape() as tape:
   # 计算预测值
-  y_pred = model(X)
+  y_pred = model(x)
   # 计算损失
   loss = tf.reduce_mean(keras.losses.MSE(y, y_pred))
 # 计算梯度
-grads = tape.gradient(loss, model.variables)
+grads = tape.gradient(loss, model.trainable_variables)
 
 # 打印损失
 print(loss)
@@ -207,9 +242,9 @@ for grad in grads:
 # 创建优化器
 optimizer = keras.optimizers.SGD(5e-4)
 # 计算梯度
-grads = tape.gradient(loss, model.variables)
+grads = tape.gradient(loss, model.trainable_variables)
 # 更新参数
-optimizer.apply_gradients(zip(grads, model.variables))
+optimizer.apply_gradients(zip(grads, model.trainable_variables))
 ```
 
 ### 迭代更新
@@ -221,14 +256,10 @@ optimizer = keras.optimizers.SGD(5e-4)
 num_batches = 100
 for batch_index in range(num_batches):
   with tf.GradientTape() as tape:
-    y_pred = model(X)
+    y_pred = model(x)
     loss = tf.reduce_mean(keras.losses.MSE(y, y_pred))
-  grads = tape.gradient(loss, model.variables)
-  optimizer.apply_gradients(zip(grads, model.variables))
-
-print(loss)
-for grad in grads:
-  print(grad)
+  grads = tape.gradient(loss, model.trainable_variables)
+  optimizer.apply_gradients(zip(grads, model.trainable_variables))
 ```
 
 ### 评估器
@@ -257,13 +288,13 @@ model.compile(optimizer=keras.optimizers.SGD(5e-4), loss=keras.losses.MSE, metri
 # steps_per_epoch 从数据中顺序取批次，步骤的次数，各个步骤间数据不重复，最后一步数据可能小于batch_size
 # epochs 遍历所有数据轮回数是epochs减去initial_epoch
 # shuffle 每次遍历所有数据前，是否对数据随机排序
-model.fit(X_train, y_train, batch_size=1, steps_per_epoch=None, initial_epoch=0, epochs=1, shuffle=True)
+model.fit(x_train, y_train, batch_size=1, steps_per_epoch=None, initial_epoch=0, epochs=1, shuffle=True)
 
 # 4.评估，返回loss函数值和metrics函数值
-model.evaluate(X_test, y_test, batch_size=None, steps=None)
+model.evaluate(x_test, y_test, batch_size=None, steps=None)
 
 # 5.预测，返回预测值
-model.predict(X, batch_size=None, steps=None)
+model.predict(x, batch_size=None, steps=None)
 ```
 
 ### BatchNormalization
@@ -284,11 +315,12 @@ x = keras.layers.Dropout(rate=.2)(x)
 
 ```
 # 加载MNIST数据，训练数据60000张28*28的灰度值图片，测试数据10000张28*28的灰度值图片
-(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+train_set, test_set = keras.datasets.mnist.load_data()
 
 # 显示图片
 import matplotlib.pyplot as plt
-plt.imshow(x_train[0], cmap='gray')
+plt.axis(False)
+plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
 plt.show()
 ```
 
@@ -299,16 +331,16 @@ plt.show()
 
 import numpy as np
 
-class MNISTLoader():
+class DataLoader():
   def __init__(self, batch_size=1, shuffle=False, train=True):
-    (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+    train_set, test_set = keras.datasets.mnist.load_data()
     # MNIST中的图像默认为uint8（0-255的数字），以下代码将其归一化到0-1之间的浮点数，并在最后增加一维作为颜色通道
     if train:
-      x = np.expand_dims(x_train.astype('float32') / 255, axis=-1)      # [60000, 28, 28, 1]
-      y = y_train.astype('int32')      # [60000]
+      x = np.expand_dims(train_set[0].astype(np.float32) / 255, axis=-1)      # [60000, 28, 28, 1]
+      y = train_set[1].astype(np.int32)      # [60000]
     else:
-      x = np.expand_dims(x_test.astype('float32') / 255, axis=-1)        # [10000, 28, 28, 1]
-      y = y_test.astype('int32')      # [10000]
+      x = np.expand_dims(test_set[0].astype(np.float32) / 255, axis=-1)        # [10000, 28, 28, 1]
+      y = test_set[1].astype(np.int32)      # [10000]
     self.dataset = tf.data.Dataset.from_tensor_slices((x, y))
     self.batch_size = batch_size
     self.shuffle = shuffle
@@ -319,10 +351,10 @@ class MNISTLoader():
     return iter(self.dataset.batch(self.batch_size))
 
 # 训练数据生成器
-train_loader = MNISTLoader(batch_size=9999, shuffle=True)
+train_loader = DataLoader(batch_size=9999, shuffle=True)
 
 # 测试数据生成器
-test_loader = MNISTLoader(batch_size=100, shuffle=True, train=False)
+test_loader = DataLoader(batch_size=100, shuffle=True, train=False)
 ```
 
 ### 建立模型
@@ -378,12 +410,12 @@ optimizer = keras.optimizers.SGD(5e-4)
 
 epochs = 10
 for epoch_index in range(epochs):
-  for X, y in train_loader:
+  for x, y in train_loader:
     with tf.GradientTape() as tape:
-      y_pred = model(X)
+      y_pred = model(x)
       loss = criterion(y, y_pred)
-    grads = tape.gradient(loss, model.variables)
-    optimizer.apply_gradients(zip(grads, model.variables))
+    grads = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(grads, model.trainable_variables))
 ```
 
 ### 交叉熵评估
@@ -410,8 +442,8 @@ print('%.4f' % metric.result())
 # 交叉熵准确度评估器
 metric = keras.metrics.SparseCategoricalAccuracy()
 
-for X, y in test_loader:
-  y_pred = model(X)
+for x, y in test_loader:
+  y_pred = model(x)
   metric.update_state(y, y_pred)
 
 print('%.4f' % metric.result())
@@ -527,8 +559,8 @@ for epoch_index in range(epochs):
     with tf.GradientTape() as tape:
       y_pred = model(x_train)
       loss = criterion(y_train, y_pred) 
-    grads = tape.gradient(loss, model.variables)
-    optimizer.apply_gradients(zip(grads, model.variables))
+    grads = tape.gradient(loss, model.trainable_variables)
+    optimizer.apply_gradients(zip(grads, model.trainable_variables))
 
     # 希望使用的记录器
     with summary_writer.as_default():
@@ -592,15 +624,15 @@ for a, b, c in dataset:
 ### 保存模型参数
 
 ```
-model.save_weights('./my_model/')
+model.save_weights('./my_model/weights/weights')
 
-model.load_weights('./my_model/')
+model.load_weights('./my_model/weights/weights')
 ```
 
 ### 保存模型
 
 ```
-# 模型目录结构
+# SavedModel 导出模型目录结构
 /saved_model_files
     /1      # 版本号为1的模型文件
         /assets
@@ -616,12 +648,44 @@ model.load_weights('./my_model/')
 version = 1
 
 # SavedModel 导出模型
-tf.saved_model.save(model, './my_model/{}'.format(version))
-model = tf.saved_model.load('./my_model/{}'.format(version))
+tf.saved_model.save(model, './my_model/saved_models/{}'.format(version))
+model = tf.saved_model.load('./my_model/saved_models/{}'.format(version))
 
 # Keras Sequential 导出模型
-keras.models.save_model(model, ./my_model.h5')
-model = keras.models.load_model('./my_model.h5'')
+keras.models.save_model(model, ./my_model/HDF5/model.h5')
+model = keras.models.load_model('./my_model/HDF5/model.h5'')
+```
+
+### 保存Checkpoint
+
+```
+# 使用自定义键值对创建Checkpoint对象
+ckpt = tf.train.Checkpoint(step=tf.Variable(1), model=model, optimizer=optimizer, dataset=dataset)
+# 在新的Checkpoint恢复键值对的值
+new_ckpt = tf.train.Checkpoint(step=tf.Variable(1), model=model, optimizer=optimizer, dataset=dataset)
+
+# 1.直接保存
+ckpt.write('./my_model/ckpts/ckpt')
+new_ckpt.read('./my_model/ckpts/ckpt')
+
+# 2.前缀后加'-1'保存为一个版本，版本号递增
+ckpt.save('./my_model/ckpts/ckpt')
+new_ckpt.restore('./my_model/ckpts/ckpt-1')
+
+# 返回最新路径
+tf.train.latest_checkpoint('./my_model/ckpts')
+
+# 查看保存键值对
+tf.train.list_variables('./my_model/ckpts/ckpt-1')
+# 获取变量
+tf.train.load_variable('./my_model/ckpts/ckpt-1', '<变量名>')
+
+# Checkpoint管理，max_to_keep表示只保存最新的个数
+manager = tf.train.CheckpointManager(ckpt, './my_model/ckpts', max_to_keep=3)
+manager.save()
+# Checkpoint历史和最新的路径
+manager.checkpoints
+manager.latest_checkpoint
 ```
 
 ### Hub 模型

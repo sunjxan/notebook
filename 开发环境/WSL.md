@@ -289,26 +289,39 @@ appendWindowsPath=true
 ```
 
 24. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
-在WSL中创建启动加载文件 `/etc/init.sh`
+
+在WSL中创建启动加载文件 `/etc/init_root.sh`和`/etc/init_user.sh`，分别以root和user用户执行需要不同权限的操作：
+
+/etc/init_root.sh
+
 ```bash
 #!/bin/sh
 /etc/init.d/ssh start
 ```
 
+/etc/init_user.sh
+
+```bash
+#!/bin/sh
+supervisord
+```
+
 在Windows中创建启动加载文件 `wsl2.ps1`
+
 ```powershell
-wsl -u root bash /etc/init.sh
+wsl -u root bash /etc/init_root.sh
+wsl bash /etc/init_user.sh
 ```
 
 控制面板->管理工具->事件查看器，Windows日志->系统，在来源为“ Hyper-V-VmSwith”的事件中，搜索信息为“Port xxxxxxxxxx (Friendly Name: xxxxxxxxxx) successfully created on switch xxxxxxxxxx (Friendly Name: WSL).”的事件，右键该项，选择 将任务附加到该事件。
 
-操作选择 启动程序，程序中填 PowerShell，参数填 `-File wsl2.ps1的绝对地址` ，后面加上`-WindowStyle Hidden` 可以在启动时隐藏 powershell 窗口，完成。
+操作选择 启动程序，程序中填 `PowerShell`，参数填 `-File <wsl2.ps1的绝对地址>` ，后面加上`-WindowStyle Hidden` 可以在启动时隐藏 powershell 窗口，完成。
 
-为了使ps1脚本成功执行，使用管理员身份运行PowerShell，输入 `set-ExecutionPolicy RemoteSigned`，选择 `Y`。
+为了使ps1脚本成功执行，开始菜单->使用管理员身份运行PowerShell，输入 `set-ExecutionPolicy RemoteSigned`，选择 `Y`。
 
 控制面板->管理工具->任务计划程序，任务计划程序库->事件查看器任务，找到刚创建的任务，右键属性，然后勾选下面的复选框：使用最高权限运行。
 
-如果出现MMC管理单元错误，不能自动获取管理员身份，则手动获取。在 `wsl2.ps1` **开始处**检测如果不是管理员身份，则重新以管理员身份打开：
+如果出现MMC管理单元错误，不能自动获取管理员身份，则手动获取：在 `wsl2.ps1` **开始处**检测如果不是管理员身份，则重新以管理员身份打开：
 
 ```powershell
 $currentWi = [Security.Principal.WindowsIdentity]::GetCurrent()
