@@ -303,7 +303,7 @@ appendWindowsPath=true
 
 ```bash
 #!/bin/sh
-supervisord
+~/.local/bin/supervisord
 ```
 
 在Windows中创建启动加载文件 `wsl2.ps1`
