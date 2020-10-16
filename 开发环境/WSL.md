@@ -290,27 +290,27 @@ appendWindowsPath=true
 
 24. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
 
-在WSL中创建启动加载文件 `/etc/init_root.sh`和`/etc/init_user.sh`，分别以root和user用户执行需要不同权限的操作：
+不需要root权限：
 
-/etc/init_root.sh
+在`~/.zshrc`文件追加：
+
+```
+supervisord
+```
+
+需要root权限：
+
+在WSL中创建启动加载文件 `/etc/init.sh`：
 
 ```bash
 #!/bin/sh
 /etc/init.d/ssh start
 ```
 
-/etc/init_user.sh
-
-```bash
-#!/bin/sh
-~/.local/bin/supervisord
-```
-
 在Windows中创建启动加载文件 `wsl2.ps1`
 
 ```powershell
-wsl -u root bash /etc/init_root.sh
-wsl bash /etc/init_user.sh
+wsl -u root bash /etc/init.sh
 ```
 
 控制面板->管理工具->事件查看器，Windows日志->系统，在来源为“ Hyper-V-VmSwith”的事件中，搜索信息为“Port xxxxxxxxxx (Friendly Name: xxxxxxxxxx) successfully created on switch xxxxxxxxxx (Friendly Name: WSL).”的事件，右键该项，选择 将任务附加到该事件。
@@ -359,7 +359,7 @@ $wsl_ip = bash -c "ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1
 如果要在局域网中访问WSL2里的服务，使用端口映射，在 `wsl2.ps1`文件中添加：
 
 ```powershell
-$ports = @(80, 443, 8080)
+$ports = @(80, 443, 8080, 9001, 8888)
 
 $addr = '0.0.0.0'
 $ports_a = $ports -join ","

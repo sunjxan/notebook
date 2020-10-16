@@ -30,6 +30,9 @@ a = torch.tensor([[1., 2., 3.], [4., 5., 6.]], device=torch.device('cuda'))
 # 使用to方法移动tensor到任何设备（默认是CPU），也能在移动时改变dtype
 b = torch.tensor([[1, 2], [3, 4], [5, 6]]).to('cuda', torch.float32)
 c = torch.matmul(a, b)
+
+print(a.device, b.device, c.device)
+# cuda:0 cuda:0 cuda:0
 ```
 
 ## 基础知识

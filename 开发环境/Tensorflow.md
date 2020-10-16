@@ -37,9 +37,11 @@ with tf.device('/GPU:0'):
   a = tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
   b = tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
   c = tf.matmul(a, b)
-
 # 结果会打印记录
 # Executing op MatMul in device /job:localhost/replica:0/task:0/device:GPU:0
+
+print(a.device, b.device, c.device)
+# /job:localhost/replica:0/task:0/device:CPU:0 /job:localhost/replica:0/task:0/device:CPU:0 /job:localhost/replica:0/task:0/device:GPU:0
 ```
 
 ## 基础知识
