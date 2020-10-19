@@ -311,6 +311,62 @@ x = keras.layers.BatchNormalization(axis, epsilon=1e-5, momentum=.1)(x)
 x = keras.layers.Dropout(rate=.2)(x)
 ```
 
+### estimator
+
+```
+# 定义特征列，age 连续、relationship 离散
+age = tf.feature_column.numeric_column('age')
+relationship = tf.feature_column.categorical_column_with_vocabulary_list(
+    'relationship',
+    ['Husband', 'Not-in-family', 'Wife', 'Own-child', 'Unmarried', 'Other-relative'])
+
+# 示例化模型
+model = tf.estimator.LinearRegressor(feature_columns=[age, relationship], model_dir='./my_model/', label_dimension=1, weight_column=None, optimizer='Ftrl', config=None, warm_start_from=None, loss_reduction='sum_over_batch_size', sparse_combiner='sum')
+
+# 准备训练、评估、预测的数据集
+import functools
+
+def train_loader(shuffle=True, batch_size=1):
+    dataset = tf.data.Dataset.from_tensor_slices(({
+      'age': [1, 2, 3, 4, 5, 6],
+      'relationship': ['Husband', 'Not-in-family', 'Wife', 'Own-child', 'Unmarried', 'Other-relative']
+    }, [3, 5, 7, 9, 11, 13]))
+    if shuffle:
+        dataset = dataset.shuffle(buffer_size=1024)
+    return dataset.batch(batch_size)
+
+train_inpf = functools.partial(train_loader, shuffle=True, batch_size=2)
+
+def evaluate_loader():
+    dataset = tf.data.Dataset.from_tensors(({
+      'age': [6, 5, 4, 3, 2, 1],
+      'relationship': ['Husband', 'Not-in-family', 'Wife', 'Own-child', 'Unmarried', 'Other-relative']
+    }, [8, 8, 8, 8, 8, 8]))
+    return dataset
+
+def predict_loader():
+  return tf.data.Dataset.from_tensors({
+      'age': [1, 2, 3, 4, 5, 6],
+      'relationship': ['Husband', 'Not-in-family', 'Wife', 'Own-child', 'Unmarried', 'Other-relative']
+})
+
+# 训练
+print('-' * 20 + ' train ' + '-' * 20)
+model.train(train_inpf)
+
+# 评估
+print('-' * 20 + ' evaluate ' + '-' * 20)
+eval_res = model.evaluate(evaluate_loader)
+for key, value in eval_res.items():
+  print('%s: %s' % (key, value))
+
+# 预测
+print('-' * 20 + ' predict ' + '-' * 20)
+pred_res = model.predict(predict_loader)
+for item in pred_res:
+     print(item['predictions'])
+```
+
 ## 卷积神经网络 Convolutional Neural Networks
 
 ### 加载数据

@@ -176,8 +176,12 @@ sudo aptitude install zsh -y
 
 14. 安装oh-my-zsh
 
-下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
+从 https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts 中复制解析规则到 `/etc/hosts` 文件中。
+
+下载 `install.sh` 并执行：
 ```bash
+cd ~
+wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 sudo bash install.sh
 
 # 安装完成后，退出root
@@ -288,7 +292,7 @@ enabled=true
 appendWindowsPath=true
 ```
 
-24. 添加启动项（https://lengthmin.me/posts/wsl2-network-tricks/）
+24. 添加启动项
 
 不需要root权限：
 
@@ -338,12 +342,19 @@ if(-not $currentWp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
 ```
 
 
-25. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变（https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications）：
+25. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变。
+
+https://lengthmin.me/posts/wsl2-network-tricks/
+
+https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications
+
 ```bash
 # Windows IP
 cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '
 # WSL2 IP
 ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'
+
+# 因为有防火墙，二者之间是互ping不通的，打开程序时，设置公用网络允许访问
 ```
 
 修改hosts文件添加master域名映射，在 `wsl2.ps1`文件中添加：
@@ -354,6 +365,11 @@ $wsl_hostname = "master"
 $wsl_ip = bash -c "ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'"
 
 ((Get-Content -Path $host_path | Select-String -Pattern '# WSL2 host' -NotMatch | Out-String).Trim() + "`n$wsl_ip`t`t$wsl_hostname`t`t`t# WSL2 host").Trim() | Out-File -FilePath $host_path -encoding ascii
+
+$win_hostname = "windows"
+$win_ip = bash -c "cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '"
+
+((Get-Content -Path /etc/ | Select-String -Pattern '# WSL2 host' -NotMatch | Out-String).Trim() + "`n$wsl_ip`t`t$wsl_hostname`t`t`t# WSL2 host").Trim() | Out-File -FilePath $host_path -encoding ascii
 ```
 
 如果要在局域网中访问WSL2里的服务，使用端口映射，在 `wsl2.ps1`文件中添加：

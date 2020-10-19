@@ -15,8 +15,8 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update && sudo apt install yarn
 
 # 设置环境变量，在~/.zshrc追加
-export NODE_HOME="/usr/local/node"
-export PATH="${NODE_HOME}/bin:$PATH"
+export NODE_HOME=/usr/local/node
+export PATH=${NODE_HOME}/bin:~/.yarn/bin:$PATH
 
 # 生效
 source ~/.zshrc
@@ -25,5 +25,12 @@ source ~/.zshrc
 node -v
 npm -v
 yarn -v
+```
+
+```
+# 使用JupyterLab
+yarn global add ijavascript
+# 安装
+ijsinstall
 ```
 
