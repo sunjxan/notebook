@@ -123,7 +123,7 @@ cv2.imshow('lena.jpg', img)
 cv2.waitKey()
 ```
 
-### Jupyter
+### 使用Matplotlib展示图片
 
 ```
 import cv2
