@@ -121,6 +121,7 @@ import cv2
 img = cv2.imread('/home/<user>/opencv/samples/data/lena.jpg')
 cv2.imshow('lena.jpg', img)
 cv2.waitKey()
+cv2.destroyAllWindows()
 ```
 
 ### 使用Matplotlib展示图片
