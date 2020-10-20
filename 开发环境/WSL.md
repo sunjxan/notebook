@@ -344,6 +344,8 @@ if(-not $currentWp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrat
 
 25. WSL1和Windows共用文件系统、网络，在局域网中可以使用IP进入WSL网络服务。而WSL2有独立的IP，所有子系统使用同一个IP地址，而且WSL2的虚拟网卡网关是动态的，每次重新启动WSL2时IP会改变。
 
+当使用远程 IP 地址连接到应用程序时，它们将被视为来自局域网 (LAN) 的连接。 这意味着你需要确保你的应用程序可以接受 LAN 连接。例如，你可能需要将应用程序绑定到 `0.0.0.0` 而非 `127.0.0.1`。进行这些更改时请注意安全性，因为这将允许来自你的 LAN 的连接。
+
 https://lengthmin.me/posts/wsl2-network-tricks/
 
 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications
@@ -354,10 +356,21 @@ cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '
 # WSL2 IP
 ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'
 
-# 因为有防火墙，二者之间是互ping不通的，打开程序时，设置公用网络允许访问
+# 因为有Windows防火墙，WSL2 ping Windows 是不通的，打开Windows程序时，设置公用网络允许访问
 ```
 
-修改hosts文件添加master域名映射，在 `wsl2.ps1`文件中添加：
+修改WSL2 hosts文件添加域名映射，在 `/etc/init.sh`文件中添加：
+
+```
+host_path="/etc/hosts"
+win_hostname="windows"
+win_ip=$(cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' ')
+
+sed -i "/# Win host/d" ${host_path}
+sed -i "\$a\\${win_ip}          ${win_hostname}                  # Win host" ${host_path}
+```
+
+修改Windows hosts文件添加域名映射，在 `wsl2.ps1`文件中添加：
 
 ```powershell
 $host_path = "$env:windir\System32\drivers\etc\hosts"
@@ -365,11 +378,6 @@ $wsl_hostname = "master"
 $wsl_ip = bash -c "ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'"
 
 ((Get-Content -Path $host_path | Select-String -Pattern '# WSL2 host' -NotMatch | Out-String).Trim() + "`n$wsl_ip`t`t$wsl_hostname`t`t`t# WSL2 host").Trim() | Out-File -FilePath $host_path -encoding ascii
-
-$win_hostname = "windows"
-$win_ip = bash -c "cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '"
-
-((Get-Content -Path /etc/ | Select-String -Pattern '# WSL2 host' -NotMatch | Out-String).Trim() + "`n$wsl_ip`t`t$wsl_hostname`t`t`t# WSL2 host").Trim() | Out-File -FilePath $host_path -encoding ascii
 ```
 
 如果要在局域网中访问WSL2里的服务，使用端口映射，在 `wsl2.ps1`文件中添加：
