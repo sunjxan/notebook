@@ -138,10 +138,10 @@ deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 ```
 
-更新升级
+更新
 
 ```bash
-sudo apt update && sudo apt upgrade -y
+sudo apt update
 ```
 
 11. 从官方Ubuntu发行版复制软件包
@@ -160,6 +160,7 @@ apt-get dselect-upgrade
 
 ```bash
 sudo apt install aptitude -y
+sudo aptitude upgrade -y
 ```
 
 13. 安装zsh
@@ -182,7 +183,7 @@ sudo aptitude install zsh -y
 ```bash
 cd ~
 wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
-sudo bash install.sh
+bash install.sh
 
 # 安装完成后，退出root
 exit
@@ -229,7 +230,7 @@ exit
 ```
 15. 设置系统语言
 
-```
+```bash
 # 查看当前语言
 echo $LANG
 
@@ -250,7 +251,7 @@ source /etc/zsh/zshrc
 
 16. 设置系统时间
 
-```
+```bash
 # 设置时区
 tzselect
 
@@ -350,13 +351,13 @@ https://lengthmin.me/posts/wsl2-network-tricks/
 
 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions#accessing-network-applications
 
+Windows可以访问WSL的程序，但WSL访问Windows的程序要通过防火墙，设置程序专用网络、公用网络都允许访问后即可访问。
+
 ```bash
 # Windows IP
 cat /etc/resolv.conf | grep 'nameserver' | cut -f 2 -d ' '
 # WSL2 IP
 ip addr show eth0 | grep 'inet ' | cut -f 6 -d ' ' | cut -f 1 -d '/'
-
-# 因为有Windows防火墙，WSL2 ping Windows 是不通的，打开Windows程序时，设置公用网络允许访问
 ```
 
 修改WSL2 hosts文件添加域名映射，在 `/etc/init.sh`文件中添加：
@@ -402,3 +403,12 @@ for ($i = 0; $i -lt $ports.length; $i++) {
 ipconfig /flushdns | Out-Null
 ```
 
+26. 在Windows安装X server并配置。设置开启WSL2时，启动X server，在 `wsl2.ps1` 文件中添加：
+
+```
+$str = netstat -ano | findstr 6000
+$target = $str.Split()[-1]
+taskkill /pid $target -f
+
+C:\Users\<user>\Desktop\config.xlaunch
+```

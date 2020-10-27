@@ -12,7 +12,11 @@ ssh-keygen -t rsa
 cd ~/.ssh
 cat id_rsa.pub >> authorized_keys
 
+# 修改默认端口
+sudo vim /etc/ssh/sshd_config
+# 删除掉Port 22前面的#，然后下一行输入新的端口号如：Port 10000（最大不能超过65535）
+
 # 登录
-ssh <当前用户>@localhost
+ssh -p10000 <user>@<hostname>
 ```
 

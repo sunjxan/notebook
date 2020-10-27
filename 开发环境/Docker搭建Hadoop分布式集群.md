@@ -72,33 +72,34 @@ sudo docker run -it -p 2222:22 -p 3307:3306 -p 8889:8888 -p 9002:9001 -v /home/<
 
 查看Ubuntu版本，选择更换源版本
 
-```
+```bash
 cat /etc/lsb-release
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 cp /root/docker_files/sources.list /etc/apt/sources.list
 ```
 
-更新系统源命令如下
+更新
 
 ```bash
-apt update && apt upgrade -y
+apt update
 ```
 
 #### 2. 安装aptitude
 
-```
+```bash
 apt install aptitude -y
+aptitude upgrade -y
 ```
 
 #### 3. 安装sudo、vim、git
 
-```
+```bash
 aptitude install sudo vim git -y
 ```
 
 #### 4. 创建用户
 
-```
+```bash
 # 创建用户
 useradd -m <用户名>
 # 设置root密码
@@ -118,13 +119,16 @@ su -s /bin/bash - <用户名>
 
 #### 5. 安装zsh并配置oh-my-zsh
 
-```
+```bash
 # 安装 zsh
 sudo aptitude install zsh -y
 
+# 从 https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts 中复制解析规则到 `/etc/hosts` 文件中
 # 安装oh-my-zsh
-# 下载 [install.sh](WSL.assets/install.sh) 并执行（https://github.com/ohmyzsh/ohmyzsh/tree/master/tools）：
-sudo bash /root/docker_files/install.sh
+cd ~
+wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+bash install.sh
+
 # 安装完成后，退出root
 exit
 source ~/.zshrc
@@ -163,7 +167,7 @@ su - <用户名>
 
 #### 6. 设置系统语言
 
-```
+```bash
 # 查看当前语言
 echo $LANG
 
@@ -184,7 +188,7 @@ source /etc/zsh/zshrc
 
 #### 7. 设置系统时间
 
-```
+```bash
 # 设置时区
 sudo aptitude install tzdata
 tzselect
@@ -197,13 +201,13 @@ sudo ntpdate ntp.ntsc.ac.cn
 
 #### 8. 安装网络工具
 
-```
+```bash
 sudo aptitude install iputils-ping netcat net-tools telnet curl -y
 ```
 
 #### 9. 安装SSH
 
-```
+```bash
 sudo aptitude install ssh -y
 
 # 生成密钥
@@ -216,6 +220,13 @@ cat id_rsa.pub >> authorized_keys
 vim ~/.zshrc
 # 追加
 sudo /etc/init.d/ssh start
+
+# 修改默认端口
+sudo vim /etc/ssh/sshd_config
+# 删除掉Port 22前面的#，然后下一行输入新的端口号如：Port 10000（最大不能超过65535）
+
+# 登录
+ssh -p10000 <user>@<hostname>
 ```
 
 #### 10. 安装Node.js并配置

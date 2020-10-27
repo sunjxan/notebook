@@ -45,8 +45,8 @@ sudo apt install python3-dev
 # opencv https://github.com/opencv/opencv/releases
 # opencv_contrib https://github.com/opencv/opencv_contrib/releases
 cd ~
-wget -O opencv.zip https://github.com/opencv/opencv/archive/4.0.0.zip
-wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.0.0.zip
+wget -O opencv.zip https://github.com/opencv/opencv/archive/4.5.0.zip
+wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.5.0.zip
 unzip opencv.zip
 unzip opencv_contrib.zip
 mv opencv-4.5.0 opencv

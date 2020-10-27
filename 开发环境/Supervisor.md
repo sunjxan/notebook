@@ -3,6 +3,7 @@
 pip3 install supervisor
 
 # 生成配置文件
+cd ~
 echo_supervisord_conf > supervisord.conf
 sudo mkdir /etc/supervisor
 sudo mv supervisord.conf /etc/supervisor
@@ -11,9 +12,13 @@ sudo vim /etc/supervisor/supervisord.conf
 # 将
 ;[inet_http_server]
 ;port=127.0.0.1:9001
+;username=user
+;password=123
 # 改为
 [inet_http_server]
 port=*:9001
+username=<user>
+password=<passwd>
 
 # 将
 ;[include]
