@@ -5,7 +5,7 @@
 5. 安装（Install on WSL）插件“Python”，“Go”；
 6. 选择Python解释器；
 7. 选择默认Shell：/bin/zsh；
-8. 修改launch.json文件
+8. 修改launch.json文件：
 ```
 {
     "version": "0.2.0",
@@ -37,4 +37,4 @@
 }
 ```
 
-9. 安装Jupyter 后，左下角切换anaconda环境的python解释器，即可使用Jupyter notebook：打开ipynb文件或者Ctrl+Shift+P输入 jupyter选择Python: Create New Blank Jupyter Notebook
+9. 安装Jupyter 后，左下角切换anaconda环境的python解释器，即可使用Jupyter notebook：打开ipynb文件或者Ctrl+Shift+P输入 jupyter选择Python: Create New Blank Jupyter Notebook；

@@ -148,5 +148,11 @@ plt.show()
 
 ### 配置PyCharm
 
-1. 运行添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP）;
+1. 运行配置添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP），或者在代码开始处添加以下代码段：
+
+```
+import os
+os.environ['DISPLAY'] = 'windows:0'
+```
+
 2. 下载安装插件（https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer），debug时可以在Debugger窗口预览图片（右键 `View as Image`）;
