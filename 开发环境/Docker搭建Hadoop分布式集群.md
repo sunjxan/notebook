@@ -229,25 +229,27 @@ sudo vim /etc/ssh/sshd_config
 ssh -p10000 <user>@<hostname>
 ```
 
-#### 10. 安装Node.js并配置
+#### 10. 安装编译工具gcc、g++、make、cmake
 
-#### 11. 安装Python、pip、JupyterLab并配置
+#### 11. 安装Node.js并配置
 
-#### 12. 安装Supervisor并配置JupyterLab任务
+#### 12. 安装Python、pip、JupyterLab并配置
 
-#### 13. 安装numpy、pandas、matplotlib、APScheduler
+#### 13. 安装Supervisor并配置JupyterLab任务
+
+#### 14. 安装numpy、pandas、matplotlib、APScheduler
 
 ```
 pip3 install numpy pandas matplotlib APScheduler
 ```
 
-#### 14. 安装JDK8并配置
+#### 15. 安装JDK8并配置
 
-#### 15. 安装Maven3.6.3并配置
+#### 16. 安装Maven3.6.3并配置
 
-#### 16. 安装MySQL并配置
+#### 17. 安装MySQL并配置
 
-#### 17. 安装cron
+#### 18. 安装cron
 
 ```
 # 退出docker，保存这个镜像

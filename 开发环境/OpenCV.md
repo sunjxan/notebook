@@ -136,3 +136,7 @@ plt.imshow(img)
 plt.show()
 ```
 
+### 配置PyCharm
+
+1. 运行添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP）;
+2. 下载安装插件（https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer），debug时可以在Debugger窗口预览图片（右键 `View as Image`）;

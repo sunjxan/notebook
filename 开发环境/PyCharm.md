@@ -1,4 +1,4 @@
-1.  安装PyCharm专业版；
+1. 安装PyCharm专业版；
 2. 打开Windows文件系统下的项目目录；
 3. File->Settings->Tools->Terminal，修改Shell path为wsl.exe；
 4. 配置WSL解释器：File->Settings->Project->Project Interpreter，添加解释器，在WSL中选择wsl发行版和Python解释器路径；
@@ -14,5 +14,5 @@ jupyter notebook list
 
 File->Settings->Build->Jupyter->Jupyter Servers，选择Configured Server，输入刚刚获取的带token的URL，创建或打开ipynb文件；
 
-8. File->Settings->Languages->Node.js，添加解释器，在WSL中选择wsl发行版和Node解释器路径
+8. File->Settings->Languages->Node.js，添加解释器，在WSL中选择wsl发行版和Node解释器路径；
 
