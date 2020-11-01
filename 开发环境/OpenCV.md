@@ -1,18 +1,20 @@
 ### pip安装
 
+**这种安装方式在IDE上有代码提示功能**
+
 ```
 pip3 install opencv-python opencv-contrib-python
 ```
 
 ### 编译安装
 
-安装开发工具:
+安装开发工具：
 
 ```bash
 sudo apt install build-essential cmake unzip pkg-config
 ```
 
-安装图片和视频的I/O库, 保证可以从磁盘中读取图像和视频
+安装图片和视频的I/O库, 保证可以从磁盘中读取图像和视频：
 
 ```bash
 sudo apt install libjpeg-dev libpng-dev libtiff-dev
@@ -20,25 +22,25 @@ sudo apt install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
 sudo apt install libxvidcore-dev libx264-dev
 ```
 
-安装GTK图形工具包
+安装GTK图形工具包：
 
 ```bash
 sudo apt install libgtk-3-dev
 ```
 
-安装数学优化库
+安装数学优化库：
 
 ```bash
 sudo apt install libatlas-base-dev gfortran
 ```
 
-安装python开发工具
+安装python开发工具：
 
 ```bash
 sudo apt install python3-dev
 ```
 
-下载opencv和opencv-contrib并解压
+下载opencv和opencv-contrib并解压：
 
 ```bash
 # 最新版本下载地址
@@ -58,7 +60,7 @@ GitHub源文件下载问题
 https://raw.githubusercontent/ 域名下文件无法下载，要从 https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts 中复制解析规则到hosts文件中。
 
 
-运行CMake
+运行CMake：
 
 ```bash
 # -D OPENCV_ENABLE_NONFREE=ON 此标志可确保您可以访问SIFT / SURF和其他获得专利的算法
@@ -78,7 +80,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D BUILD_EXAMPLES=ON ..
 ```
 
-编译
+编译：
 
 ```bash
 # -j8代表用8个核编译, 核越多, 编译的速度越快
@@ -87,11 +89,19 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 make -j8
 ```
 
-安装
+安装：
 
 ```bash
 sudo make -j8 install
 sudo ldconfig
+```
+
+最终得到动态链接库 `.so` 文件，可以再使用pip安装一次，然后使用编译获得的 `.so` 文件进行替换，以获得IDE的代码提示功能：
+
+```
+pip3 install opencv-python opencv-contrib-python
+sudo cp /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/cv2.cpython-36m-x86_64-linux-gnu.so ~/.local/lib/python3
+.6/site-packages/cv2/
 ```
 
 ### 安装Windows X-server图形界面
