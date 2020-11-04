@@ -42,37 +42,13 @@ vim config.json
 }
 ```
 
-6. 启动服务，监视并自动生成静态文件，并配置 `supervisord`：
+6. 生成网页：
 
 ```
-sudo vim /etc/supervisor/conf.d/hugo.ini
-
-[program:hugo]
-command=hugo -D -w
-directory=/home/<user>/blog
-#supervisor启动的时候是否随着同时启动，默认true
-autostart=true
-#这个选项是子进程启动多少秒之后，此时状态如果是running，则我们认为启动成功了。默认值为1
-startsecs=1
-#程序异常退出后自动重启
-autorestart=true
-#启动失败自动重试次数，默认是3
-startretries=3
-#把stderr重定向到stdout，默认false
-redirect_stderr=false
-#输出日志文件
-stdout_logfile=/tmp/hugo-stdout.log
-#错误日志文件
-stderr_logfile=/tmp/hugo-stderr.log
-loglevel=info
-stopsignal=KILL
-stopasgroup=true
-killasgroup=true
-
-supervisorctl reload
+hugo -D
 ```
 
-7. 配置 `nginx` 反向代理：
+7. 配置 `nginx` 服务：
 
 ```
 sudo vim /etc/nginx/conf.d/hugo.conf
@@ -87,10 +63,17 @@ server {
 sudo service nginx reload
 ```
 
-8. 添加文章，然后刷新主页：
+8. 添加文章，并更新网站：
 
 ```
+# 根据模板archetypes/default.md创建新的markdown文件
 hugo new posts/hello-world.md
+
+# 编辑文章内容
 vim content/posts/hello-world.md
+
+# 更新网站
+hugo -D
 ```
 
+主题、搜索功能、评论功能、背景音乐、分类、RSS

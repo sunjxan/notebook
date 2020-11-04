@@ -310,7 +310,7 @@ supervisord
 
 ```bash
 #!/bin/sh
-/etc/init.d/ssh start
+service ssh start
 ```
 
 在Windows中创建启动加载文件 `wsl2.ps1`

@@ -219,7 +219,7 @@ cat id_rsa.pub >> authorized_keys
 # 设置开机启动
 vim ~/.zshrc
 # 追加
-sudo /etc/init.d/ssh start
+sudo service ssh start
 
 # 修改默认端口
 sudo vim /etc/ssh/sshd_config
@@ -718,7 +718,7 @@ sudo ntpdate ntp.ntsc.ac.cn
 
 ```
 # 设置环境变量，在~/.zshrc追加
-sudo /etc/init.d/mysql start
+sudo service mysql start
 ```
 
 #### 7. 启动Hive

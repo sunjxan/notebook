@@ -32,7 +32,7 @@ sudo mkdir /etc/supervisor/conf.d
 sudo vim /etc/supervisor/conf.d/test.ini
 
 [program:<任务名>]
-command=<命令>
+command=<绝对路径命令>
 directory=<工作目录>
 user=<用户名>
 #supervisor启动的时候是否随着同时启动，默认true
