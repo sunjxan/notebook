@@ -3,7 +3,7 @@
 **这种安装方式在IDE上有代码提示功能**
 
 ```
-pip3 install opencv-python opencv-contrib-python
+pip3 install opencv-contrib-python
 ```
 
 ### 编译安装
@@ -99,9 +99,8 @@ sudo ldconfig
 最终得到动态链接库 `.so` 文件，可以再使用pip安装一次，然后使用编译获得的 `.so` 文件进行替换，以获得IDE的代码提示功能：
 
 ```
-pip3 install opencv-python opencv-contrib-python
-sudo cp /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/cv2.cpython-36m-x86_64-linux-gnu.so ~/.local/lib/python3
-.6/site-packages/cv2/
+pip3 install opencv-contrib-python
+sudo cp /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/cv2.cpython-36m-x86_64-linux-gnu.so ~/.local/lib/python3.6/site-packages/cv2/
 ```
 
 ### 安装Windows X-server图形界面

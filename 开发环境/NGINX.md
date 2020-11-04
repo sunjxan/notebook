@@ -17,15 +17,13 @@ sudo service nginx reload
 
 安装好的文件位置：
 
-/usr/sbin/nginx  主程序
+`/usr/sbin/nginx` 主程序
 
-/etc/nginx  存放配置文件
+`/etc/nginx` 存放配置文件
 
-/var/log/nginx  存放日志
+`/var/log/nginx` 存放日志
 
-/var/www/html  默认虚拟主机
-
-
+`/var/www/html` 默认虚拟主机
 
 **配置文件结构**
 
