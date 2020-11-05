@@ -60,6 +60,9 @@ server {
     root /home/<user>/blog/public;
 }
 
+# 测试配置是否正确
+sudo nginx -t
+
 sudo service nginx reload
 ```
 
