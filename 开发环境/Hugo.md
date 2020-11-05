@@ -82,4 +82,3 @@ vim content/posts/hello-world.md
 hugo -D
 ```
 
-主题、搜索功能、评论功能、背景音乐、分类、RSS
