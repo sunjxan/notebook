@@ -56,8 +56,11 @@ sudo vim /etc/nginx/conf.d/hugo.conf
 server {
     listen 80;
     server_name <IP或域名>;
-    error_page 404 /404.html;
-    root /home/<user>/blog/public;
+    location / {
+        root /home/<user>/blog/public;
+        index index.html;
+    }
+    error_page 404 /404.html;
 }
 
 # 测试配置是否正确
