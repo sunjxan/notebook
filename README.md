@@ -25,6 +25,7 @@
 	- [Anaconda](开发环境/Anaconda.md)
 	- [Docker](开发环境/Docker.md)
 	- [Docker搭建Hadoop分布式集群](开发环境/Docker搭建Hadoop分布式集群.md)
+	- [FFmpeg](开发环境/FFmpeg.md)
 	- [Flink](开发环境/Flink.md)
 	- [Flume](开发环境/Flume.md)
 	- [Git](开发环境/Git.md)
