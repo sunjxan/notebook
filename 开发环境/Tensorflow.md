@@ -377,8 +377,8 @@ train_set, test_set = keras.datasets.mnist.load_data()
 
 # 显示图片
 import matplotlib.pyplot as plt
-plt.axis(False)
 plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
+plt.axis('off')
 plt.show()
 ```
 
@@ -782,11 +782,10 @@ content_image = plt.imread('https://upload.wikimedia.org/wikipedia/commons/thumb
 style_image = plt.imread('https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg', 'jpg')
 
 # 打印输入图片和样本图片
-plt.axis(False)
 plt.imshow(content_image)
-plt.show()
-plt.axis(False)
+plt.axis('off')
 plt.imshow(style_image)
+plt.axis('off')
 plt.show()
 
 # 将图片转换为[batch_size, image_height, image_width, 3]大小的[0, 255]上的浮点数
@@ -803,8 +802,8 @@ stylized_images = outputs[0]
 stylized_image = stylized_images[0]
 
 # 打印结果
-plt.axis(False)
 plt.imshow(stylized_image)
+plt.axis('off')
 plt.show()
 ```
 

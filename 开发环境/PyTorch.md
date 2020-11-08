@@ -319,16 +319,16 @@ import torchvision as tv
 train_set = tv.datasets.MNIST(root='./data', train=True, download=True)
 # 显示图片
 import matplotlib.pyplot as plt
-plt.axis(False)
 plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
+plt.axis('off')
 plt.show()
 
 transform = tv.transforms.Compose([tv.transforms.ToTensor()])
 # 加载测试数据，将PIL Image转换为Tensor
 test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 # 显示图片
-plt.axis(False)
 plt.imshow(test_set[0][0][0], cmap=plt.get_cmap('gray'))
+plt.axis('off')
 plt.show()
 ```
 
@@ -559,8 +559,7 @@ import matplotlib.pyplot as plt
 import torchvision
 
 # 打印结果
-plt.axis(False)
 plt.imshow(torchvision.utils.make_grid(generated_images).permute(1, 2, 0))
+plt.axis('off')
 plt.show()
 ```
-

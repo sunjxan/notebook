@@ -127,22 +127,82 @@ print(cv2.__version__)
 
 ```
 import cv2
-img = cv2.imread('/home/<user>/opencv/samples/data/lena.jpg')
-cv2.imshow('lena.jpg', img)
+
+# 读取图片
+image = cv2.imread('opencv/samples/data/lena.jpg')
+
+# 如果不存在该名字的窗口，则创建图形窗口，设置窗口名，添加图片，否则直接添加图片
+# 之后如果有不同名的窗口被创建，则展示该未渲染图片的窗口
+cv2.imshow('Image', image)
+
+# 传参delay（必须为整数），正整数为等待时间毫秒数，非正整数或不传表示等待时间无限长
+# 在任一窗口激活状态下，键盘输入停止等待，返回值为键盘字符ASCII码，等待时间结束，返回值为-1
+# 在等待时间内，为所有展示的窗口渲染图片，有可能只能完成部分渲染
 cv2.waitKey()
+
+# 关闭单个窗口
+cv2.destroyWindow('Image')
+# 关闭所有窗口
 cv2.destroyAllWindows()
 ```
 
-### 使用Matplotlib展示图片
+### PIL Image打开图片
 
 ```
-import cv2
-from matplotlib import pyplot as plt
-img = cv2.imread('/home/<user>/opencv/samples/data/lena.jpg')
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
-plt.axis(False)
-plt.imshow(img)
+from PIL import Image
+import numpy as np
+
+# 读取图片
+imageObj = Image.open('opencv/samples/data/lena.jpg')
+# 转换为numpy数组
+image = np.array(imageObj.getdata(), dtype=np.uint8).reshape(imageObj.height, imageObj.width, -1)
+```
+
+### Matplotlib打开图片
+
+```
+import matplotlib.pyplot as plt
+
+# 使用GTK图形库，展示figure
+plt.switch_backend('GTK3Agg')
+# 使用网页，展示figure内图片
+plt.switch_backend('WebAgg')
+
+# 读取图片
+image = plt.imread('opencv/samples/data/lena.jpg')
+
+# 创建figure，设置figure名
+# 图形库程序默认会以从1递增的数字为编号创建figure
+# 网页端只会默认创建一个编号为1的figure
+figure = plt.figure('Image')
+# 添加图片
+plt.imshow(image)
+# 取消坐标轴
+plt.axis('off')
+
+# 仅适用于图形库展示：
+# 展示figure
+figure.show()
+
+# 仅适用于图形库展示：
+# 先展示当前figure，然后为所有展示的figure渲染图片
+# 传参timeout，正数为等待时间秒数，非正数或不传表示等待时间无限长
+# 只有在当前窗口激活状态下，键盘输入或鼠标点击停止等待，返回值分别为True和False，等待时间结束，返回值为None
+plt.waitforbuttonpress()
+
+# 将所有未被关闭的figure，先展示再渲染图片
+# 始终等待，直到用户手动关闭所有figure（点关闭按钮或窗口激活状态下输入字符“q”）
 plt.show()
+
+# 删除当前figure内图片
+plt.close()
+# 删除命名figure内图片
+plt.close('Image')
+# 删除编号figure内图片
+plt.close(1)
+# 删除所有figure内图片
+plt.close('all')
+# 手动关闭也会删除figure内图片
 ```
 
 ### 配置PyCharm
