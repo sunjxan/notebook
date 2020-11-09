@@ -100,7 +100,10 @@ sudo ldconfig
 
 ```
 pip3 install opencv-contrib-python
-sudo cp /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/cv2.cpython-36m-x86_64-linux-gnu.so ~/.local/lib/python3.6/site-packages/cv2/
+
+rm ~/.local/lib/python3.6/site-packages/cv2/*.so
+
+ln -s /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/*.so ~/.local/lib/python3.6/site-packages/cv2/cv2.so
 ```
 
 ### 安装Windows X-server图形界面
