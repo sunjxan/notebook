@@ -300,7 +300,7 @@ appendWindowsPath=true
 
 在`~/.zshrc`文件追加：
 
-```
+```bash
 supervisord
 ```
 
@@ -421,10 +421,11 @@ ipconfig /flushdns | Out-Null
 
 27. 在Windows安装X server并配置。设置开启WSL2时，启动X server，在 `wsl2.ps1` 文件中添加：
 
-```
-$str = netstat -ano | findstr 6000
+```powershell
+$str = netstat -ano | findstr 0.0.0.0:6000
 $target = $str.Split()[-1]
 taskkill /pid $target -f
 
 C:\Users\<user>\Desktop\config.xlaunch
 ```
+
