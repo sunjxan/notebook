@@ -138,11 +138,18 @@ image = cv2.imread('opencv/samples/data/lena.jpg')
 # 之后如果有不同名的窗口被创建，则展示该未渲染图片的窗口
 cv2.namedWindow('Image')
 
+# 设置窗口标题
+cv2.setWindowTitle('Image', 'lena.jpg')
+
+# 设置窗口位置和大小
+cv2.moveWindow('Image', 10, 20)
+cv2.resizeWindow('Image', 100, 100)
+
 # 如果不存在该名字的窗口，则创建图形窗口，设置窗口名，添加图片，否则为该窗口添加图片
 # 之后如果有不同名的窗口被创建，则展示该未渲染图片的窗口
 cv2.imshow('Image', image)
 
-# 为所有展示的窗口渲染图片
+# 更新窗口，为所有展示的窗口渲染图片
 # 传参delay（必须为整数），正整数为等待时间毫秒数，非正整数或不传表示等待时间无限长
 # 在任一窗口激活状态下，键盘输入停止等待，返回值为1字节key code，等待时间结束，返回值为-1
 cv2.waitKey()
@@ -164,7 +171,7 @@ import numpy as np
 # 读取图片
 imageObj = Image.open('opencv/samples/data/lena.jpg')
 # 转换为numpy数组
-image = np.array(imageObj.getdata(), dtype=np.uint8).reshape(imageObj.height, imageObj.width, -1)
+image = np.array(imageObj)
 ```
 
 ### Matplotlib打开图片
@@ -186,8 +193,6 @@ image = plt.imread('opencv/samples/data/lena.jpg')
 figure = plt.figure('Image')
 # 添加图片
 plt.imshow(image)
-# 取消坐标轴
-plt.axis('off')
 
 # 仅适用于图形库展示：
 # 展示figure
@@ -224,3 +229,23 @@ os.environ['DISPLAY'] = 'windows:0'
 ```
 
 2. 下载安装插件（https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer），debug时可以在Debugger窗口预览图片（右键 `View as Image`）;
+
+3. 在调试中使用 `matplotlib` 查看图片细节：
+
+```
+# 右下角显示鼠标处坐标和数值
+# 移动按钮，按鼠标左键拖拽移动坐标轴位置，按鼠标右键拖拽以图片为中心放缩坐标轴
+# 放缩按钮，按鼠标左键选中矩形区域放大，按鼠标右键选中矩形区域缩小
+# 快捷键 q:退出 h/r/Home:还原 c/Left/Backspace:撤销 v/Right:重做 g:显示/隐藏辅助线 p:移动按钮 o:放缩按钮 s:保存 
+
+from matplotlib import pyplot as plt
+plt.switch_backend('GTK3Agg')
+
+# 展示彩色图片
+plt.imshow(image[..., (2,1,0)])
+plt.show()
+
+# 展示灰度图片
+plt.imshow(gray, cmap='gray')
+plt.show()
+```

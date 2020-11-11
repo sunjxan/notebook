@@ -46,8 +46,9 @@ z = torch.rand((3, 4))
 x2 = torch.zeros_like(x)
 y2 = torch.ones_like(y)
 a = torch.full((2,3), 5.)
-a2 = torch.full_like(a)
-b = torch.arange(0, 20)
+a2 = torch.full_like(a, 3.)
+b = torch.arange(0, 20, 3)
+c = torch.linspace(1, 9, 5)
 ```
 
 ### 张量属性
@@ -84,12 +85,36 @@ x.flatten()
 # 压缩
 x.squeeze()
 
-# 最内维度不变，其他维度复制
-x.expand((1, 2, -1))
+# 在原有维度基础上复制数据进行扩展
+x.expand((2, 3, -1, -1))
 
 # 指定形状
 x.view((2, -1))
 x.reshape((-1, 6))
+```
+
+### 索引
+
+```
+x[0, :]
+x[1, ...]
+
+# 在索引中需要传递数字的地方，传入一个包含多个数字的tuple，表示选中的下标
+# 可以任意调换顺序，也可以重复数字
+# 当一个索引中多个位置使用tuple时，它们的长度要保持一致
+# 用于筛选数据
+x[:, :, (0, 1)]
+# 用于调换数据顺序
+x[:, :, (2, 1, 0)]
+# 用于复制数据
+x[:, (0, 0), :]
+
+# 对数组使用布尔运算，并使用位运算符表示逻辑运算
+~(x > 1)
+(x > 1) & (x < 3)
+(x < 1) | (x > 3)
+# 运算结果可以作为数组的索引，结果为符合条件的筛选数据
+a[a > 1]
 ```
 
 ### 赋值
@@ -320,7 +345,6 @@ train_set = tv.datasets.MNIST(root='./data', train=True, download=True)
 # 显示图片
 import matplotlib.pyplot as plt
 plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
-plt.axis('off')
 plt.show()
 
 transform = tv.transforms.Compose([tv.transforms.ToTensor()])
@@ -328,7 +352,6 @@ transform = tv.transforms.Compose([tv.transforms.ToTensor()])
 test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 # 显示图片
 plt.imshow(test_set[0][0][0], cmap=plt.get_cmap('gray'))
-plt.axis('off')
 plt.show()
 ```
 
@@ -560,6 +583,5 @@ import torchvision
 
 # 打印结果
 plt.imshow(torchvision.utils.make_grid(generated_images).permute(1, 2, 0))
-plt.axis('off')
 plt.show()
 ```

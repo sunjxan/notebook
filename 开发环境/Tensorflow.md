@@ -55,7 +55,8 @@ z = tf.random.normal((3, 4))
 x2 = tf.zeros_like(x)
 y2 = tf.ones_like(y)
 a = tf.fill((2,3), 5)
-b = tf.range(0, 20)
+b = tf.range(0, 20, 3)
+c = tf.linspace(1, 9, 5)
 ```
 
 ### 张量属性
@@ -65,6 +66,7 @@ b = tf.range(0, 20)
 x.ndim
 # 维度
 x.shape
+x.size()
 # 数据
 x.numpy()
 # 数据类型
@@ -93,6 +95,20 @@ tf.expand_dims(x, axis=0)
 tf.reshape(x, (2, 6))
 ```
 
+### 索引
+
+```
+x[0, :]
+x[1, ...]
+
+# 对数组使用布尔运算，并使用位运算符表示逻辑运算
+~(x > 1)
+(x > 1) & (x < 3)
+(x < 1) | (x > 3)
+# 运算结果可以作为数组的索引，结果为符合条件的筛选数据
+a[a > 1]
+```
+
 ### 初始化函数
 
 ```
@@ -107,6 +123,7 @@ a = initializer(dtype=tf.float32, shape=(1,2))
 ### 创建张量
 
 ```
+# 初始化器创建常量
 initializer = keras.initializers.zeros()
 a = initializer(dtype=tf.float32, shape=(1,2))
 
@@ -378,7 +395,6 @@ train_set, test_set = keras.datasets.mnist.load_data()
 # 显示图片
 import matplotlib.pyplot as plt
 plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
-plt.axis('off')
 plt.show()
 ```
 
@@ -783,9 +799,7 @@ style_image = plt.imread('https://upload.wikimedia.org/wikipedia/commons/0/0a/Th
 
 # 打印输入图片和样本图片
 plt.imshow(content_image)
-plt.axis('off')
 plt.imshow(style_image)
-plt.axis('off')
 plt.show()
 
 # 将图片转换为[batch_size, image_height, image_width, 3]大小的[0, 255]上的浮点数
@@ -803,7 +817,6 @@ stylized_image = stylized_images[0]
 
 # 打印结果
 plt.imshow(stylized_image)
-plt.axis('off')
 plt.show()
 ```
 
