@@ -151,7 +151,7 @@ cv2.imshow('Image', image)
 
 # 更新窗口，为所有展示的窗口渲染图片
 # 传参delay（必须为整数），正整数为等待时间毫秒数，非正整数或不传表示等待时间无限长
-# 在任一窗口激活状态下，键盘输入停止等待，返回值为1字节key code，等待时间结束，返回值为-1
+# 在任一窗口激活状态下，键盘输入停止等待，返回值为1字节key code，手动关闭或等待时间结束，返回值为-1
 cv2.waitKey()
 # 键盘输入返回值为2字节key code，keycode & 0xff 转换为1字节key code
 cv2.waitKeyEx()
@@ -205,7 +205,7 @@ figure.show()
 plt.waitforbuttonpress()
 
 # 将所有未被手动关闭的figure，先展示再渲染图片
-# 始终等待，直到用户手动关闭所有figure（点关闭按钮或窗口激活状态下输入字符“q”）
+# 始终等待，直到手动关闭所有figure
 plt.show()
 
 # 删除当前figure内图片
