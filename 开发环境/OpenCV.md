@@ -126,7 +126,19 @@ import cv2
 print(cv2.__version__)
 ```
 
-### 打开图片
+### PIL Image打开图片
+
+```
+from PIL import Image
+import numpy as np
+
+# 读取图片
+imageObj = Image.open('opencv/samples/data/lena.jpg')
+# 转换为numpy数组
+image = np.array(imageObj)
+```
+
+### OpenCV打开图片
 
 ```
 import cv2
@@ -162,18 +174,6 @@ cv2.destroyWindow('Image')
 cv2.destroyAllWindows()
 ```
 
-### PIL Image打开图片
-
-```
-from PIL import Image
-import numpy as np
-
-# 读取图片
-imageObj = Image.open('opencv/samples/data/lena.jpg')
-# 转换为numpy数组
-image = np.array(imageObj)
-```
-
 ### Matplotlib打开图片
 
 ```
@@ -193,6 +193,8 @@ image = plt.imread('opencv/samples/data/lena.jpg')
 figure = plt.figure('Image')
 # 添加图片
 plt.imshow(image)
+# 添加标题
+plt.title('lena.jpg')
 
 # 仅适用于图形库展示：
 # 展示figure
@@ -246,6 +248,22 @@ plt.imshow(image[..., (2,1,0)])
 plt.show()
 
 # 展示灰度图片
-plt.imshow(gray, cmap='gray')
+plt.imshow(image[..., 2], cmap='gray')
+plt.show()
+
+# 一次展示多张照片
+plt.subplot(2, 2, 1)
+plt.imshow(image[..., (2, 1, 0)])
+plt.title('Image')
+plt.subplot(2, 2, 2)
+plt.imshow(image[..., 2], cmap='gray')
+plt.title('Red')
+plt.subplot(2, 2, 3)
+plt.imshow(image[..., 1], cmap='gray')
+plt.title('Green')
+plt.subplot(2, 2, 4)
+plt.imshow(image[..., 0], cmap='gray')
+plt.title('Blue')
 plt.show()
 ```
+
