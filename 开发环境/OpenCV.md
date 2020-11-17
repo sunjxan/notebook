@@ -1,6 +1,8 @@
+## 安装
+
 ### pip安装
 
-**这种安装方式在IDE上有代码提示功能**
+这种安装方式在Python IDE上有代码提示功能
 
 ```
 pip3 install opencv-contrib-python
@@ -96,7 +98,7 @@ sudo make -j8 install
 sudo ldconfig
 ```
 
-最终得到动态链接库 `.so` 文件，可以再使用pip安装一次，然后使用编译获得的 `.so` 文件进行替换，以获得IDE的代码提示功能：
+最终得到动态链接库 `cv2.so` 文件，可以再使用pip安装一次，然后使用编译获得的 `cv2.so` 文件进行替换，以获得Python IDE的代码提示功能：
 
 ```
 pip3 install opencv-contrib-python
@@ -106,11 +108,10 @@ rm ~/.local/lib/python3.6/site-packages/cv2/*.so
 ln -s /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/*.so ~/.local/lib/python3.6/site-packages/cv2/cv2.so
 ```
 
-### 安装Windows X-server图形界面
+## 测试
 
-如果WSL2没有Windows X-server，要先在Windows上安装VcXsrv，并配置打开；
-
-### 测试
+如果WSL2没有Windows X-server，要先在Windows上安装VcXsrv，并配置打开。
+然后进行测试：
 
 ```
 cd ~/opencv/samples/cpp/example_cmake
@@ -118,6 +119,8 @@ cmake .
 make -j8
 ./opencv_example
 ```
+
+## Python编程
 
 ### 查看版本
 
@@ -191,9 +194,9 @@ image = plt.imread('opencv/samples/data/lena.jpg')
 # 图形库程序默认会以从1递增的数字为编号创建figure
 # 网页端只会默认创建一个编号为1的figure
 figure = plt.figure('Image')
-# 添加图片
+# 为当前figure添加图片
 plt.imshow(image)
-# 添加标题
+# 为当前figure添加标题
 plt.title('lena.jpg')
 
 # 仅适用于图形库展示：
@@ -223,7 +226,7 @@ plt.close('all')
 
 ### 配置PyCharm
 
-1. 运行配置添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP），或者在代码开始处添加以下代码段：
+1. 在运行配置添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP），或者在代码开始处添加以下代码段：
 
 ```
 import os
@@ -240,7 +243,7 @@ os.environ['DISPLAY'] = 'windows:0'
 # 放缩按钮，按鼠标左键选中矩形区域放大，按鼠标右键选中矩形区域缩小
 # 快捷键 q:退出 h/r/Home:还原 c/Left/Backspace:撤销 v/Right:重做 g:显示/隐藏辅助线 p:移动按钮 o:放缩按钮 s:保存 
 
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 plt.switch_backend('GTK3Agg')
 
 # 展示彩色图片
@@ -267,3 +270,49 @@ plt.title('Blue')
 plt.show()
 ```
 
+## C++编程
+
+### 配置CLion
+
+1. 修改CMakeLists.txt：
+```
+cmake_minimum_required(VERSION 3.10)
+project(untitled)
+set(CMAKE_CXX_STANDARD 14)
+
+find_package(OpenCV REQUIRED)
+
+message(STATUS "OpenCV_VERSION:${OpenCV_VERSION}")
+message(STATUS "OpenCV_DIR:${OpenCV_DIR}")
+message(STATUS "OpenCV_INSTALL_PATH:${OpenCV_INSTALL_PATH}")
+message(STATUS "OpenCV_INCLUDE_DIRS:${OpenCV_INCLUDE_DIRS}")
+message(STATUS "OpenCV_LIB_DIR:${OpenCV_INSTALL_PATH}/lib")
+message(STATUS "OpenCV_LIBS:${OpenCV_LIBS}")
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+add_executable(untitled main.cpp)
+
+link_directories(${OpenCV_LIB_DIR})
+target_link_libraries(untitled ${OpenCV_LIBS})
+```
+
+2. 在运行配置添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP），或者在main函数中添加环境变量：
+```
+#include <iostream>
+#include <cmath>
+#include "opencv2/opencv.hpp"
+
+using namespace std;
+
+int main() {
+    putenv((char *)"DISPLAY=windows:0");
+    
+    cv::Mat image = cv::imread("opencv/samples/data/lena.jpg");
+    cv::imshow("Image", image);
+    cv::waitKey();
+    cv::destroyAllWindows();
+    
+    return 0;
+}
+```

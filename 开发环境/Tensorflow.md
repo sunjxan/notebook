@@ -151,9 +151,9 @@ print(c, d ,e)
 ## 神经网络 Neural Networks
 
 ```
-from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow import nn
+import tensorflow.keras as keras
+import tensorflow.keras.layers as layers
+import tensorflow.nn as nn
 
 keras.__version__
 ```
@@ -164,17 +164,19 @@ keras.__version__
 # units 包含神经元数
 # input_dim 每个神经元输入数
 # use_bias 是否有偏置项
-layer = keras.layers.Dense(units, input_dim, use_bias=True, name, activation=None, kernel_initializer='glorot_uniform', bias_initializer=keras.initializers.zeros)
+layer = keras.layers.Dense(units=2, input_dim=3, use_bias=True, name='', activation=None, kernel_initializer='glorot_uniform', bias_initializer=keras.initializers.zeros)
 
-# 计算
-x = tf.constant([[1, 1, 1]])
+# (batch, input_dim)
+x = np.array([[1, 1, 1]])
+# (batch, units)
 logits = layer(x)
 
 # 权重和偏置（计算后生成）
 layer.weights
 
-# 激活
+# (batch, units)
 y = nn.sigmoid(logits)
+# (batch, units)
 y = nn.softmax(logits)
 ```
 
@@ -386,6 +388,21 @@ for item in pred_res:
 
 ## 卷积神经网络 Convolutional Neural Networks
 
+### 卷积层
+
+```
+layer_padding = keras.layers.Conv2D(filters=10, kernel_size=(5, 5), strides=(1, 1), padding='same', activation='relu')
+layer_no_padding = keras.layers.Conv2D(filters=10, kernel_size=(5, 5), strides=(1, 1), padding='valid', activation='relu')
+
+# (batch, height, width, channels)
+x = np.expand_dims(train_data.astype(np.float32) / 255, axis=-1)
+
+# (batch, height, width, filters)
+y = layer_padding(x)
+# (batch, (height - kernel_size_height) // strides_y + 1, (width - kernel_size_width) // strides_x + 1, filters)
+y = layer_no_padding(x)
+```
+
 ### 加载数据
 
 ```
@@ -410,11 +427,11 @@ class DataLoader():
     train_set, test_set = keras.datasets.mnist.load_data()
     # MNIST中的图像默认为uint8（0-255的数字），以下代码将其归一化到0-1之间的浮点数，并在最后增加一维作为颜色通道
     if train:
-      x = np.expand_dims(train_set[0].astype(np.float32) / 255, axis=-1)      # [60000, 28, 28, 1]
-      y = train_set[1].astype(np.int32)      # [60000]
+      x = np.expand_dims(train_set[0].astype(np.float32) / 255, axis=-1)      # (60000, 28, 28, 1)
+      y = train_set[1].astype(np.int32)      # (60000,)
     else:
-      x = np.expand_dims(test_set[0].astype(np.float32) / 255, axis=-1)        # [10000, 28, 28, 1]
-      y = test_set[1].astype(np.int32)      # [10000]
+      x = np.expand_dims(test_set[0].astype(np.float32) / 255, axis=-1)        # (10000, 28, 28, 1)
+      y = test_set[1].astype(np.int32)      # (10000,)
     self.dataset = tf.data.Dataset.from_tensor_slices((x, y))
     self.batch_size = batch_size
     self.shuffle = shuffle
@@ -459,7 +476,6 @@ class CNNModel(keras.Model):
     x = self.dense2(x)
     return x
 
-# [batch_size, width, height, 1]
 model = CNNModel()
 ```
 
@@ -835,7 +851,7 @@ new_model.build([None, 299, 299, 3])
 
 ### 部署服务 TensorFlow Serving
 
-apt安装
+- apt安装
 
 ```
 # 添加GPG key
@@ -854,7 +870,7 @@ sudo apt install tensorflow-model-server
 tensorflow_model_server  --rest_api_port=8501  --model_name=<模型名> --model_base_path=<导出模型绝对路径> >server.log 2>&1 &
 ```
 
-Docker安装
+- Docker安装
 
 ```
 docker pull tensorflow/serving
@@ -876,7 +892,7 @@ curl -d '{"instances": [1.0, 2.0, 5.0]}' -X POST http://localhost:8501/v1/models
 { "predictions": [2.5, 3.0, 4.5] }
 ```
 
-使用
+- 使用
 
 ```
 import json

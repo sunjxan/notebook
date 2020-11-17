@@ -158,7 +158,7 @@ print(c, a.grad, b.grad)
 ## 神经网络 Neural Networks
 
 ```
-from torch import nn
+import torch.nn as nn
 ```
 
 ### 神经元层
@@ -333,6 +333,21 @@ if torch.cuda.device_count() > 1:
 
 ## 卷积神经网络 Convolutional Neural Networks
 
+### 卷积层
+
+```
+layer_padding = nn.Conv2d(in_channels=3, out_channels=10, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2), padding_mode='zeros')
+layer_no_padding = nn.Conv2d(in_channels=3, out_channels=10, kernel_size=(5, 5), stride=(1, 1))
+
+# (batch, channels, height, width)
+x = torch.tensor(train_data / 255, dtype=torch.float32)
+
+# (batch, out_channels, height, width)
+y = layer_padding(x)
+# (batch, out_channels,  (height - kernel_size_height) // strides_y + 1, (width - kernel_size_width) // strides_x + 1)
+y = layer_no_padding(x)
+```
+
 ### 加载数据
 
 ```
@@ -404,7 +419,6 @@ class CNNModel(nn.Module):
     x = self.fc2(x)
     return x
 
-# [batch_size, 1, width, height]
 model = CNNModel()
 ```
 

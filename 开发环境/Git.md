@@ -6,7 +6,7 @@
 - Checkout Windows-style,commit Unix-style line endings
 - Use Windows' default console window
 
-2. Checkout Windows-style,commit Unix-style line endings
+2. 设置换行符编码：
 
 在检出文本文件时，Git会将LF转换为CRLF。当提交文本文件时，CRLF将转换为LF。 对于跨平台项目，这是Windows上推荐的设置（“core.autocrlf”设置为“true”）。
 
@@ -22,14 +22,14 @@ git config --global core.autocrlf input
 git config --global core.autocrlf false
 ```
 
-3. 关闭文件模式
+3. 关闭文件模式：
 
 ```
 # 忽略文件权限修改
 git config --global core.filemode false
 ```
 
-4. 设置用户信息
+4. 设置用户信息：
 
 ```
 git config --global user.name "Your Name"
@@ -47,7 +47,7 @@ D:\Microsoft VS Code\Code.exe --wait --diff %base %mine
 # 设置外部merge工具
 D:\Microsoft VS Code\Code.exe --wait %merged
 ```
-7. 创建SSH Key
+7. 创建SSH Key：
 
 在Linux的用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有`id_rsa`和`id_rsa.pub`这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell，创建SSH Key：
 
@@ -58,10 +58,9 @@ ssh-keygen -t rsa -C "youremail@example.com"
 
   ssh-keygen生成的`key`在TortoiseGit下是不能使用的。因为ssh-keygen生成的密钥采用的是`OpenSSH SSH-2`，而TortoiseGit是通过Pageant进行私钥/公钥验证的，所以想要在TortoiseGit中使用ssh-keygen生成的key就需要通过`PuTTYGen`来进行转格式：
 
-  > 1) 将Linux下的.ssh目录复制到Windows的用户主目录里；
-
-  > 2）运行`PuTTYGen`，在`Conversions`菜单中点击`Import key`，选择`ssh-keygen`生成的私钥文件所在位置，比如`id_rsa`文件；
-
-  > 3）点击`Save private key`按钮，将其保存为`.ppk`文件；
-
-  > 4）打开`Pageant`，点击`Add Key`，选择前一步所保存的`.ppk`文件所在的位置即可。
+```
+1. 将Linux下的.ssh目录复制到Windows的用户主目录里;
+2. 运行`PuTTYGen`，在`Conversions`菜单中点击`Import key`，选择`ssh-keygen`生成的私钥文件所在位置，比如`id_rsa`文件;
+3. 点击`Save private key`按钮，将其保存为`.ppk`文件;
+4. 打开`Pageant`，点击`Add Key`，选择前一步所保存的`.ppk`文件所在的位置即可;
+```
