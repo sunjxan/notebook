@@ -90,6 +90,12 @@ passwd
 
 # 设置WSL终端
 "commandline": "wsl cd ~ && /bin/bash"
+
+# 如果"ctrl+shift+f"不能打开搜索框，则修改关键键为"ctrl+f"
+"keybindings":
+[
+    { "command": "find", "keys": "ctrl+f" }
+]
 ```
 10. 更换国内源
 
