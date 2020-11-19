@@ -23,6 +23,7 @@
 	- [进程与线程](并发/进程与线程.md)
 - 开发环境
 	- [Anaconda](开发环境/Anaconda.md)
+	- [CLion](开发环境/CLion.md)
 	- [Docker](开发环境/Docker.md)
 	- [Docker搭建Hadoop分布式集群](开发环境/Docker搭建Hadoop分布式集群.md)
 	- [FFmpeg](开发环境/FFmpeg.md)
@@ -45,6 +46,7 @@
 	- [MySQL](开发环境/MySQL.md)
 	- [NGINX](开发环境/NGINX.md)
 	- [Node.js](开发环境/Node.js.md)
+	- [Numpy](开发环境/Numpy.md)
 	- [OpenCV](开发环境/OpenCV.md)
 	- [PyCharm](开发环境/PyCharm.md)
 	- [pyhive](开发环境/pyhive.md)
@@ -135,3 +137,4 @@
 	- [网络模型](网络/网络模型.md)
 	- [集线器、交换机与路由器的区别](网络/集线器、交换机与路由器的区别.md)
 - 计算机视觉
+	- [算子](计算机视觉/算子.md)

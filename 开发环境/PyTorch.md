@@ -356,17 +356,17 @@ import torchvision as tv
 
 # 加载MNIST数据，训练数据60000张28*28的灰度值图片，测试数据10000张28*28的灰度值图片
 # 加载训练数据，得到PIL.Image.Image类型的图片
-train_set = tv.datasets.MNIST(root='./data', train=True, download=True)
+train_set = tv.datasets.MNIST(root='./data', train=True, download=True)      # (60000, 2, 28, 28)
 # 显示图片
 import matplotlib.pyplot as plt
-plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
+plt.imshow(train_set[0][0], cmap='gray')
 plt.show()
 
 transform = tv.transforms.Compose([tv.transforms.ToTensor()])
 # 加载测试数据，将PIL Image转换为Tensor
-test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+test_set = tv.datasets.MNIST(root='./data', train=False, download=True, transform=transform)      # (10000, 2, 1, 28, 28)
 # 显示图片
-plt.imshow(test_set[0][0][0], cmap=plt.get_cmap('gray'))
+plt.imshow(test_set[0][0][0], cmap='gray')
 plt.show()
 ```
 

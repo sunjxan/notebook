@@ -411,7 +411,7 @@ train_set, test_set = keras.datasets.mnist.load_data()
 
 # 显示图片
 import matplotlib.pyplot as plt
-plt.imshow(train_set[0][0], cmap=plt.get_cmap('gray'))
+plt.imshow(train_set[0][0], cmap='gray')
 plt.show()
 ```
 
