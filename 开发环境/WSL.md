@@ -435,3 +435,18 @@ taskkill /pid $target -f
 C:\Users\<user>\Desktop\config.xlaunch
 ```
 
+然后可以在命令行打开 `Ubuntu` 自带的编辑器 `gedit` ，但不能使用 `Windows` 的中文输入法输入中文。使用命令 `fc-list :lang=zh` 查看系统支持的中文字体，如果没有，需要先安装：
+
+```
+# 复制字体
+sudo mkdir /usr/share/fonts/opentype
+sudo mkdir /usr/share/fonts/opentype/msyh
+sudo cp /mnt/c/Windows/Fonts/msyh* /usr/share/fonts/opentype/msyh
+
+# 生成字体缓存
+fc-cache -fv
+
+# 查看字体是否已支持
+fc-list :lang=zh
+```
+
