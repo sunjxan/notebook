@@ -26,6 +26,7 @@
 	- [CLion](开发环境/CLion.md)
 	- [Docker](开发环境/Docker.md)
 	- [Docker搭建Hadoop分布式集群](开发环境/Docker搭建Hadoop分布式集群.md)
+	- [face_recognition](开发环境/face_recognition.md)
 	- [FFmpeg](开发环境/FFmpeg.md)
 	- [Flink](开发环境/Flink.md)
 	- [Flume](开发环境/Flume.md)
