@@ -298,23 +298,26 @@ print('%.4f' % metric.result())
 ### 流水线
 
 ```
-# 1.打印模型概要
+# 1.构建模型
+model.build(input_shape=(1, 3))
+
+# 2.打印模型概要
 model.summary()
 
-# 2.编译
+# 3.编译
 model.compile(optimizer=keras.optimizers.SGD(5e-4), loss=keras.losses.MSE, metrics=[keras.metrics.MSE])
 
-# 3.训练，返回历史信息model.history，包含params、epoch、history属性
+# 4.训练，返回历史信息model.history，包含params、epoch、history属性
 # batch_size 每次批量计算，批量的大小，同一批次内数据不重复，一次计算，一个损失函数值，每个参数更新一次
 # steps_per_epoch 从数据中顺序取批次，步骤的次数，各个步骤间数据不重复，最后一步数据可能小于batch_size
 # epochs 遍历所有数据轮回数是epochs减去initial_epoch
 # shuffle 每次遍历所有数据前，是否对数据随机排序
 model.fit(x_train, y_train, batch_size=1, steps_per_epoch=None, initial_epoch=0, epochs=1, shuffle=True)
 
-# 4.评估，返回loss函数值和metrics函数值
+# 5.评估，返回loss函数值和metrics函数值
 model.evaluate(x_test, y_test, batch_size=None, steps=None)
 
-# 5.预测，返回预测值
+# 6.预测，返回预测值
 model.predict(x, batch_size=None, steps=None)
 ```
 
