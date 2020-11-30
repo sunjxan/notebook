@@ -54,9 +54,10 @@ D:\Microsoft VS Code\Code.exe --wait %merged
 ```
 ssh-keygen -t rsa -C "youremail@example.com"
 ```
-  你需要把邮件地址换成你自己的邮件地址，然后一路回车，使用默认值即可，由于这个Key也不是用于军事目的，所以也无需设置密码。如果一切顺利的话，可以在用户主目录里找到`.ssh`目录，里面有`id_rsa`和`id_rsa.pub`两个文件，这两个就是SSH Key的秘钥对，`id_rsa`文件内长字符串是私钥，不能泄露出去，`id_rsa.pub`文件全文是公钥，可以放心地告诉任何人。
 
-  ssh-keygen生成的`key`在TortoiseGit下是不能使用的。因为ssh-keygen生成的密钥采用的是`OpenSSH SSH-2`，而TortoiseGit是通过Pageant进行私钥/公钥验证的，所以想要在TortoiseGit中使用ssh-keygen生成的key就需要通过`PuTTYGen`来进行转格式：
+你需要把邮件地址换成你自己的邮件地址，然后一路回车，使用默认值即可，由于这个Key也不是用于军事目的，所以也无需设置密码。如果一切顺利的话，可以在用户主目录里找到`.ssh`目录，里面有`id_rsa`和`id_rsa.pub`两个文件，这两个就是SSH Key的秘钥对，`id_rsa`文件内长字符串是私钥，不能泄露出去，`id_rsa.pub`文件全文是公钥，可以放心地告诉任何人。
+
+如果安装TortoiseGit时，没有选择使用OpenSSH密钥，则需要对私钥进行转换。因为ssh-keygen生成的密钥采用的是`OpenSSH SSH-2`，而TortoiseGit是通过Pageant进行私钥/公钥验证的，所以想要在TortoiseGit中使用ssh-keygen生成的key就需要通过`PuTTYGen`来进行转格式：
 
 ```
 1. 将Linux下的.ssh目录复制到Windows的用户主目录里;

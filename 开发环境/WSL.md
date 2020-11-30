@@ -28,7 +28,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 ```
 运行后重启电脑；
 
-4. 在应用商店中安装Ubuntu，或下载安装包安装（<https://docs.microsoft.com/zh-cn/windows/wsl/install-manual>），安装后创建用户；
+4. 在应用商店中安装Ubuntu 18.04 LTS，安装后创建用户；
 
 5. 升级到WSL2（WSL与WSL2的不同 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions），在 `PowerShell` 中使用下面命令：
 ```
@@ -438,7 +438,9 @@ taskkill /pid $target -f
 C:\Users\<user>\Desktop\config.xlaunch
 ```
 
-然后可以在命令行打开 `Ubuntu` 自带的编辑器 `gedit` ，但不能使用 `Windows` 的中文输入法输入中文。使用命令 `fc-list :lang=zh` 查看系统支持的中文字体，如果没有，需要先安装：
+安装 `Ubuntu` 自带的编辑器 `gedit` 用于编辑文本，但不能使用 `Windows` 的中文输入法输入中文。
+
+安装字体设置 `fontconfig` ，使用命令 `fc-list :lang=zh` 查看系统支持的中文字体，如果没有，需要先安装：
 
 ```
 # 复制字体
