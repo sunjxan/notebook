@@ -13,11 +13,10 @@
 
 
 
-1. 运行 Windows 10 **版本 19041** 或更高版本：
-- 加入 [Windows 预览体验计划](<https://insider.windows.com/zh-cn/>)并选择慢速更新；
-- 可以通过打开命令提示符并运行 `ver` 命令来检查 Windows 版本。
+1. 运行 Windows 10 **版本 18362** 或更高版本：
+- 可以通过打开命令提示符并运行 `ver` 命令来检查 Windows 版本
 
-2. BIOS的Advanced->CPU Configuration里的Virtualization设置为Enabled；
+2. BIOS的Advanced -> CPU Configuration里的Virtualization设置为Enabled；
 
 3. 以管理员身份打开 PowerShell 并运行：
 ```powershell
@@ -28,9 +27,14 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 ```
 运行后重启电脑；
 
-4. 在应用商店中安装Ubuntu 18.04 LTS，安装后创建用户；
+4. 下载 Linux 内核更新包并更新（https://docs.microsoft.com/zh-cn/windows/wsl/wsl2-kernel ）；
 
-5. 升级到WSL2（WSL与WSL2的不同 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions），在 `PowerShell` 中使用下面命令：
+5. 将所有子系统设置为WSL版本2（WSL与WSL2的不同 https://docs.microsoft.com/zh-cn/windows/wsl/compare-versions ）：
+```
+wsl --set-default-version 2
+```
+
+其他命令：
 ```
 # 列出所有子系统及版本
 wsl -l -v
@@ -52,7 +56,7 @@ wsl -u root <command>
 wsl -u root <file>
 ```
 
-6. 下载 Linux 内核更新包并更新（https://docs.microsoft.com/zh-cn/windows/wsl/wsl2-kernel）；
+6. 在应用商店中安装Ubuntu 18.04 LTS，安装后创建用户；
 
 7. 移动安装位置，WSL2虚拟磁盘会动态扩增，却不会缩小，要放到有足够存储空间的位置；
 
