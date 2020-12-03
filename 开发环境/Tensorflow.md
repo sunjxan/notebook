@@ -1,4 +1,7 @@
 ```
+# CPU版
+pip3 install tensorflow-cpu
+# GPU版
 pip3 install tensorflow
 ```
 
