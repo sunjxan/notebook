@@ -48,7 +48,9 @@
 	- [NGINX](开发环境/NGINX.md)
 	- [Node.js](开发环境/Node.js.md)
 	- [Numpy](开发环境/Numpy.md)
+	- [Open3D](开发环境/Open3D.md)
 	- [OpenCV](开发环境/OpenCV.md)
+	- [OpenGL](开发环境/OpenGL.md)
 	- [PyCharm](开发环境/PyCharm.md)
 	- [pyhive](开发环境/pyhive.md)
 	- [Python](开发环境/Python.md)
@@ -138,4 +140,5 @@
 	- [网络模型](网络/网络模型.md)
 	- [集线器、交换机与路由器的区别](网络/集线器、交换机与路由器的区别.md)
 - 计算机视觉
+	- [神经网络](计算机视觉/神经网络.md)
 	- [算子](计算机视觉/算子.md)

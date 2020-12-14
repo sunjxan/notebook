@@ -439,7 +439,7 @@ $str = netstat -ano | findstr 0.0.0.0:6000
 $target = $str.Split()[-1]
 taskkill /pid $target -f
 
-C:\Users\<user>\Desktop\config.xlaunch
+D:\Desktop\Multiple-windows.xlaunch
 ```
 
 安装 `Ubuntu` 自带的编辑器 `gedit` 用于编辑文本，但不能使用 `Windows` 的中文输入法输入中文。

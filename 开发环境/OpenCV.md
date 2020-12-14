@@ -45,7 +45,7 @@ sudo apt install python3-dev
 下载opencv和opencv-contrib并解压：
 
 ```bash
-# 最新版本下载地址
+# 下载地址
 # opencv https://github.com/opencv/opencv/releases
 # opencv_contrib https://github.com/opencv/opencv_contrib/releases
 cd ~
@@ -57,7 +57,7 @@ mv opencv-4.5.0 opencv
 mv opencv_contrib-4.5.0 opencv_contrib
 ```
 
-GitHub源文件下载问题
+CMake过程中下载GitHub上的文件失败的问题
 
 https://raw.githubusercontent/ 域名下文件无法下载，要从 https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts 中复制解析规则到hosts文件中。
 
@@ -69,7 +69,7 @@ https://raw.githubusercontent/ 域名下文件无法下载，要从 https://gith
 # -D OPENCV_EXTRA_MODULES_PATH 不要写错opencv-contrib文件夹了
 # -D PYTHON_EXECUTABLE 你的目标python环境
 
-cd ~/opencv
+cd opencv
 mkdir build
 cd build
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
@@ -88,13 +88,13 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 # -j8代表用8个核编译, 核越多, 编译的速度越快
 # 使用以下命令查看逻辑CPU的个数
 # nproc
-make -j8
+make -j $(nproc)
 ```
 
 安装：
 
 ```bash
-sudo make -j8 install
+sudo make -j $(nproc) install
 sudo ldconfig
 ```
 
@@ -116,7 +116,7 @@ ln -s /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/*.so ~/.local/lib/py
 ```
 cd ~/opencv/samples/cpp/example_cmake
 cmake .
-make -j8
+make -j $(nproc)
 ./opencv_example
 ```
 
@@ -278,6 +278,7 @@ plt.show()
 ```
 cmake_minimum_required(VERSION 3.10)
 project(untitled)
+
 set(CMAKE_CXX_STANDARD 14)
 
 find_package(OpenCV REQUIRED)
@@ -306,6 +307,7 @@ target_link_libraries(untitled ${OpenCV_LIBS})
 using namespace std;
 
 int main() {
+    // 设置Windows X-server
     putenv((char *)"DISPLAY=windows:0");
     
     cv::Mat image = cv::imread("opencv/samples/data/lena.jpg");
