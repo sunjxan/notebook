@@ -11,10 +11,15 @@ sudo apt install libpcl-dev
 安装依赖项：
 
 ```
+sudo apt install libusb-1.0-0-dev libusb-dev libudev-dev
+sudo apt install mpi-default-dev openmpi-bin openmpi-common
 sudo apt install libeigen3-dev
 sudo apt install libflann1.9 libflann-dev
 sudo apt install libboost-all-dev
-sudo apt install libvtk7-dev libvtk7-qt-dev libvtk7.1p libvtk7.1p-qt
+sudo apt install libvtk7-dev libvtk7-qt-dev libvtk7.1 libvtk7.1-qt
+sudo apt install freeglut3-dev pkg-config
+sudo apt install libxmu-dev libxi-dev
+sudo apt install mono-complete
 ```
 
 下载PCL并解压：
