@@ -1,6 +1,6 @@
 ## 安装
 
-### GLAD
+### glad（跨平台兼容库）
 
 https://glad.dav1d.de/ 在线配置：C/C++，OpenGL，Version 3.3及以上版本，Core，Generate a loader，点击GENERATE按钮，生成文件，复制 `glad.zip` 压缩包的链接地址，下载并解压：
 
@@ -11,7 +11,20 @@ unzip glad.zip -d glad
 sudo mv glad/include/* /usr/local/include
 ```
 
-### GLFW
+### GLM（Open**GL** **M**athematics，数学库）
+
+下载GLM并解压：
+
+```
+# 下载地址
+# https://github.com/g-truc/glm/releases
+cd ~
+wget -O glm.zip https://github.com/g-truc/glm/archive/0.9.8.5.zip
+unzip glm.zip
+mv glm-0.9.8.5 glm
+```
+
+### GLFW（Graphics Library Framework，OpenGL框架库）
 
 下载GLFW并解压：
 
@@ -51,9 +64,9 @@ sudo make -j $(nproc) install
 
 ## 测试
 
-如果WSL2没有Windows X-server，要先在Windows上安装VcXsrv，并配置以 `Fullscreen` 模式打开，否则会报错 `Error: GLX: Failed to create context: GLXBadFBConfig` 。
+如果WSL2没有Windows X-server，要先在Windows上安装VcXsrv，并配置以 `One window without titlebar` 模式打开，否则会报错 `Error: GLX: Failed to create context: GLXBadFBConfig` 。
 
-先修改环境变量为 `Fullscreen` 模式的 `Display number` ：
+先修改环境变量为 `One window without titlebar` 模式的 `Display number` ：
 
 ```
 export DISPLAY=windows:1
@@ -80,11 +93,15 @@ add_executable(untitled main.cpp ~/glad/src/glad.c)
 target_link_libraries(untitled glfw3 GL m Xrandr Xi X11 pthread dl Xinerama Xcursor)
 ```
 
-2. 在运行配置添加环境变量 `DISPLAY=windows:1`（windows为WSL2的Win端IP，1为 `Fullscreen` 模式的 `Display number` ），或者在main函数中添加环境变量：
+2. 在运行配置添加环境变量 `DISPLAY=windows:1`（windows为WSL2的Win端IP，1为 `One window without titlebar` 模式的 `Display number` ），或者在main函数中添加环境变量：
 ```
 #include <iostream>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 using namespace std;
 

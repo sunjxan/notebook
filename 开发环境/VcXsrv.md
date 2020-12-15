@@ -5,7 +5,7 @@ netstat -ano | findstr 0.0.0.0:6000
 
 taskkill /pid <PID> -f
 ```
-3. 打开XLaunch，设置 `Multiple windows` 和 `Fullscreen` 两种启动方式：
+3. 打开XLaunch，设置 `Multiple windows` 和 `One window without titlebar` 两种启动方式：
 
 Multiple windows
 
@@ -19,7 +19,7 @@ Save configuration  保存到桌面 `Multiple-windows.xlaunch`
 
 ------
 
-Fullscreen
+One window without titlebar
 
 Display number  1
 
@@ -27,7 +27,7 @@ Start no client
 
 勾选 Disable access control
 
-Save configuration  保存到桌面 `Fullscreen.xlaunch`
+Save configuration  保存到桌面 `One-window.xlaunch`
 
 取消  只保存，不启动
 
