@@ -11,15 +11,32 @@ sudo apt install libpcl-dev
 安装依赖项：
 
 ```
-sudo apt install libusb-1.0-0-dev libusb-dev libudev-dev
+sudo apt install doxygen mpi-default-dev openmpi-bin openmpi-common
+sudo apt install libusb-1.0-0-dev libqhull* libusb-dev libgtest-dev libudev-dev
 sudo apt install mpi-default-dev openmpi-bin openmpi-common
 sudo apt install libeigen3-dev
 sudo apt install libflann1.9 libflann-dev
 sudo apt install libboost-all-dev
-sudo apt install libvtk7-dev libvtk7-qt-dev libvtk7.1 libvtk7.1-qt
 sudo apt install freeglut3-dev pkg-config
 sudo apt install libxmu-dev libxi-dev
-sudo apt install mono-complete
+sudo apt install libphonon-dev libphonon-dev phonon-backend-gstreamer
+sudo apt install phonon-backend-vlc graphviz mono-complete
+sudo apt install qt5-default
+```
+
+下载VTK并解压安装：
+
+```
+# 下载地址
+# https://github.com/Kitware/VTK/releases
+cd ~
+wget -o VTK.zip https://github.com/Kitware/VTK/archive/v9.0.0.zip
+unzip VTK.zip
+mv VTK-9.0.0 VTK
+cd VTK && mkdir build && cd build
+cmake ..
+make                                                                   
+sudo make install
 ```
 
 下载PCL并解压：
@@ -39,7 +56,7 @@ mv pcl-pcl-1.11.1 pcl
 cd pcl
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=None -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_GPU=ON -DBUILD_apps=ON -DBUILD_examples=ON -DCMAKE_INSTALL_PREFIX=/usr ..
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_GPU=ON -DBUILD_apps=ON -DBUILD_examples=ON ..
 ```
 
 编译：
@@ -58,6 +75,8 @@ sudo make -j $(nproc) install
 ```
 
 ## 测试
+
+如果WSL2没有Windows X-server，要先在Windows上安装VcXsrv，并配置添加环境变量 `DISPLAY=windows:1`（windows为WSL2的Win端IP）。然后进行测试：
 
 ```bash
 pcl_viewer ../test/pcl_logo.pcd
