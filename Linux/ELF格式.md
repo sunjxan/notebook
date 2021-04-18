@@ -1,5 +1,7 @@
 可执行连接格式（Executable and Linking Format）是一种用于 二进制文件、可执行文件（无扩展名）、可重定位文件（.o, .a）、共享库（.so）和核心转储格式（core dump）文件。最初是由UNIX 系统实验室（UNIX System Laboratories，USL）开发并发布的，做为应用程序二进制接口（Application Binary Interface，ABI ）的一部分，也是Linux的主要可执行文件格式。1999年，被86open项目选为x86架构上的类Unix操作系统的二进制文件标准格式，用来取代COFF。
 
+![image-20210416204707619](C:\Users\sunjxan\AppData\Roaming\Typora\typora-user-images\image-20210416204707619.png)
+
 ELF文件由4部分组成，分别是ELF头（ELF header）、程序头表（Program header table）、节（Section）和节头表（Section header table）。实际上，一个文件中不一定包含全部内容，而且它们的位置也未必如同所示这样安排，只有ELF头的位置是固定的，其余各部分的位置、大小等信息由ELF头中的各项值来决定。
 
 ![img](ELF格式.assets/1.png)
@@ -59,6 +61,8 @@ ELF文件由4部分组成，分别是ELF头（ELF header）、程序头表（Pro
   .data：已初始化且初值非0的全局变量和静态局部变量，可读可写
   .bss：未初始化或初值为0的全局变量和静态局部变量，可读可写
   
+  ![image-20210416211546344](C:\Users\sunjxan\AppData\Roaming\Typora\typora-user-images\image-20210416211546344.png)
+  
 - 程序头（0x40 ~ 0xaf）
   
   类型    段起点     虚拟地址    物理地址    FileSiz  MemSiz  Flags   Align
@@ -83,5 +87,5 @@ ELF文件由4部分组成，分别是ELF头（ELF header）、程序头表（Pro
 - nm  列出符号
 - strings  列出字符串
 - size  列出节的大小
-- objdump -DS  反汇编
+- objdump -sd  展示所有节内容并反汇编其中代码
 - readelf -a  读取ELF文件信息
