@@ -24,13 +24,11 @@
 
 1、  MOV（传送）
 
-指令写法：MOV target，source
+指令写法：MOV source, target (MOVB, MOVW, MOVL, MOVQ)
 
 功能描述：将源操作数source的值复制到target中去，source值不变
 
-注意事项：1）target不能是CS（代码段寄存器），我的理解是代码段不可写，只可读，所以相应这地方也不能对CS执行复制操作。2）target和source不能同时为内存数、段寄存器（CS\DS\ES\SS\FS\GS）3)不能将立即数传送给段寄存器4）target和source必须类型匹配，比如，要么都是字节，要么都是字或者都是双字等。4）由于立即数没有明确的类型，所以将立即数传送到target时，系统会自动将立即数零扩展到与target数的位数相同，再进行传送。有时，需要用BYTE PTR 、WORD PTR、 DWORD PTR明确指出立即数的位数
-
-写法示例：MOV dl,01H;MOV eax,[bp]; eax =ss:[bp] 双字传送。
+注意事项：1）target不能是CS（代码段寄存器），我的理解是代码段不可写，只可读，所以相应这地方也不能对CS执行复制操作。2）target和source不能同时为内存数、段寄存器（CS\DS\ES\SS\FS\GS）3)不能将立即数传送给段寄存器4）target和source必须类型匹配，比如，要么都是字节，要么都是字或者都是双字等。4）由于立即数没有明确的类型，所以将立即数传送到target时，系统会自动将立即数零扩展到与target数的位数相同，再进行传送。
 
 2、  XCHG(交换)
 
@@ -39,8 +37,6 @@
 功能描述：交换object1与object2的值
 
 注意事项：1）不能直接交换两个内存数的值 2）类型必须匹配3）两个操作数任何一个都不能是段寄存器【看来段寄存器的写入的限制非常的严格，MOV指令也不能对段寄存器进行写入】，4）必须是通用寄存器（ax、bx、cx、dx、si、di）或内存数
-
-写法示例：XCHG ax，[bx][si]; XCHG ax,bx;
 
 3、  LEA(装入有效地址)
 
