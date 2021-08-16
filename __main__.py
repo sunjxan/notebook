@@ -10,20 +10,15 @@ import urllib
 from urllib.request import urlretrieve
 
 pattern_split_1 = re.compile('(!\[[^\]]+\]\([^\)]+\))')
-pattern_find_1 = re.compile('!\[([^\]]+)\]\(([^\)]+)(\s[\'\"]([^\'\"]+)[\'\"])?\)')
-
+pattern_find_1 = re.compile('!\[[^\]]+\]\(([^\)]+)\)')
+pattern_split_2 = re.compile('(<img src="[^"]+"[^/>]*/>)')
+pattern_find_2 = re.compile('<img src="([^"]+)"[^/>]*/>')
 
 def downimage(url, file):
     downdir = os.path.abspath(os.path.dirname(file))
     if not os.path.isdir(downdir):
         os.mkdir(downdir)
-    if url[0] == '<':
-    	url = url[1:-1]
-    if url[:4] == 'http':
-        if url[:9] == 'http:////':
-            url = 'http://' + url[9:]
-        elif url[:10] == 'https:////':
-            url = 'https://' + url[10:]
+    if url.startswith('http'):
         # 绕过反爬虫机制
         try:
             opener = urllib.request.build_opener()
@@ -35,7 +30,7 @@ def downimage(url, file):
         else:
             print(file, '下载成功')
             return True
-    elif url[:22] == 'data:image/png;base64,':
+    elif url.startswith('data:image/png;base64,'):
         try:
             imgdata = base64.b64decode(url[22:])
             with open(file, 'wb') as f:
@@ -46,10 +41,10 @@ def downimage(url, file):
             print(file, '下载成功')
             return True
     else:
+        if url[1] == ':':
+            url = '/mnt/' + url[0].lower() + url[2:]
+            url = url.replace('\\', '/')
         try:
-            if url[1] == ':':
-                url = '/mnt/' + url[0].lower() + url[2:]
-                url = url.replace('\\', '/')
             shutil.move(url, file)
         except:
             print(file, '移动失败！')
@@ -65,8 +60,7 @@ def createfileitem(floor, title, filepath):
 
     global path
     start = len(path + '/')
-    summary.append(
-        '\t' * floor + '- [' + title + '](' + filepath[start:] + ')\n')
+    summary.append('\t' * floor + '- [' + title + '](' + filepath[start:] + ')\n')
 
 def scandir(dir, floor, pattern_split, pattern_find):
     files = os.listdir(dir)
@@ -76,7 +70,7 @@ def scandir(dir, floor, pattern_split, pattern_find):
             if file[0] == '.' or file == '__pycache__' or filepath[-7:] == '.assets':
                 continue
             createfileitem(floor, file, None)
-            scandir(filepath, floor + 1)
+            scandir(filepath, floor + 1, pattern_split, pattern_find)
             continue
         if os.path.isfile(filepath) and file[-3:] == '.md':
             createfileitem(floor, file[:-3], filepath)
@@ -85,29 +79,47 @@ def scandir(dir, floor, pattern_split, pattern_find):
             num = 0
             for index, line in enumerate(lines):
                 res = pattern_split.split(line)
-                if len(res) != 1:
-                    for ix in range(len(res)):
+                len_res = len(res)
+                if len_res != 1:
+                    for ix in range(len_res):
                         if ix % 2:
+                            # res[ix]是图片引入
+                            # filename_ori是图片url
+                            filename_ori = pattern_find.findall(res[ix])[0]
+
+                            filename = filename_ori
+                            if filename_ori.startswith('<'):
+                                filename = filename_ori[1:-1]
+                            if filename_ori.startswith('http'):
+                                if filename_ori.startswith('http:////'):
+                                    filename = 'http://' + filename_ori[9:]
+                                elif filename_ori.startswith('https:////'):
+                                    filename = 'https://' + filename_ori[10:]
+                            elif filename_ori.startswith('file'):
+                                if filename_ori.startswith('file:///'):
+                                    filename = filename_ori[8:]
+                                elif filename_ori.startswith('file://'):
+                                    filename = filename_ori[7:]
+                            
+                            prefix = file[:-3] + '.assets'
+                            if filename.startswith(prefix):
+                                continue
+                            filename_path = urllib.parse.urlparse(filename).path
+                            rindex = filename_path.rfind('.')
+                            suffix = filename_path[rindex:] if rindex != -1 else ''
+
+                            # 确定图片文件新路径
                             while True:
                                 num += 1
-                                newfile = file[:-3] + \
-                                    '.assets/' + str(num) + '.png'
+                                newfile = prefix + '/' + str(num) + suffix
                                 newfilepath = dir + '/' + newfile
                                 if not os.path.isfile(newfilepath):
                                     break
-                            tmp = pattern_find.findall(res[ix])[0]
+                            
                             # 切换工作目录获取绝对路径
-                            os.chdir(dir)
-                            if os.path.dirname(os.path.abspath(tmp[1])) == os.path.dirname(os.path.abspath(newfilepath)):
-                                num -= 1
-                                continue
-                            if downimage(tmp[1], newfilepath):
-                                if tmp[3]:
-                                    res[ix] = '![' + tmp[0] + \
-                                        '](' + newfile + ' "' + tmp[3] + '")'
-                                else:
-                                    res[ix] = '![' + tmp[0] + \
-                                        '](' + newfile + ')'
+                            os.chdir(dir)   
+                            if downimage(filename, newfilepath):
+                                res[ix] = res[ix].replace(filename_ori, newfile)
                     lines[index] = ''.join(res)
             with open(filepath, 'w', encoding='utf8') as f:
                 f.writelines(lines)
@@ -119,5 +131,6 @@ if os.path.isfile(readme):
 
 summary = []
 scandir(path, 0, pattern_split_1, pattern_find_1)
+scandir(path, 0, pattern_split_2, pattern_find_2)
 with open(readme, 'w', encoding='utf8') as f:
     f.writelines(summary)
