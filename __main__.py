@@ -9,8 +9,8 @@ import shutil
 import urllib
 from urllib.request import urlretrieve
 
-pasplit = re.compile('(!\[[^\]]+\]\([^\)]+\))')
-pafind = re.compile('!\[([^\]]+)\]\(([^\)]+)(\s[\'\"]([^\'\"]+)[\'\"])?\)')
+pattern_split_1 = re.compile('(!\[[^\]]+\]\([^\)]+\))')
+pattern_find_1 = re.compile('!\[([^\]]+)\]\(([^\)]+)(\s[\'\"]([^\'\"]+)[\'\"])?\)')
 
 
 def downimage(url, file):
@@ -68,8 +68,7 @@ def createfileitem(floor, title, filepath):
     summary.append(
         '\t' * floor + '- [' + title + '](' + filepath[start:] + ')\n')
 
-
-def scandir(dir, floor):
+def scandir(dir, floor, pattern_split, pattern_find):
     files = os.listdir(dir)
     for file in files:
         filepath = dir + '/' + file
@@ -85,7 +84,7 @@ def scandir(dir, floor):
                 lines = f.readlines()
             num = 0
             for index, line in enumerate(lines):
-                res = pasplit.split(line)
+                res = pattern_split.split(line)
                 if len(res) != 1:
                     for ix in range(len(res)):
                         if ix % 2:
@@ -96,7 +95,7 @@ def scandir(dir, floor):
                                 newfilepath = dir + '/' + newfile
                                 if not os.path.isfile(newfilepath):
                                     break
-                            tmp = pafind.findall(res[ix])[0]
+                            tmp = pattern_find.findall(res[ix])[0]
                             # 切换工作目录获取绝对路径
                             os.chdir(dir)
                             if os.path.dirname(os.path.abspath(tmp[1])) == os.path.dirname(os.path.abspath(newfilepath)):
@@ -113,13 +112,12 @@ def scandir(dir, floor):
             with open(filepath, 'w', encoding='utf8') as f:
                 f.writelines(lines)
 
-
 path = os.path.abspath(os.path.dirname(__file__))
 readme = path + '/' + 'README.md'
 if os.path.isfile(readme):
     os.remove(readme)
 
 summary = []
-scandir(path, 0)
+scandir(path, 0, pattern_split_1, pattern_find_1)
 with open(readme, 'w', encoding='utf8') as f:
     f.writelines(summary)
