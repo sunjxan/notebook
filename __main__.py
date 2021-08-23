@@ -131,6 +131,9 @@ if os.path.isfile(readme):
 
 summary = []
 scandir(path, 0, pattern_split_1, pattern_find_1)
+
+summary = []
 scandir(path, 0, pattern_split_2, pattern_find_2)
+
 with open(readme, 'w', encoding='utf8') as f:
     f.writelines(summary)
