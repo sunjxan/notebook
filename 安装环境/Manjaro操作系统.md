@@ -333,14 +333,6 @@ latte-dock
     tool = code
 [difftool "code"]
     cmd = code --wait --diff $LOCAL $REMOTE
-
-[merge]
-    tool = code
-[mergetool]
-    keepBackup = false
-[mergetool "code"]
-    cmd = code --wait $MREGED
-    trustExitCode = false
 ```
 
 ### 注意事项
