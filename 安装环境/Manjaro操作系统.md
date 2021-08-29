@@ -140,11 +140,12 @@ yay -S qv2ray
 yay -S v2raya
 ```
 
-4. 文本类
+4. 编辑类
 
 ```
 yay -S vim
 yay -S typora
+yay -S sublime-text-4
 ```
 
 5. oh-my-zsh
@@ -190,24 +191,30 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 exit
 ```
 
-6. 开发类
+6. 编程类
 
 ```
 yay -S gitkraken
 yay -S visual-studio-code-bin
 yay -S pycharm-community-edition
 yay -S codeblocks
+yay -S dosbox
 ```
 
-7. 办公类
+7. 阅读类
 
 ```
-yay -S calibre
 yay -S foxitreader
+yay -S calibre
+```
+
+8. 办公类
+
+```
 yay -S libreoffice-fresh libreoffice-fresh-zh-cn
 ```
 
-8. 通讯类
+9. 通讯类
 
 ```
 # qq
@@ -225,33 +232,33 @@ yay -S electron-lark
 yay -S dingtalk-bin
 ```
 
-9. 图像类
+10. 图像类
 
 ```
 yay -S flameshot
 yay -S gimp
 ```
 
-10. 音乐类
+11. 音乐类
 
 ```
 yay -S qqmusic-bin
 yay -S netease-cloud-music
 ```
 
-11. 邮件类
+12. 邮件类
 
 ```
 yay -S thunderbird thunderbird-i18n-zh-cn
 ```
 
-12. 下载类
+13. 下载类
 
 ```
 yay -S uget
 ```
 
-13. 网盘类
+14. 网盘类
 
 ```
 # 百度网盘
@@ -260,7 +267,7 @@ yay -S baidunetdisk-bin
 # 坚果云
 yay -S nutstore
 ```
-14. 网络类
+15. 网络类
 
 ```
 yay -S filezilla
@@ -269,12 +276,13 @@ yay -S fiddler
 yay -S wireshark-qt
 ```
 
-15. 工具类
+16. 工具类
 
 ```
 yay -S mathpix-snipping-tool
 yay -S edrawmax-cn
 yay -S netron-bin
+yay -S droidcam
 ```
 
 ### 安装虚拟机
@@ -306,28 +314,34 @@ latte-dock
 ```
 
 2. 在系统设置 - 外观 - 全局主题 - 获取新全局主题，搜索“macos”，选择最多下载在前，安装“whitesur”主题并使用，勾选“使用来自主题的桌面布局”，应用；
-
 3. 在系统设置 - 外观 - 应用程序风格，选择“Breeze微风”，点击配置 - 透明度，设置为半透明；
-
 4. 在系统设置 - 外观 - 应用程序风格 - 配置GNOME/GTK应用程序风格 - 获取新GNOME/GTK应用程序风格，搜索“bigsur”，选择最多下载在前，安装“bigsur-originals-gtk-blue-light”风格并使用；
-
 5. 在系统设置 - 外观 - Plasma样式 - 获取新Plasma样式，搜索“macos”，选择最多下载在前，安装“whitesur-dark”样式并使用；
-
 6. 在系统设置 - 外观 - 图标 - 获取新图标，搜索“bigsur”，选择最多下载在前，安装“bigsur icon theme”图标并使用；
-
-7.  复制Windows系统 `C:\Windows\Fonts` 目录到 `/usr/share/fonts` ，重命名为 `Windows-Fonts` ，在同级创建目录 `MacOS-Fonts` ，存放苹方系列字体文件，在系统设置 - 外观 - 字体，调整所有字体，选择 苹方简体常规，固定宽度字体选择 `Consolas` ；
-   
+7. 复制Windows系统 `C:\Windows\Fonts` 目录到 `/usr/share/fonts` ，重命名为 `Windows-Fonts` ，在同级创建目录 `MacOS-Fonts` ，存放苹方系列字体文件，在系统设置 - 外观 - 字体，调整所有字体，选择 苹方简体常规，固定宽度字体选择 `Consolas` ；
 8. 在系统设置 - 开机与关机 -登陆屏幕（SDDM），选择“whitesur”使用；
-
 9. 在桌面右键 - 配置桌面和壁纸 - 获取新壁纸，搜索“macos”，选择最多下载在前，安装壁纸，配置播放幻灯片；
-
 10. 在桌面右键 - 配置桌面和壁纸 - 获取新壁纸，搜索“2560 x 1440”，选择最多下载在前，安装壁纸，在 `~/.local/share/wallpapers` 中选择壁纸复制，替换主题中的锁屏背景图片 `~/.local/share/wallpapers/WhiteSur/contents/images/2560x1440.png` 、  `/usr/share/sddm/themes/WhiteSur/background.png` ，调整大小为 `1920x1080` 并使用Gimp设置高斯模糊 (10,10) 导出为新图片，替换主题中的欢迎屏幕背景图片 `~/.local/share/plasma/look-and-feel/com.github.vinceliuiceWhiteSur/contents/splash/images/background.png` ，原有图片重命名为 `backup.png` ；
-
 11. 设置顶栏，右键编辑面板，点击配置系统托盘，将面板间距设置可变大小，将 `Manjaro设置管理器` 、 `News available!` 、 `Yakuake` 、 `蓝牙` 、 `剪贴板` 设置总是隐藏，配置数字时钟，日期自适应位置，不显示秒，时间显示24小时制；
-
 12. 编辑终端Konsole，设置-显示工具栏 都取消，右键编辑当前方案，常规 设置命令为 `/bin/zsh` ，外观 - 配色方案和字体 选择微风，点编辑，勾选模糊背景，设置背景透明度为40%，字体选择 `Consolas` ，外观 - 光标 设置为 I字型，闪烁已启用；
-
 13. 在系统设置 - 显卡与显示器 - 显示器配置，设置全局缩放率，重启电脑；
+14. 打开 Dolphin，在 设置 - 配置Dolphin - 右键菜单，勾选git，点击 下载新服务，搜索“terminal”，选择最多下载在前，安装“Your Terminal Menu - Open Terminal Here”，确定后重启 Dolphin；
+15. 为了搭配 Dolphin 的git功能，在终端输入 ` git config --global core.editor "code --wait"` ，接下来打开配置文件  `git config --global -e` ，添加以下配置项：
+
+```
+[diff]
+    tool = code
+[difftool "code"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+    tool = code
+[mergetool]
+    keepBackup = false
+[mergetool "code"]
+    cmd = code --wait $MREGED
+    trustExitCode = false
+```
 
 ### 注意事项
 
