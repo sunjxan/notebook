@@ -304,6 +304,9 @@ yay virtualbox-host-modules
 
 # 安装扩展包
 yay -S virtualbox-ext-oracle
+
+# 添加用户组
+sudo usermod -a -G vboxusers <user>
 ```
 
 打开 virtualbox，新建一台虚拟机，设置启动光盘，选择虚拟光盘文件，然后启动。
