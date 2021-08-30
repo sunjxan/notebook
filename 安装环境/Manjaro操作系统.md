@@ -45,11 +45,6 @@ sudo dd if=/path/to/manjaro.iso of=/dev/sdX bs=4M status=progress && sync
 交换到磁盘从来就不是一件好事。对于机械硬盘，通过听硬盘的工作噪声，同时观察系统的响应速度，就能说出系统是否在交换。对于 SSD，您无法听到工作噪声，但可以使用**top** 或 **free** 程序查看使用了多少交换空间。应该尽量避免使用 SSD 设备作为交换分区。一旦发生交换，首先检查是否输入了不合理的命令，例如试图编辑一个 5GB 的文件。如果交换时常发生，最好的办法是为你的系统添置内存。
 
 5. 设置用户名、密码、root密码；
-6. 添加存储目录：
-```
-sudo mkdir /home/data
-sudo chown <user> /home/data
-```
 
 ### 安装软件准备
 
