@@ -282,6 +282,7 @@ yay -S wireshark-qt
 yay -S mathpix-snipping-tool
 yay -S edrawmax-cn
 yay -S netron-bin
+yay -S cheese
 yay -S droidcam
 yay -S gparted
 ```
@@ -323,14 +324,16 @@ latte-dock
 5. 在系统设置 - 外观 - Plasma样式 - 获取新Plasma样式，搜索“macos”，选择最多下载在前，安装“whitesur-dark”样式并使用；
 6. 在系统设置 - 外观 - 图标 - 获取新图标，搜索“bigsur”，选择最多下载在前，安装“bigsur icon theme”图标并使用；
 7. 复制Windows系统 `C:\Windows\Fonts` 目录到 `/usr/share/fonts` ，重命名为 `Windows-Fonts` ，在同级创建目录 `MacOS-Fonts` ，存放苹方系列字体文件，在系统设置 - 外观 - 字体，调整所有字体，选择 苹方简体常规，固定宽度字体选择 `Consolas` ；
-8. 在系统设置 - 开机与关机 -登陆屏幕（SDDM），选择“whitesur”使用；
-9. 在桌面右键 - 配置桌面和壁纸 - 获取新壁纸，搜索“macos”，选择最多下载在前，安装壁纸，配置播放幻灯片；
-10. 在桌面右键 - 配置桌面和壁纸 - 获取新壁纸，搜索“2560 x 1440”，选择最多下载在前，安装壁纸，在 `~/.local/share/wallpapers` 中选择壁纸复制，替换主题中的锁屏背景图片 `~/.local/share/wallpapers/WhiteSur/contents/images/2560x1440.png` 、  `/usr/share/sddm/themes/WhiteSur/background.png` ，调整大小为 `1920x1080` 并使用Gimp设置高斯模糊 (10,10) 导出为新图片，替换主题中的欢迎屏幕背景图片 `~/.local/share/plasma/look-and-feel/com.github.vinceliuiceWhiteSur/contents/splash/images/background.png` ，原有图片重命名为 `backup.png` ；
+8. 在系统设置 - 开机与关机 -登陆屏幕（SDDM），选择“whitesur”使用，并更改背景；
+9. 在桌面右键 - 配置桌面和壁纸 - 壁纸，选择 每日一图 - 必应；
+10. 在系统设置 - 工作区行为 - 锁屏 - 外观配置 - 图像 - 获取新壁纸，搜索“macos”，选择最多下载在前，安装壁纸，在 `~/.local/share/wallpapers` 中选择对应壁纸复制，替换主题中的登录屏幕背景图片 `/usr/share/sddm/themes/WhiteSur/background.png` ，调整大小为 `1920x1080` 并使用Gimp设置高斯模糊 (10,10) 导出为新图片，替换主题中的欢迎屏幕背景图片 `~/.local/share/plasma/look-and-feel/com.github.vinceliuiceWhiteSur/contents/splash/images/background.png` ，原有图片重命名为 `backup.png` ；
 11. 设置顶栏，右键编辑面板，点击配置系统托盘，将面板间距设置可变大小，将 `Manjaro设置管理器` 、 `News available!` 、 `Yakuake` 、 `蓝牙` 、 `剪贴板` 设置总是隐藏，配置数字时钟，日期自适应位置，不显示秒，时间显示24小时制；
 12. 编辑终端Konsole，设置-显示工具栏 都取消，右键编辑当前方案，常规 设置命令为 `/bin/zsh` ，外观 - 配色方案和字体 选择微风，点编辑，勾选模糊背景，设置背景透明度为40%，字体选择 `Consolas` ，外观 - 光标 设置为 I字型，闪烁已启用；
 13. 在系统设置 - 显卡与显示器 - 显示器配置，设置全局缩放率，重启电脑；
-14. 打开 Dolphin，在 设置 - 配置Dolphin - 右键菜单，勾选git，点击 下载新服务，搜索“terminal”，选择最多下载在前，安装“Your Terminal Menu - Open Terminal Here”，确定后重启 Dolphin；
-15. 为了搭配 Dolphin 的git功能，在终端输入 ` git config --global core.editor "code --wait"` ，接下来打开配置文件  `git config --global -e` ，添加以下配置项：
+14. 在系统设置 - 工作区行为 - 桌面特效，勾选 最小化过渡动画（神灯）；
+15. 在系统设置 - 窗口管理 - 任务切换器 - 获取新任务切换器，搜索“MediumRounded”，选择最多下载在前，安装“MediumRounded”切换器布局并使用；
+16. 打开 Dolphin，在 设置 - 配置Dolphin - 右键菜单，勾选git，点击 下载新服务，搜索“terminal”，选择最多下载在前，安装“Your Terminal Menu - Open Terminal Here”，确定后重启 Dolphin；
+17. 为了搭配 Dolphin 的git功能，在终端输入 ` git config --global core.editor "code --wait"` ，接下来打开配置文件  `git config --global -e` ，添加以下配置项：
 
 ```
 [diff]
@@ -338,6 +341,7 @@ latte-dock
 [difftool "code"]
     cmd = code --wait --diff $LOCAL $REMOTE
 ```
+18. 将 `Dolphin` 、 `Konsole` 、 `系统监视器` 、 `添加/删除软件` 、 `回收站` 添加固定到dock并固定启动器；
 
 ### 注意事项
 
