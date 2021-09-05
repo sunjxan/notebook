@@ -111,6 +111,9 @@ v2ray -test -config /etc/v2ray/config.json
 
 # 开启服务
 v2ray -config /etc/v2ray/config.json
+
+# 开机启动
+sudo systemctl enable v2ray
 ```
 在 系统设置 - 网络设置 - 代理，选择使用系统代理服务器配置，HTTP代理 和 SSL代理填 `http://localhost:1081` ，SOCKS代理填 `http://localhost:1080` 。
 
@@ -133,6 +136,9 @@ alias unproxy="unset http_proxy;unset https_proxy"
 
 ```
 yay -S v2raya
+
+# 开机启动
+sudo systemctl enable v2raya
 ```
 
 3. oh-my-zsh
