@@ -42,19 +42,21 @@ sudo dd if=/path/to/manjaro.iso of=/dev/sdX bs=4M status=progress && sync
 
 ### 安装软件准备
 
+在开始菜单中打开 Konsole 输入：
+
 ```bash
 sudo pacman-mirrors -i -c China -m rank
 ```
 
 在弹出的框中选一个最快的源
 
-更新系统
+更新系统：
 
 ```bash
 sudo pacman -Syyu
 ```
 
-yay 是 AUR 助手，兼容 pacman，以后可以使用 yay 安装软件
+yay 是 AUR 助手，兼容 pacman，以后可以使用 yay 安装软件：
 
 ```bash
 sudo pacman -S yay
@@ -63,7 +65,11 @@ yay -S base-devel
 # 全部安装
 ```
 
-从 https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts 中复制解析规则到 `/etc/hosts` 文件头部。
+从 https://github.com/googlehosts/hosts/blob/master/hosts-files/hosts 中复制解析规则到 `/etc/hosts` 头部：
+
+```
+kate /etc/hosts
+```
 
 ### 安装软件
 
@@ -73,10 +79,10 @@ yay -S base-devel
 yay -S fcitx5-im fcitx5-chinese-addons fcitx5-pinyin-zhwiki fcitx5-material-color
 ```
 环境变量
-欲在程序中正常启用 Fcitx5, 须设置以下环境变量，并重新登陆：
+欲在程序中正常启用 Fcitx5, 须设置以下环境变量，并重新登录：
 
 ```
-~/.pam_environment
+kate ~/.pam_environment
 
 GTK_IM_MODULE DEFAULT=fcitx
 QT_IM_MODULE  DEFAULT=fcitx
@@ -86,22 +92,21 @@ SDL_IM_MODULE DEFAULT=fcitx
 ```
 `Fcitx5设置 -> 添加输入法` 添加 拼音 输入法
 
-`Fcitx5设置 -> 配置附加组件 -> 经典用户界面 -> 主题` 设置主题
+`Fcitx5设置 -> 配置附加组件 -> 经典用户界面` 设置主题和字体
 
-在拼音输入法（或者 Rime 输入法）的设置中，启用“ **在程序中显示预编辑文本** ”即可启用单行模式
+在拼音输入法（或者 Rime 输入法）的设置中，启用“ 在程序中显示预编辑文本 ”即可启用单行模式
 
-2. 浏览器
+2. v2ray
 
-```bash
-yay -S google-chrome
-```
-
-3. v2ray
-- 终端
 ```
 yay -S v2ray
+```
+- 命令行中使用
+```
+# 添加v2ray配置
+kate /etc/v2ray/config.json
 
-# 配置 /etc/v2ray/config.json 后测试
+# 测试
 v2ray -test -config /etc/v2ray/config.json
 
 # 开启服务
@@ -124,25 +129,13 @@ alias proxy="export http_proxy=http://localhost:1081;export https_proxy=http://l
 alias unproxy="unset http_proxy;unset https_proxy"
 ```
 
-- UI客户端
+- 安装web客户端
 
 ```
-# qv2ray
-yay -S qv2ray
-
-# v2raya
 yay -S v2raya
 ```
 
-4. 编辑类
-
-```
-yay -S vim
-yay -S typora
-yay -S sublime-text-4
-```
-
-5. oh-my-zsh
+3. oh-my-zsh
 
 下载 `install.sh` 并执行：
 ```bash
@@ -163,7 +156,7 @@ git clone https://github.com/zsh-users/zsh-autosuggestions.git
 修改配置文件：
 
 ```bash
-vim ~/.zshrc
+kate ~/.zshrc
 
 # 修改主题
 ZSH_THEME="ys"
@@ -183,6 +176,20 @@ source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # 重新打开zsh
 exit
+```
+
+4. 浏览器
+
+```bash
+yay -S google-chrome
+```
+
+5. 编辑类
+
+```
+yay -S vim
+yay -S typora
+yay -S sublime-text-4
 ```
 
 6. 编程类
@@ -315,19 +322,21 @@ latte-dock
 2. 在系统设置 - 外观 - 全局主题 - 获取新全局主题，搜索“macos”，选择最多下载在前，安装“whitesur”主题并使用，勾选“使用来自主题的桌面布局”，应用；
 3. 在系统设置 - 外观 - 应用程序风格，选择“Breeze微风”，点击配置 - 透明度，设置为半透明；
 4. 在系统设置 - 外观 - 应用程序风格 - 配置GNOME/GTK应用程序风格 - 获取新GNOME/GTK应用程序风格，搜索“bigsur”，选择最多下载在前，安装“bigsur-originals-gtk-blue-light”风格并使用；
-5. 在系统设置 - 外观 - Plasma样式 - 获取新Plasma样式，搜索“macos”，选择最多下载在前，安装“whitesur-dark”样式并使用；
+5. 在系统设置 - 外观 - Plasma样式 - 获取新Plasma样式，搜索“macos”，选择最多下载在前，安装“whitesur dark plasma”样式并使用；
 6. 在系统设置 - 外观 - 图标 - 获取新图标，搜索“bigsur”，选择最多下载在前，安装“bigsur icon theme”图标并使用；
 7. 复制Windows系统 `C:\Windows\Fonts` 目录到 `/usr/share/fonts` ，重命名为 `Windows-Fonts` ，在同级创建目录 `MacOS-Fonts` ，存放苹方系列字体文件，在系统设置 - 外观 - 字体，调整所有字体，选择 苹方简体常规，固定宽度字体选择 `Consolas` ；
-8. 在系统设置 - 开机与关机 -登陆屏幕（SDDM），选择“whitesur”使用，并更改背景；
-9. 在桌面右键 - 配置桌面和壁纸 - 壁纸，选择 每日一图 - 必应；
-10. 在系统设置 - 工作区行为 - 锁屏 - 外观配置 - 图像 - 获取新壁纸，搜索“macos”，选择最多下载在前，安装壁纸，在 `~/.local/share/wallpapers` 中选择对应壁纸复制，替换主题中的登录屏幕背景图片 `/usr/share/sddm/themes/WhiteSur/background.png` ，调整大小为 `1920x1080` 并使用Gimp设置高斯模糊 (10,10) 导出为新图片，替换主题中的欢迎屏幕背景图片 `~/.local/share/plasma/look-and-feel/com.github.vinceliuiceWhiteSur/contents/splash/images/background.png` ，原有图片重命名为 `backup.png` ；
-11. 设置顶栏，右键编辑面板，点击配置系统托盘，将面板间距设置可变大小，将 `Manjaro设置管理器` 、 `News available!` 、 `Yakuake` 、 `蓝牙` 、 `剪贴板` 设置总是隐藏，配置数字时钟，日期自适应位置，不显示秒，时间显示24小时制；
-12. 编辑终端Konsole，设置-显示工具栏 都取消，右键编辑当前方案，常规 设置命令为 `/bin/zsh` ，外观 - 配色方案和字体 选择微风，点编辑，勾选模糊背景，设置背景透明度为40%，字体选择 `Consolas` ，外观 - 光标 设置为 I字型，闪烁已启用；
-13. 在系统设置 - 显卡与显示器 - 显示器配置，设置全局缩放率，重启电脑；
-14. 在系统设置 - 工作区行为 - 桌面特效，勾选 最小化过渡动画（神灯）；
-15. 在系统设置 - 窗口管理 - 任务切换器 - 获取新任务切换器，搜索“MediumRounded”，选择最多下载在前，安装“MediumRounded”切换器布局并使用；
-16. 打开 Dolphin，在 设置 - 配置Dolphin - 右键菜单，勾选git，点击 下载新服务，搜索“terminal”，选择最多下载在前，安装“Your Terminal Menu - Open Terminal Here”，确定后重启 Dolphin；
-17. 为了搭配 Dolphin 的git功能，在终端输入 ` git config --global core.editor "code --wait"` ，接下来打开配置文件  `git config --global -e` ，添加以下配置项：
+8. 在系统设置 - 开机与关机 -登录屏幕（SDDM），选择“whitesur”使用；
+
+9. 在系统设置 - 工作区行为 - 锁屏 - 外观配置 - 图像 - 获取新壁纸，搜索“macos”，选择最多下载在前，安装壁纸，在 `~/.local/share/wallpapers` 中选择对应壁纸复制，替换主题中的登录屏幕背景图片 `/usr/share/sddm/themes/WhiteSur/background.png` ，调整大小为 `1920x1080` 并使用Gimp设置高斯模糊 (10,10) 导出为新图片，替换主题中的欢迎屏幕背景图片 `~/.local/share/plasma/look-and-feel/com.github.vinceliuice.WhiteSur/contents/splash/images/background.png` ，原有图片重命名为 `backup.png` ；
+10. 在系统设置 - 用户 - 头像，设置用户头像；
+11. 在桌面右键 - 配置桌面和壁纸 - 壁纸，选择 每日一图 - 必应；
+12. 设置顶栏，右键编辑面板，将面板间距设置可变大小，点击配置系统托盘，将 `Manjaro设置管理器` 、 `News available!` 、 `Yakuake` 、 `蓝牙` 、 `剪贴板` 设置总是隐藏，添加部件数字时钟到右上角，配置数字时钟，日期自适应位置，不显示秒，时间显示24小时制；
+13. 编辑终端Konsole，设置-显示工具栏 都取消，右键编辑当前方案，常规 设置命令为 `/bin/zsh` ，外观 - 配色方案和字体 选择微风，点编辑，勾选模糊背景，设置背景透明度为40%，字体选择 `Consolas` ，外观 - 光标 设置为 I字型，闪烁已启用；
+14. 在系统设置 - 显卡与显示器 - 显示器配置，设置全局缩放率；
+15. 在系统设置 - 工作区行为 - 桌面特效，勾选 最小化过渡动画（神灯）；
+16. 在系统设置 - 窗口管理 - 任务切换器 - 获取新任务切换器，搜索“mediumrounded”，选择最多下载在前，安装“MediumRounded”切换器布局并使用，勾选 包含“显示桌面”图标，勾选 每个程序一个窗口；
+17. 打开 Dolphin，在 设置 - 配置Dolphin - 右键菜单，勾选git，点击 下载新服务，搜索“terminal”，选择最多下载在前，安装“Your Terminal Menu - Open Terminal Here”，确定后重启 Dolphin；
+18. 为了搭配 Dolphin 的git功能，在终端输入 ` git config --global core.editor "code --wait"` ，接下来打开配置文件  `git config --global -e` ，添加以下配置项：
 
 ```
 [diff]
@@ -335,7 +344,7 @@ latte-dock
 [difftool "code"]
     cmd = code --wait --diff $LOCAL $REMOTE
 ```
-18. 将 `Dolphin` 、 `Konsole` 、 `系统监视器` 、 `添加/删除软件` 、 `回收站` 添加固定到dock并固定启动器；
+19. 将 `Dolphin` 、 `Konsole` 、 `系统监视器` 、 `添加/删除软件` 、 `回收站` 添加固定到dock并固定启动器；
 
 ### 注意事项
 
