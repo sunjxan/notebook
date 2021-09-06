@@ -345,10 +345,16 @@ latte-dock
 18. 为了搭配 Dolphin 的git功能，在终端输入 ` git config --global core.editor "code --wait"` ，接下来打开配置文件  `git config --global -e` ，添加以下配置项：
 
 ```
+[core]
+	editor = code --wait
+	autocrlf = false
 [diff]
     tool = code
 [difftool "code"]
     cmd = code --wait --diff $LOCAL $REMOTE
+[user]
+	name = <username>
+	email = <email>
 ```
 19. 将 `Dolphin` 、 `Konsole` 、 `系统监视器` 、 `添加/删除软件` 、 `回收站` 添加固定到dock并固定启动器；
 
