@@ -242,7 +242,6 @@ yay -S dingtalk-bin
 10. 图像类
 
 ```
-yay -S flameshot
 yay -S gimp
 ```
 
@@ -346,17 +345,18 @@ latte-dock
 
 ```
 [core]
-	editor = code --wait
-	autocrlf = false
+    editor = code --wait
+    autocrlf = false
 [diff]
     tool = code
 [difftool "code"]
     cmd = code --wait --diff $LOCAL $REMOTE
 [user]
-	name = <username>
-	email = <email>
+    name = <username>
+    email = <email>
 ```
 19. 将 `Dolphin` 、 `Konsole` 、 `系统监视器` 、 `添加/删除软件` 、 `回收站` 添加固定到dock并固定启动器；
+20. 打开Spectacle，配置 - 完成截图之后，勾选 复制图像到剪贴板，在 系统设置 - 快捷键 - 快捷键 - Spectacle - 截取矩形区域，添加自定义快捷键 `Alt + A` ；
 
 ### 注意事项
 
