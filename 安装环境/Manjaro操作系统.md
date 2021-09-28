@@ -233,7 +233,7 @@ yay -S wechat-uos
 yay -S electron-wechat
 
 # feishu
-yay -S electron-lark
+yay -S feishu
 
 # dingtalk
 yay -S dingtalk-bin

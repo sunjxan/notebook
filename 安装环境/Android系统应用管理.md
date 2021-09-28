@@ -18,10 +18,10 @@ adb install -d <apk文件>
 # 卸载应用
 adb uninstall <应用包名>
 
-# 卸载系统应用（不要卸载应用商店）
+# 卸载系统应用（不要卸载系统应用商店）
 adb shell pm uninstall --user 0 <应用包名>
 ```
 
-安装 [Apkpure](https://apkpure.com) 代替原生应用商店和Google Play Store，收藏安装的应用以同步。
+安装 [Apkpure](https://apkpure.com) 代替 [Google Play Store](https://play.google.com/store) ，收藏安装的应用以同步，与系统应用商店配合管理应用。
 
 MIUI不允许安装多应用，所以安装xapk文件时，先在 设置 - 更多设置 - 开发者选项 中关闭 MIUI优化，安装完成后再打开。
