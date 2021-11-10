@@ -187,7 +187,7 @@ exit
 4. 浏览器
 
 ```bash
-yay -S google-chrome
+yay -S microsoft-edge-stable-bin
 ```
 
 5. 编辑类
@@ -204,7 +204,7 @@ yay -S sublime-text-4
 yay -S gitkraken
 yay -S visual-studio-code-bin
 yay -S pycharm-community-edition
-yay -S codeblocks
+yay -S qtcreator
 yay -S dosbox
 ```
 
@@ -291,6 +291,7 @@ yay -S netron-bin
 yay -S cheese
 yay -S droidcam
 yay -S gparted
+yay -S scrcpy
 ```
 
 ### 安装虚拟机
