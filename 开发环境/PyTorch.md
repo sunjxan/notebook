@@ -11,8 +11,9 @@ pip3 install torch==1.7.0+cu101 torchvision==0.8.1+cu101 torchaudio==0.7.0 -f ht
 import torch
 print(torch.__version__)
 
-# 查看GPU和CUDA支持
+# 查看CUDA和cudnn支持
 print(torch.cuda.is_available())
+print(torch.backends.cudnn.enabled)
 
 # 查看电脑GPU
 print(torch.cuda.device_count())
