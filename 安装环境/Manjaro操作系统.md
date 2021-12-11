@@ -285,13 +285,15 @@ yay -S wireshark-qt
 16. 工具类
 
 ```
-yay -S mathpix-snipping-tool
-yay -S edrawmax-cn
-yay -S netron-bin
-yay -S cheese
-yay -S droidcam
-yay -S gparted
-yay -S scrcpy
+yay -S mathpix-snipping-tool  （数学公式）
+yay -S edrawmax-cn  （画图）
+yay -S netron-bin  （神经网络）
+yay -S cheese  （摄像）
+yay -S droidcam  （安卓摄像）
+yay -S gparted  （分区）
+yay -S scrcpy  （投屏）
+yay -S woeusb-ng  （启动盘制作）
+yay -S ventoy  （启动盘制作）
 ```
 
 ### 安装虚拟机
