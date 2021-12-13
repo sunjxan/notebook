@@ -110,9 +110,6 @@ ln -s /usr/local/lib/python3.6/dist-packages/cv2/python-3.6/*.so ~/.local/lib/py
 
 ## 测试
 
-如果WSL2没有Windows X-server，要先在Windows上安装VcXsrv，并配置打开。
-然后进行测试：
-
 ```
 cd ~/opencv/samples/cpp/example_cmake
 cmake .
@@ -224,18 +221,7 @@ plt.close('all')
 # 手动关闭也会删除figure内图片
 ```
 
-### 配置PyCharm
-
-1. 在运行配置添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP），或者在代码开始处添加以下代码段：
-
-```
-import os
-os.environ['DISPLAY'] = 'windows:0'
-```
-
-2. 下载安装插件（https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer），debug时可以在Debugger窗口预览图片（右键 `View as Image`）;
-
-3. 在调试中使用 `matplotlib` 查看图片细节：
+### Matplotlib用于调试
 
 ```
 # 右下角显示鼠标处坐标和数值
@@ -272,9 +258,8 @@ plt.show()
 
 ## C++编程
 
-### 配置CLion
+CMakeLists.txt
 
-1. 修改CMakeLists.txt：
 ```
 cmake_minimum_required(VERSION 3.10)
 project(untitled LANGUAGES CXX)
@@ -299,23 +284,43 @@ link_directories(${OpenCV_LIB_DIR})
 target_link_libraries(untitled ${OpenCV_LIBS})
 ```
 
-2. 在运行配置添加环境变量 `DISPLAY=windows:0`（windows为WSL2的Win端IP），或者在main函数中添加环境变量：
+test.cpp
+
 ```
-#include <iostream>
-#include <cmath>
 #include <opencv2/opencv.hpp>
-
 using namespace std;
-
-int main() {
-    // 设置Windows X-server
-    putenv((char *)"DISPLAY=windows:0");
-    
+int main()
+{
     cv::Mat image = cv::imread("opencv/samples/data/lena.jpg");
     cv::imshow("Image", image);
     cv::waitKey();
-    cv::destroyAllWindows();
-    
+    cv::destroyAllWindows();    
     return 0;
 }
 ```
+
+## 插件
+
+### GDB ImageWatch
+
+```
+git clone git@github.com:OpenImageDebugger/OpenImageDebugger.git
+
+cd OpenImageDebugger
+git submodule init
+git submodule update
+
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+make -j $(nproc)
+sudo make -j $(nproc) install
+
+vim ~/.gdbinit
+# 追加以下
+source /usr/local/OpenImageDebugger/oid.py
+```
+
+### CLion / PyCharm
+
+下载安装插件（https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer），debug时可以在Debugger窗口预览图片（右键 `View as Image`）。
