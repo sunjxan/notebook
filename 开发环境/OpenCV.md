@@ -323,4 +323,4 @@ source /usr/local/OpenImageDebugger/oid.py
 
 ### OpenCV Image Viewer (PyCharm / CLion)
 
-下载安装插件（https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer），debug时可以在Debugger窗口预览图片（右键 `View as Image`）。
+下载安装插件（ https://plugins.jetbrains.com/plugin/14371-opencv-image-viewer ），debug时可以在Debugger窗口预览图片（右键 `View as Image`）。
