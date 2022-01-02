@@ -18,8 +18,18 @@ adb install -d <apk文件>
 # 卸载应用
 adb uninstall <应用包名>
 
-# 卸载系统应用（不要卸载系统应用商店）
+# 卸载系统应用（不要卸载MIUI系统应用商店）
 adb shell pm uninstall --user 0 <应用包名>
+
+华为应用包名
+com.huawei.hifolder  热门推荐（精品推荐）
+com.huawei.android.thememanager  主题
+com.baidu.input_huawei  百度输入法-华为版
+com.huawei.browser  华为浏览器
+com.huawei.hwireader/com.huawei.hwread.al  华为阅读
+com.huawei.music  华为音乐
+com.huawei.himovie  华为视频
+com.android.stk  SIM卡应用
 ```
 
 安装 [Apkpure](https://apkpure.com) 代替 [Google Play Store](https://play.google.com/store) ，收藏安装的应用以同步，与系统应用商店配合管理应用。
