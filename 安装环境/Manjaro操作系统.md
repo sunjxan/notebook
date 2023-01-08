@@ -25,18 +25,17 @@ sudo dd if=/path/to/manjaro.iso of=/dev/sdX bs=4M status=progress && sync
 3. 选择键盘布局为English(US) - Default；
 4. 手动分区，新建GPT分区表：
 
-- EFI系统分区（EFI system partition，ESP）/boot/efi，FAT32文件系统，100 ~ 300MB，设置标记为boot，建议设为第一块磁盘的第一个分区；
+- EFI系统分区（EFI system partition，ESP）/boot/efi，FAT32文件系统，5 ~ 10 MB，设置标记为boot，建议设为第一块磁盘的第一个分区；
 
-- 根分区/，ext4文件系统，10 ~ 20GB，所有的目录都挂在这个目录下面；
+- 根分区/，ext4文件系统，1 ~ 5 GB，所有的目录都挂在这个目录下面；
 
-
-- /usr，ext4文件系统，25 ~ 50GB，用于存放程序以及数据的地方，涵盖了二进制文件，各种文档，各种头文件，还有各种库文件；
-- /opt，ext4文件系统，10 ~ 20GB， 这个目录往往被用于安装 Gnome 或 KDE 等大型软件，以免把大量文件塞进 /usr 目录树；
-- /srv，ext4文件系统，100 ~ 500MB，用于存储本机或本服务器提供服务的数据，主要用于配置服务器；
-- /var，ext4文件系统，20 ~ 40GB，包含缓存、一些临时文件以及日志文件；
+- /usr，ext4文件系统，40 ~ 50 GB，用于存放程序以及数据的地方，涵盖了二进制文件，各种文档，各种头文件，还有各种库文件；
+- /opt，ext4文件系统，10 ~ 20 GB， 这个目录往往被用于安装 Gnome 或 KDE 等大型软件，以免把大量文件塞进 /usr 目录树；
+- /srv，ext4文件系统，100 ~ 500 MB，用于存储本机或本服务器提供服务的数据，主要用于配置服务器，一般不用分配；
+- /var，ext4文件系统，10 ~ 20 GB，包含缓存、一些临时文件以及日志文件；
 - /home，ext4文件系统，硬盘剩余的可用空间；
 
-- 交换 (Swap) 分区，linuxswap文件系统，物理内存大小的0.75 ～ 2倍；
+- 交换 (Swap) 分区，linuxswap文件系统，物理内存大小的0.75 ~ 2 倍；
 
 5. 设置用户名、密码、root密码；
 
@@ -82,13 +81,13 @@ yay -S fcitx5-im fcitx5-chinese-addons fcitx5-pinyin-zhwiki fcitx5-material-colo
 欲在程序中正常启用 Fcitx5, 须设置以下环境变量，并重新登录：
 
 ```
-kate ~/.pam_environment
+sudo vim /etc/environment
 
-GTK_IM_MODULE DEFAULT=fcitx
-QT_IM_MODULE  DEFAULT=fcitx
-XMODIFIERS    DEFAULT=@im=fcitx
-INPUT_METHOD  DEFAULT=fcitx
-SDL_IM_MODULE DEFAULT=fcitx
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+GLFW_IM_MODULE=ibus
 ```
 `Fcitx5设置 -> 添加输入法` 添加 拼音 输入法
 
@@ -96,49 +95,36 @@ SDL_IM_MODULE DEFAULT=fcitx
 
 在拼音输入法（或者 Rime 输入法）的设置中，启用“ 在程序中显示预编辑文本 ”即可启用单行模式
 
-2. v2ray
+2. clash
 
 ```
-yay -S v2ray
+yay -S clash
 ```
+下载Country.mmdb放到当前路径
+在服务订阅处获得转化后的config.yaml配置文件
+
 - 命令行中使用
 ```
-# 添加v2ray配置
-kate /etc/v2ray/config.json
-
-# 测试
-v2ray -test -config /etc/v2ray/config.json
-
 # 开启服务
-v2ray -config /etc/v2ray/config.json
-
-# 开机启动
-sudo systemctl enable v2ray
+clash -d .
 ```
-在 系统设置 - 网络设置 - 代理，选择使用系统代理服务器配置，HTTP代理 和 SSL代理填 `http://localhost:1081` ，SOCKS代理填 `http://localhost:1080` 。
+在 系统设置 - 网络设置 - 代理，选择使用系统代理服务器配置，HTTP代理 和 SSL代理填 `http://localhost:7890` ，SOCKS代理填 `http://localhost:7891` 。
 
 终端内配置：
 
 ```
 #启用代理
-export http_proxy=http://localhost:1081
-export https_proxy=http://localhost:1081
+export http_proxy=http://localhost:7890
+export https_proxy=http://localhost:7890
+export socks_proxy=http://localhost:7891
 # 关闭代理
 unset http_proxy
 unset https_proxy
+unset socks_proxy
 
 # 通过运行proxy命令启用代理，运行unproxy命令关闭代理，这样就可以在代理与非代理之间切换自如
-alias proxy="export http_proxy=http://localhost:1081;export https_proxy=http://localhost:1081" 
-alias unproxy="unset http_proxy;unset https_proxy"
-```
-
-- 安装web客户端
-
-```
-yay -S v2raya
-
-# 开机启动
-sudo systemctl enable v2raya
+alias proxy="export http_proxy=http://localhost:7890;export https_proxy=http://localhost:7890;export socks_proxy=http://localhost:7891" 
+alias unproxy="unset http_proxy;unset https_proxy;unset socks_proxy"
 ```
 
 3. oh-my-zsh
@@ -363,7 +349,7 @@ latte-dock
 
 ### 注意事项
 
-每天要开机执行一遍 `sudo pacman -Syyu` ，及时更新。
+每天要开机执行一遍 `sudo pacman -Syyu` 或 `yay` ，及时更新。
 
 卸载软件使用
 
