@@ -108,6 +108,17 @@ yay -S clash
 # 开启服务
 clash -d .
 ```
+
+```
+yay -S clash-for-windows-bin
+```
+
+- 命令行中使用
+```
+# 开启服务
+cfw
+```
+
 在 系统设置 - 网络设置 - 代理，选择使用系统代理服务器配置，HTTP代理 和 SSL代理填 `http://localhost:7890` ，SOCKS代理填 `http://localhost:7891` 。
 
 终端内配置：
