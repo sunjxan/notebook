@@ -97,25 +97,23 @@ GLFW_IM_MODULE=ibus
 
 2. clash
 
+- clash
+
 ```
 yay -S clash
 ```
 下载Country.mmdb放到当前路径
 在服务订阅处获得转化后的config.yaml配置文件
 
-- 命令行中使用
 ```
-# 开启服务
 clash -d .
 ```
 
+- clash for windows
+
 ```
 yay -S clash-for-windows-bin
-```
 
-- 命令行中使用
-```
-# 开启服务
 cfw
 ```
 
