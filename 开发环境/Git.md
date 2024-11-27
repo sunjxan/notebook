@@ -1,10 +1,15 @@
 1. Windows安装Git（<https://git-scm.com/downloads>）：
 
-- 使用VS Code作为默认编辑器
+- Use Visual Studio Code as Git's default editor
+- Override the default branch name for new repositories
 - Git from the command line and also from 3rd-party software
+- Use external OpenSSH
 - Use the OpenSSL library
-- Checkout Windows-style,commit Unix-style line endings
+- Checkout as-is, commit Unix-style line endings
 - Use Windows' default console window
+- Rebase
+- Git Credential Manager
+- Enable file system caching
 
 2. 设置换行符编码：
 
